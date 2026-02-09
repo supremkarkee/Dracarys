@@ -16,7 +16,8 @@ docker ps
 if you see any containers running, stop them using 
 docker stop <container name>
 
-or ```docker-compose down ```
+or ```docker-compose down ``` 
+after that we can run our container
 
 * run ```docker-compose up --build```
 
