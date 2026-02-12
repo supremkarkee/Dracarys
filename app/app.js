@@ -29,6 +29,12 @@ app.get("/db_test", function(req, res) {
     });
 });
 
+
+// route for testing db with parameters
+app.get("/db_test2", function(req, res) 
+{
+    
+
 // Create a route for /goodbye
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {
