@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account - Dracarys</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* Background setup matches login page */
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('images/signup_background.jpg');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .main-content {
+            text-align: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .hero-title {
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            text-align: center;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out;
+            transition: all 0.3s ease;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #ffffff;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        /* Role Selection Styles */
+        .role-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .role-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .role-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            border-color: #667eea;
+        }
+
+        .role-btn h3 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .role-btn p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        /* Form Styles */
+        #signupForm {
+            display: none;
+            /* Hidden by default */
+            text-align: left;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.4);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #cfd8dc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-content">
+        <h1 class="hero-title">Join Dracarys</h1>
+
+        <div class="container">
+            <div id="roleSelection">
+                <h2>I want to join as a...</h2>
+                <div class="role-selection">
+                    <div class="role-btn" onclick="selectRole('tutor')">
+                        <h3>Tutor</h3>
+                        <p>Share knowledge and mentor others.</p>
+                    </div>
+                    <div class="role-btn" onclick="selectRole('learner')">
+                        <h3>Learner</h3>
+                        <p>Find tutors and grow your skills.</p>
+                    </div>
+                </div>
+                <br>
+                <a href="loginpage.html" class="back-link">Already have an account? Login</a>
+            </div>
+
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <h2 id="formTitle">Create Account</h2>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="userId">User ID</label>
+                    <input type="text" id="userId" placeholder="Choose a unique ID" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Gmail Address</label>
+                    <input type="email" id="email" placeholder="example@gmail.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="ageCheck" required>
+                    <label for="ageCheck">I confirm that I am 18 years or older.</label>
+                </div>
+
+                <input type="hidden" id="selectedRole">
+
+                <button type="submit" class="submit-btn" id="submitBtn">Sign Up</button>
+
+                <div style="text-align: center;">
+                    <a href="javascript:resetSelection()" class="back-link">Change Role</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function selectRole(role) {
+            document.getElementById('roleSelection').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+            document.getElementById('selectedRole').value = role;
+
+            const title = role === 'tutor' ? 'Tutor Registration' : 'Learner Registration';
+            document.getElementById('formTitle').innerText = title;
+        }
+
+        function resetSelection() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('roleSelection').style.display = 'block';
+            document.getElementById('signupForm').reset();
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerText;
+            const role = document.getElementById('selectedRole').value;
+
+            btn.innerText = 'Creating Account...';
+            btn.style.opacity = '0.8';
+
+            // Simulate API call
+            setTimeout(() => {
+                alert(`Account created successfully for ${role}! \nWelcome to Dracarys.`);
+                window.location.href = 'loginpage.html';
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>
