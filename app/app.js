@@ -31,9 +31,9 @@ app.get("/db_test", function(req, res) {
 
 
 // route for testing db with parameters
-app.get("/db_test2", function(req, res) 
-{
-    
+app.get("/db_test2", function(req, res) {
+    res.send("Database test working");
+});
 
 // Create a route for /goodbye
 // Responds to a 'GET' request
@@ -46,13 +46,13 @@ app.get("/about", function(req, res) {
     res.sendFile("about.html", { root: "./static" });
 });
 
-app.get("/roehampton", function(req, res) 
-{
-    res.send("Hello roehampton !");
+
+app.get("/roehampton", function(req, res) {
     console.log(req.url);
     let path = req.url;
-    res.send(path.substring(0,3));
+    res.send("Hello roehampton " + path.substring(0,3));
 });
+
 
 // Create a dynamic route for /hello/<name>, where name is any value provided by user
 // At the end of the URL
