@@ -191,3 +191,128 @@ footer {
     margin-top: var(--spacing-lg);
     color: #666;
 }
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9fafc;
+    color: #333;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8%;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.btn-nav {
+    background: #ff4d4d;
+    padding: 8px 16px;
+    color: white !important;
+    border-radius: 6px;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 80px 8%;
+}
+
+.hero-text {
+    max-width: 50%;
+}
+
+.hero-text h1 {
+    font-size: 48px;
+    color: #222;
+}
+
+.hero-text p {
+    margin: 20px 0;
+    font-size: 18px;
+}
+
+.hero-buttons a {
+    margin-right: 15px;
+}
+
+.btn-primary {
+    background: #ff4d4d;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-secondary {
+    border: 2px solid #ff4d4d;
+    padding: 10px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #ff4d4d;
+}
+
+.hero-image img {
+    width: 500px;
+}
+
+.features {
+    text-align: center;
+    padding: 60px 8%;
+    background: white;
+}
+
+.feature-grid {
+    display: flex;
+    gap: 30px;
+    margin-top: 40px;
+    justify-content: center;
+}
+
+.feature-card {
+    background: #f3f4f6;
+    padding: 25px;
+    border-radius: 12px;
+    width: 280px;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+}
+
+.feature-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.cta {
+    text-align: center;
+    padding: 80px 8%;
+    background: linear-gradient(135deg, #ff4d4d, #ff7a7a);
+    color: white;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #222;
+    color: white;
+}
