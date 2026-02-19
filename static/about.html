@@ -4,99 +4,440 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | Dracarys</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>About Dracarys | Community Tuition Marketplace</title>
+    <style>
+        /* GLOBAL STYLES */
+        :root {
+            --primary: #E63946;
+            --dark: #1D3557;
+            --secondary: #457B9D;
+            --accent: #A8DADC;
+            --gold: #F4A261;
+            --success: #2A9D8F;
+            --light: #F1FAEE;
+            --white: #ffffff;
+            --grey: #6C757D;
+            --grey-light: #f8f9fa;
+            --font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--white);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            color: var(--white);
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* MISSION SECTION */
+        .mission {
+            background: var(--light);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .mission h2 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+        }
+
+        .mission p {
+            color: #444;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* STATS SECTION */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--dark);
+            padding: 60px 20px;
+            gap: 2px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-box .num {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .stat-box .label {
+            color: var(--white);
+            opacity: 0.85;
+            font-size: 1rem;
+            margin-top: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* TEAM SECTION */
+        .team {
+            padding: 80px 20px;
+            text-align: center;
+            background: var(--white);
+        }
+
+        .team h2 {
+            font-size: 2.2rem;
+            color: var(--dark);
+            margin-bottom: 50px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .member {
+            text-align: center;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .member h4 {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .member .student-id {
+            font-size: 0.85rem;
+            color: var(--grey);
+            font-family: monospace;
+        }
+
+        .member .role {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        /* VALUES SECTION */
+        .values {
+            background: var(--light);
+            padding: 80px 20px;
+        }
+
+        .values h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--dark);
+            margin-bottom: 50px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .value-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            border-top: 5px solid var(--primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-card .icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .value-card h4 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .value-card p {
+            font-size: 0.95rem;
+            color: var(--grey);
+            line-height: 1.6;
+        }
+
+        /* ETHICS SECTION */
+        .ethics {
+            background: var(--dark);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .ethics h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+        }
+
+        .ethics p {
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* CTA SECTION */
+        .cta {
+            background: var(--primary);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            opacity: 0.95;
+            margin-bottom: 35px;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: var(--white);
+            color: var(--primary);
+            padding: 15px 35px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--dark);
+            color: var(--white);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media(max-width: 900px) {
+            .values-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 600px) {
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 40px 20px;
+            }
+
+            .values-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <header>
-        <div class="logo">Dracarys</div>
-        <nav>
-            <ul>
-                <!-- <li><a href="index.html">Home</a></li> -->
-                <li><a href="about.html" class="active">About</a></li>
-            </ul>
-        </nav>
+
+    <header class="hero">
+        <div class="icon">🔥</div>
+        <h1>About Dracarys</h1>
+        <p>We believe every child deserves access to an inspiring, affordable, and safe learning experience — no matter
+            their background or budget.</p>
     </header>
 
-    <main>
-        <section class="about-section">
-            <div class="story">
-                <h2>Our Mission</h2>
-                <div class="mission-statement">
-                    <h3>Free. Accessible. Fun.</h3>
-                    <p>
-                        We believe that high-quality education should be a right, not a privilege.
-                        Our mission is to <strong>bridge the gap</strong> between traditional, expensive tuition classes
-                        and the students who need them most.
-                    </p>
-                    <p>
-                        By connecting passionate university students with younger pupils, we create a cycle of learning
-                        and mentorship.
-                        We aim to <strong>lift the financial burden</strong> off parents' shoulders, ensuring that no
-                        child is left behind due to cost.
-                    </p>
-                    <p>
-                        Dracarys is more than just a platform; it's a movement to facilitate child growth and make
-                        learning an enjoyable, community-driven experience.
-                    </p>
-                </div>
+    <section class="mission">
+        <h2>Our Mission</h2>
+        <p>
+            Dracarys is a community-driven tuition marketplace built by university students, for school students.
+            We connect enthusiastic university students and subject experts with primary and secondary school pupils,
+            bridging the gap between academic levels through peer-to-peer learning.
+            Our platform makes education more <strong>accessible</strong>, more <strong>affordable</strong>, and
+            genuinely more <strong>fun</strong>.
+        </p>
+    </section>
+
+    <section class="stats">
+        <div class="stat-box">
+            <div class="num">10+</div>
+            <div class="label">Verified Tutors</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">10</div>
+            <div class="label">Subjects Available</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">100%</div>
+            <div class="label">Safety Verified</div>
+        </div>
+    </section>
+
+    <section class="team">
+        <h2>👨‍💻 Meet the Team</h2>
+        <div class="team-grid">
+            <div class="member">
+                <div class="avatar" style="background:var(--primary)">SK</div>
+                <h4>Suprem Karki</h4>
+                <p class="student-id">A00020626</p>
+                <p class="role">Backend & DevOps</p>
             </div>
-
-            <div class="team">
-                <center>
-                    <h2>Meet the Team</h2>
-                </center>
-                <div class="team-grid">
-                    <!-- Member 1 -->
-                    <div class="team-member">
-                        <img src="https://ui-avatars.com/api/?name=Suprem+karki&background=ff4d4d&color=fff"
-                            alt="Suprem karki" class="avatar">
-                        <div class="name">Suprem karki</div>
-                        <div class="role">Cyber Security Specialist</div>
-                        <p> Cyber Security Student emphasing secure by design.</p>
-                    </div>
-
-                    <!-- Member 2 -->
-                    <div class="team-member">
-                        <img src="https://ui-avatars.com/api/?name=Sadun+Sudu+Dewage&background=ff4d4d&color=fff"
-                            alt="Sadun Sudu Dewage" class="avatar">
-                        <div class="name">Sadun Sudu Dewage</div>
-                        <div class="role">Computing Student</div>
-                        <p>Crafting pixel-perfect experiences and intuitive user flows.</p>
-                    </div>
-
-                    <!-- Member 3 -->
-                    <div class="team-member">
-                        <img src="https://ui-avatars.com/api/?name=Raja+shah&background=ff4d4d&color=fff" alt="Raja Shah"
-                            class="avatar">
-                        <div class="name">Raja Shah</div>
-                        <div class="role">Computer Science Student</div>
-                        <p>Contributes database knowledge while supporting overall team coordination.</p>
-                    </div>
-
-                    <!-- Member 4 -->
-                    <div class="team-member">
-                        <img src="https://ui-avatars.com/api/?name=Sarah+Lee&background=ff4d4d&color=fff"
-                            alt="Sarah Lee" class="avatar">
-                        <div class="name">Aman Lamjel</div>
-                        <div class="role">Computer Science Student</div>
-                        <p>Bringing designs to life with modern CSS and JavaScript.</p>
-                    </div>
-                </div>
+            <div class="member">
+                <div class="avatar" style="background:var(--secondary)">RS</div>
+                <h4>Raja Shah</h4>
+                <p class="student-id">A00020547</p>
+                <p class="role">Frontend & Design</p>
             </div>
-        </section>
-    </main>
+            <div class="member">
+                <div class="avatar" style="background:var(--success)">SS</div>
+                <h4>Sadun Sudu Dewage</h4>
+                <p class="student-id">A00019034</p>
+                <p class="role">Database & Docs</p>
+            </div>
+            <div class="member">
+                <div class="avatar" style="background:var(--gold)">AL</div>
+                <h4>Aman Lamjel</h4>
+                <p class="student-id">A00016965</p>
+                <p class="role">Testing & Ethics</p>
+            </div>
+        </div>
+    </section>
 
-    <footer>
-        <p>&copy; 2026 Dracarys Team. All rights reserved.</p>
-    </footer>
+    <section class="values">
+        <h2>Our Core Values</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="icon">🎯</div>
+                <h4>Accessibility</h4>
+                <p>Quality education should not be limited by financial barriers. We offer affordable community-based
+                    tutoring for all families.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">🛡️</div>
+                <h4>Child Safety</h4>
+                <p>Every tutee is a minor. We verify all tutors, provide parental oversight tools, and monitor all
+                    communications for safety.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">🌟</div>
+                <h4>Engagement</h4>
+                <p>Learning should be exciting. Our tutors use interactive methods, games, and real-life examples to
+                    make subjects come alive.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">🤝</div>
+                <h4>Community</h4>
+                <p>We believe in sharing knowledge cooperatively, for mutual benefit. Dracarys is built on the principle
+                    of giving back.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">⚖️</div>
+                <h4>Fairness</h4>
+                <p>Transparent pricing, fair treatment of tutors, and equal access regardless of background, gender, or
+                    learning needs.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">📈</div>
+                <h4>Growth</h4>
+                <p>We track and celebrate progress. Every session note, every review, and every badge represents a step
+                    forward.</p>
+            </div>
+        </div>
+    </section>
 
-    <!-- <script src="script.js"></script> -->
+    <section class="ethics">
+        <h2>🛡️ Our Commitment to Safety & Ethics</h2>
+        <p>
+            Dracarys was designed with child safeguarding at its core. All tutors are verified with university email
+            addresses.
+            Parents have full visibility over all messaging between tutors and their children.
+            We comply fully with GDPR — collecting only the minimum data required.
+            Our platform includes a content flagging system, moderation controls, and a clear code of conduct for all
+            tutors.
+            We are committed to inclusivity, accessibility (WCAG 2.1 AA), and bias-free matching.
+        </p>
+    </section>
+
+    <section class="cta">
+        <h2>🔥 Ready to Join the Community?</h2>
+        <p>Whether you're a parent looking for a tutor, or a university student wanting to give back — Dracarys is for
+            you.</p>
+        <a href="#" class="btn">Get Started Today</a>
+    </section>
+
 </body>
 
 </html>
