@@ -119,3 +119,16 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Java/Maven
+target/
+*.class
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# But keep run configurations
+!.idea/runConfigurations/
+!.run/
