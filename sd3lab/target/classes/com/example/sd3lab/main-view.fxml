@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.sd3lab.HelloController" 
+      stylesheets="@style.css" spacing="0" prefWidth="800" prefHeight="600">
+    
+    <!-- Navigation Bar -->
+    <HBox styleClass="header" alignment="CENTER_LEFT" spacing="20">
+        <Label text="Dracarys" styleClass="logo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Home" styleClass="nav-link" onAction="#showMain"/>
+        <Button text="About" styleClass="nav-link" onAction="#showAbout"/>
+        <Button text="Login" styleClass="nav-link" onAction="#showLogin"/>
+        <Button text="Sign Up" styleClass="btn-primary" onAction="#showSignup"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox alignment="TOP_CENTER" spacing="40">
+            <padding><Insets top="50" right="50" bottom="50" left="50"/></padding>
+
+            <!-- Hero Section -->
+            <VBox alignment="CENTER" spacing="20" maxWidth="600">
+                <Label text="Learn. Create. Grow." styleClass="hero-title" wrapText="true" textAlignment="CENTER"/>
+                <Label text="Dracarys is a community-driven platform that connects passionate tutors and motivated students in a safe and engaging environment." 
+                       styleClass="hero-text" wrapText="true" textAlignment="CENTER"/>
+                <HBox spacing="15" alignment="CENTER">
+                    <Button text="Get Started" styleClass="btn-primary" onAction="#showSignup"/>
+                    <Button text="Learn More" styleClass="nav-link" style="-fx-border-color: #ff4d4d; -fx-border-radius: 5;" onAction="#showAbout"/>
+                </HBox>
+            </VBox>
+
+            <!-- Features -->
+            <HBox spacing="30" alignment="CENTER">
+                <VBox styleClass="card" spacing="15" alignment="CENTER" prefWidth="220">
+                    <Label text="Safe Community" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+                    <Label text="Verified tutors and secure communication." wrapText="true" textAlignment="CENTER"/>
+                </VBox>
+                <VBox styleClass="card" spacing="15" alignment="CENTER" prefWidth="220">
+                    <Label text="Interactive Learning" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+                    <Label text="Engaging sessions designed for growth." wrapText="true" textAlignment="CENTER"/>
+                </VBox>
+                <VBox styleClass="card" spacing="15" alignment="CENTER" prefWidth="220">
+                    <Label text="Track Progress" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+                    <Label text="Monitor performance and celebrate achievements." wrapText="true" textAlignment="CENTER"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </ScrollPane>
+
+    <HBox styleClass="footer">
+        <Label text="© 2026 Dracarys | Empowering Education Through Community"/>
+    </HBox>
+</VBox>

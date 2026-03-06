@@ -88,5 +88,17 @@ MYSQL_ROOT_USER=root
 DB_CONTAINER=db
 DB_PORT=3306
 ```
+___
 
+## 🚀 IntelliJ IDEA Setup (Recommended)
 
+To set up the entire project (Node.js + JavaFX) in IntelliJ:
+
+1. **Open the Project**: Select **File -> Open** and choose the root `Dracarys` folder.
+2. **Import as Maven**: IntelliJ should detect the root `pom.xml`. If prompted, click **"Import Maven Project"** or **"Load Maven Project"**.
+3. **Run Configurations**: We've included pre-configured run actions:
+   - Select **"Start Express Server"** from the run dropdown and click the green arrow to start the Node.js backend.
+   - Select **"Run JavaFX Lab"** to launch the Java graphical interface.
+
+> [!NOTE]
+> For the JavaFX lab, ensure you use **JDK 21 or higher** for best compatibility with macOS Sequoia.

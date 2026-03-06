@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run JavaFX Lab" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.example.sd3lab.Main" />
+    <module name="sd3lab" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/sd3lab" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
