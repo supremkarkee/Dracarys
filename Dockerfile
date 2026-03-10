@@ -1,5 +1,5 @@
 # Base image to use
-FROM node:latest
+FROM node:20-alpine
 
 # set a working directory
 WORKDIR /src
@@ -9,7 +9,7 @@ WORKDIR /src
 COPY package*.json /src/
 
 # Ask npm to install the dependencies
-RUN npm install -g supervisor && npm install && npm install supervisor
+RUN npm install
 
 # Copy across all our files
 COPY . /src
@@ -17,4 +17,5 @@ COPY . /src
 # Expose our application port (3000)
 EXPOSE 3000
 
-
+# Start the application
+CMD ["npm", "start"]
