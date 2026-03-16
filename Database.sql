@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2026 at 05:05 PM
+-- Generation Time: Mar 16, 2026 at 01:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -121,17 +121,21 @@ INSERT INTO `tutee_subjects` (`tutee_id`, `subject_id`) VALUES
 CREATE TABLE `tutors` (
   `tutor_id` int(11) NOT NULL,
   `user_id` varchar(10) NOT NULL,
-  `rating` decimal(2,1) DEFAULT NULL
+  `rating` decimal(2,1) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `qualification` varchar(255) DEFAULT NULL,
+  `subjects` varchar(255) DEFAULT NULL,
+  `lesson_count` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tutors`
 --
 
-INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`) VALUES
-(1, 'U001', 4.8),
-(2, 'U002', 4.5),
-(3, 'U005', 4.9);
+INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`, `description`, `qualification`, `subjects`, `lesson_count`) VALUES
+(1, 'U001', 4.8, 'Experienced mathematics tutor specializing in algebra and calculus for high school students.', 'MSc Mathematics - University of London', 'Mathematics, Physics', 120),
+(2, 'U002', 4.5, 'Chemistry tutor helping students understand complex concepts through practical examples.', 'BSc Chemistry - University of Manchester', 'Chemistry, Biology', 85),
+(3, 'U005', 4.9, 'Software engineer and programming tutor with strong background in algorithms and problem solving.', 'BSc Computer Science - MIT', 'Computer Science, Programming', 150);
 
 -- --------------------------------------------------------
 
@@ -304,4 +308,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
