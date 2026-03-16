@@ -166,26 +166,25 @@ INSERT INTO `tutor_subjects` (`tutor_id`, `subject_id`) VALUES
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `user_id` varchar(10) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` enum('tutor','tutee') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(50) UNIQUE NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('tutor', 'tutee') NOT NULL
+);
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `role`) VALUES
+INSERT INTO `users` (`user_id`, `full_name`, `email`, `password_hash`, `role`) VALUES
 ('U001', 'Alice Johnson', 'alice.johnson@email.com', 'hashed_pass_1', 'tutor'),
 ('U002', 'Brian Smith', 'brian.smith@email.com', 'hashed_pass_2', 'tutor'),
-('U003', 'Catherine Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'tutee'),
-('U004', 'Daniel Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'tutee'),
+('U003', 'Catherine Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'learner'),
+('U004', 'Daniel Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'learner'),
 ('U005', 'Emily Davis', 'emily.davis@email.com', 'hashed_pass_5', 'tutor'),
-('U006', 'Frank Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'tutee');
-
+('U006', 'Frank Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'learner');
 --
 -- Indexes for dumped tables
 --
