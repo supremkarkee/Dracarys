@@ -1,19 +1,51 @@
-extends site-layout
-block content
-    header
-        .logo Dracarys
-        nav
-            ul
-                li
-                    a.active(href="/") Home
-                li
-                    a(href="/about") About
-    main
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        title Dracarys - Learn & Grow
+        link(rel="stylesheet" href="/CSS/style.css")
+        link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet")
+    body
+        //- Navigation
+        include navbar.pug
+
+        //- Hero Section
         section.hero
-            h1 Ignite Your Potential
-            p We are a team of passionate developers building the future of software. Join us on our journey to create something extraordinary.
-            a.btn(href="/about") Meet the Team
-    footer
-        p &copy; 2026 Dracarys Team. All rights reserved.
-block scripts
-    script(src="/script.js")
+            .hero-text
+                h1 Learn. Create. Grow.
+                p Dracarys is a community-driven platform that connects passionate tutors and motivated students in a safe and engaging environment.
+                p.quote "Education is not a way to escape poverty; it is a way of fighting it".
+                .hero-buttons
+                    a.btn-primary(href="/signup") Get Started
+                    a.btn-secondary(href="/about") Learn More
+            .hero-image
+                img(src="/images/learning.jpg" alt="Students Learning")
+
+        //- Features Section
+        section.features
+            h2 Why Choose Dracarys?
+            .feature-grid
+                .feature-card
+                    img(src="/images/community.jpg" alt="Community")
+                    h3 Safe Community
+                    p Verified tutors and secure communication ensure a trustworthy learning experience.
+                .feature-card
+                    img(src="/images/interactive.jpg" alt="Interactive")
+                    h3 Interactive Learning
+                    p Engaging sessions designed to help students understand and grow confidently.
+                .feature-card
+                    img(src="/images/progress.jpg" alt="Progress")
+                    h3 Track Progress
+                    p Parents and tutors can monitor performance and celebrate achievements.
+
+        //- Call to Action
+        section.cta
+            h2 Ready to Start Your Learning Journey?
+            p.quote "The beautiful thing about learning is that no one can take it away from you."
+            p.quote "Education is not the filling of a pail, but the lighting of a fire."
+            p Join our growing educational community today.
+            a.btn-primary(href="/signup") Join Now
+
+        //- Footer
+        footer
+            p ┬® 2026 Dracarys | Empowering Education Through Community

@@ -1,8 +1,14 @@
 // Import express.js
 const express = require("express");
+const path = require("path");
+
 
 // Create express app
 var app = express();
+
+// Very important for pug template to work.
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'pug')
 
 // Add static files location
 app.use(express.static("static"));
@@ -10,75 +16,34 @@ app.use(express.static("static"));
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
-// Create a route for root - /
+// route for the root
+
 app.get("/", function (req, res) {
-    res.send("Hello world!");
-    console.log(req.url);
+    res.render("home");
 });
 
-// Create a route for testing the db
-app.get("/db_test", function (req, res) {
-    // Assumes a table called test_table exists in your database
-    sql = 'select * from test_table';
-    db.query(sql).then(results => {
-        console.log(results);
-        res.send(results)
-    });
-});
+// route for about page
 
-// route for testing db with parameters
-app.get("/db_test2", function (req, res) {
-    res.send("Database test working");
-});
-
-// Create a route for /goodbye
-// Responds to a 'GET' request
-app.get("/goodbye", function (req, res) {
-    res.send("Goodbye world!");
-});
-
-// Create a route for /about
 app.get("/about", function (req, res) {
-    res.sendFile("about.html", { root: "./static" });
+    res.render("about");
 });
 
+// Routes for home page
 
-app.get("/roehampton", function (req, res) {
-    console.log(req.url);
-    let path = req.url;
-    res.send("Hello roehampton " + path.substring(0, 3));
+app.get("/home", function (req, res) {
+    res.render("home");
 });
 
+// Routes for signup page
 
-// Create a dynamic route for /hello/<name>, where name is any value provided by user
-// At the end of the URL
-// Responds to a 'GET' request
-app.get("/hello/:name", function (req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
-    console.log(req.params);
-    //  Retrieve the 'name' parameter and use it in a dynamically generated page
-    res.send("Hello " + req.params.name);
+app.get("/signup", function (req, res) {
+    res.render("signup");
 });
 
+// Routes for login page
 
-app.get("/user/:id", function (req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
-    console.log(req.params);
-    //  Retrieve the 'id' parameter and use it in a dynamically generated page
-    res.send("your user id is :  " + req.params.id);
-});
-
-
-
-app.get("/Student/:name/:id", function (req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
-    console.log(req.params);
-    //  Retrieve the 'id' parameter and use it in a dynamically generated page
-    res.send("Hi dear studnet  :  " + req.params.name + "  your student id is : " + req.params.id);
-    //res.send("Your student id is : " + req.params.id);
+app.get("/login", function (req, res) {
+    res.render("loginpage");
 });
 
 // Start server on port 3000
