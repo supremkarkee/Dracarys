@@ -13,6 +13,7 @@ services:
         condition: service_healthy
     env_file:
       - ./.env
+
   db:
     image: mysql
     restart: always
@@ -22,12 +23,13 @@ services:
       - "3309:3306"
     volumes:
       - ./db:/var/lib/mysql
-      - ./sd2-db.sql:/docker-entrypoint-initdb.d/sd2-db.sql
+      - ./Database.sql:/docker-entrypoint-initdb.d/Database.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
