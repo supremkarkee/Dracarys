@@ -13,8 +13,12 @@ app.set('view engine', 'pug')
 // Add static files location
 app.use(express.static("static"));
 
+// Middleware to parse URL-encoded bodies (form data)
+app.use(express.urlencoded({ extended: true }));
+
 // Get the functions in the db.js file to use
 const db = require('./services/db');
+const authRoutes = require('./routes/auth');
 
 // route for the root
 
@@ -40,10 +44,18 @@ app.get("/signup", function (req, res) {
     res.render("signup");
 });
 
+// Mount the authentication form submission routes
+app.use('/', authRoutes);
+
 // Routes for login page
 
 app.get("/login", function (req, res) {
     res.render("loginpage");
+});
+
+// Catch-all route for unhandled requests (404 Page Not Found)
+app.use(function (req, res, next) {
+    res.status(404).render('404');
 });
 
 // Start server on port 3000
