@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: db
--- Generation Time: Oct 30, 2022 at 09:54 AM
--- Server version: 8.0.24
--- PHP Version: 7.4.20
+-- Host: 127.0.0.1
+-- Generation Time: Mar 16, 2026 at 01:57 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,125 +18,292 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sd2-db`
+-- Database: `onlinetutoring_platform`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `test_table`
+-- Table structure for table `reviews`
 --
 
-CREATE TABLE `test_table` (
-  `id` int NOT NULL,
-  `name` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `reviews` (
+  `review_id` int(11) NOT NULL,
+  `tutee_id` int(11) DEFAULT NULL,
+  `tutor_id` int(11) DEFAULT NULL,
+  `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
+  `feedback` text DEFAULT NULL,
+  `review_date` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `test_table`
+-- Dumping data for table `reviews`
 --
 
-INSERT INTO `test_table` (`id`, `name`) VALUES
-(1, 'Lisa'),
-(2, 'Kimia');
+INSERT INTO `reviews` (`review_id`, `tutee_id`, `tutor_id`, `rating`, `feedback`, `review_date`) VALUES
+(1, 1, 1, 5, 'Alice explains mathematics concepts very clearly', '2025-01-15'),
+(2, 2, 2, 4, 'Great help with chemistry exam preparation', '2025-02-10'),
+(3, 3, 3, 5, 'Excellent programming tutor, very patient', '2025-03-01');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subjects`
+--
+
+CREATE TABLE `subjects` (
+  `subject_id` int(11) NOT NULL,
+  `subject_name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `subjects`
+--
+
+INSERT INTO `subjects` (`subject_id`, `subject_name`, `description`) VALUES
+(1, 'Mathematics', 'Includes algebra, calculus and geometry'),
+(2, 'Physics', 'Mechanics, motion and energy concepts'),
+(3, 'Chemistry', 'Organic and inorganic chemistry fundamentals'),
+(4, 'English', 'Grammar, writing and literature'),
+(5, 'Computer Science', 'Programming and algorithms');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tutees`
+--
+
+CREATE TABLE `tutees` (
+  `tutee_id` int(11) NOT NULL,
+  `user_id` varchar(10) NOT NULL,
+  `school_level` varchar(50) DEFAULT NULL,
+  `grade_level` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutees`
+--
+
+INSERT INTO `tutees` (`tutee_id`, `user_id`, `school_level`, `grade_level`) VALUES
+(1, 'U003', 'High School', 'Grade 10'),
+(2, 'U004', 'High School', 'Grade 12'),
+(3, 'U006', 'Middle School', 'Grade 8');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tutee_subjects`
+--
+
+CREATE TABLE `tutee_subjects` (
+  `tutee_id` int(11) NOT NULL,
+  `subject_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutee_subjects`
+--
+
+INSERT INTO `tutee_subjects` (`tutee_id`, `subject_id`) VALUES
+(1, 1),
+(1, 2),
+(2, 3),
+(3, 1),
+(3, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tutors`
+--
+
+CREATE TABLE `tutors` (
+  `tutor_id` int(11) NOT NULL,
+  `user_id` varchar(10) NOT NULL,
+  `rating` decimal(2,1) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `qualification` varchar(255) DEFAULT NULL,
+  `subjects` varchar(255) DEFAULT NULL,
+  `lesson_count` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutors`
+--
+
+INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`, `description`, `qualification`, `subjects`, `lesson_count`) VALUES
+(1, 'U001', 4.8, 'Experienced mathematics tutor specializing in algebra and calculus for high school students.', 'MSc Mathematics - University of London', 'Mathematics, Physics', 120),
+(2, 'U002', 4.5, 'Chemistry tutor helping students understand complex concepts through practical examples.', 'BSc Chemistry - University of Manchester', 'Chemistry, Biology', 85),
+(3, 'U005', 4.9, 'Software engineer and programming tutor with strong background in algorithms and problem solving.', 'BSc Computer Science - MIT', 'Computer Science, Programming', 150);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tutor_subjects`
+--
+
+CREATE TABLE `tutor_subjects` (
+  `tutor_id` int(11) NOT NULL,
+  `subject_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutor_subjects`
+--
+
+INSERT INTO `tutor_subjects` (`tutor_id`, `subject_id`) VALUES
+(1, 1),
+(1, 2),
+(2, 3),
+(2, 4),
+(3, 1),
+(3, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` varchar(10) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('tutor','tutee') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `role`) VALUES
+('U001', 'Alice Johnson', 'alice.johnson@email.com', 'hashed_pass_1', 'tutor'),
+('U002', 'Brian Smith', 'brian.smith@email.com', 'hashed_pass_2', 'tutor'),
+('U003', 'Catherine Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'tutee'),
+('U004', 'Daniel Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'tutee'),
+('U005', 'Emily Davis', 'emily.davis@email.com', 'hashed_pass_5', 'tutor'),
+('U006', 'Frank Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'tutee');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `test_table`
+-- Indexes for table `reviews`
 --
-ALTER TABLE `test_table`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`review_id`),
+  ADD KEY `tutee_id` (`tutee_id`),
+  ADD KEY `tutor_id` (`tutor_id`);
+
+--
+-- Indexes for table `subjects`
+--
+ALTER TABLE `subjects`
+  ADD PRIMARY KEY (`subject_id`);
+
+--
+-- Indexes for table `tutees`
+--
+ALTER TABLE `tutees`
+  ADD PRIMARY KEY (`tutee_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `tutee_subjects`
+--
+ALTER TABLE `tutee_subjects`
+  ADD PRIMARY KEY (`tutee_id`,`subject_id`),
+  ADD KEY `subject_id` (`subject_id`);
+
+--
+-- Indexes for table `tutors`
+--
+ALTER TABLE `tutors`
+  ADD PRIMARY KEY (`tutor_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `tutor_subjects`
+--
+ALTER TABLE `tutor_subjects`
+  ADD PRIMARY KEY (`tutor_id`,`subject_id`),
+  ADD KEY `subject_id` (`subject_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `test_table`
+-- AUTO_INCREMENT for table `reviews`
 --
-ALTER TABLE `test_table`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `reviews`
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `subjects`
+--
+ALTER TABLE `subjects`
+  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `tutees`
+--
+ALTER TABLE `tutees`
+  MODIFY `tutee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `tutors`
+--
+ALTER TABLE `tutors`
+  MODIFY `tutor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`),
+  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`);
+
+--
+-- Constraints for table `tutees`
+--
+ALTER TABLE `tutees`
+  ADD CONSTRAINT `tutees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `tutee_subjects`
+--
+ALTER TABLE `tutee_subjects`
+  ADD CONSTRAINT `tutee_subjects_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`),
+  ADD CONSTRAINT `tutee_subjects_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`);
+
+--
+-- Constraints for table `tutors`
+--
+ALTER TABLE `tutors`
+  ADD CONSTRAINT `tutors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `tutor_subjects`
+--
+ALTER TABLE `tutor_subjects`
+  ADD CONSTRAINT `tutor_subjects_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`),
+  ADD CONSTRAINT `tutor_subjects_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`);
 COMMIT;
-
--- --------------------------------------------------------
--- Lab Tables: Modules, Programmes, Programme_Modules, Students, Student_Programme
--- --------------------------------------------------------
-
-CREATE TABLE `Modules` (
-  `code` VARCHAR(10) PRIMARY KEY,
-  `name` VARCHAR(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO `Modules` VALUES('CMP020C101','Software Development 1');
-INSERT INTO `Modules` VALUES('CMP020C102','Computer Systems');
-INSERT INTO `Modules` VALUES('CMP020C103','Mathematics for Computer Science');
-INSERT INTO `Modules` VALUES('CMP020C104','Software Development 2');
-INSERT INTO `Modules` VALUES('CMP020C105','Computing and Society');
-INSERT INTO `Modules` VALUES('CMP020C106','Databases');
-INSERT INTO `Modules` VALUES('PHY020C101','Physics Skills and Techniques');
-INSERT INTO `Modules` VALUES('PHY020C102','Mathematics for Physics');
-INSERT INTO `Modules` VALUES('PHY020C103','Computation for Physics');
-INSERT INTO `Modules` VALUES('PHY020C106','Introduction to Astrophysics');
-
-CREATE TABLE `Programmes` (
-  `id` VARCHAR(8) PRIMARY KEY,
-  `name` VARCHAR(50)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO `Programmes` VALUES('09UU0001','BSc Computer Science');
-INSERT INTO `Programmes` VALUES('09UU0002','BEng Software Engineering');
-INSERT INTO `Programmes` VALUES('09UU0003','BSc Physics');
-
-CREATE TABLE `Programme_Modules` (
-  `programme` VARCHAR(8) NOT NULL,
-  `module` VARCHAR(10) NOT NULL,
-  FOREIGN KEY (`programme`) REFERENCES `Programmes`(`id`),
-  FOREIGN KEY (`module`) REFERENCES `Modules`(`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO `Programme_Modules` VALUES('09UU0001','CMP020C101');
-INSERT INTO `Programme_Modules` VALUES('09UU0001','CMP020C102');
-INSERT INTO `Programme_Modules` VALUES('09UU0001','CMP020C103');
-INSERT INTO `Programme_Modules` VALUES('09UU0001','CMP020C104');
-INSERT INTO `Programme_Modules` VALUES('09UU0001','CMP020C105');
-INSERT INTO `Programme_Modules` VALUES('09UU0001','CMP020C106');
-INSERT INTO `Programme_Modules` VALUES('09UU0002','CMP020C101');
-INSERT INTO `Programme_Modules` VALUES('09UU0002','CMP020C102');
-INSERT INTO `Programme_Modules` VALUES('09UU0002','CMP020C103');
-INSERT INTO `Programme_Modules` VALUES('09UU0002','CMP020C104');
-INSERT INTO `Programme_Modules` VALUES('09UU0002','CMP020C105');
-INSERT INTO `Programme_Modules` VALUES('09UU0002','CMP020C106');
-INSERT INTO `Programme_Modules` VALUES('09UU0003','PHY020C101');
-INSERT INTO `Programme_Modules` VALUES('09UU0003','PHY020C102');
-INSERT INTO `Programme_Modules` VALUES('09UU0003','PHY020C103');
-INSERT INTO `Programme_Modules` VALUES('09UU0003','PHY020C106');
-
-CREATE TABLE `Students` (
-  `id` INT PRIMARY KEY,
-  `name` VARCHAR(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO `Students` VALUES(1,'Kevin Chalmers');
-INSERT INTO `Students` VALUES(2,'Lisa Haskel');
-INSERT INTO `Students` VALUES(3,'Arturo Araujo');
-INSERT INTO `Students` VALUES(4,'Sobhan Tehrani');
-INSERT INTO `Students` VALUES(100,'Oge Okonor');
-INSERT INTO `Students` VALUES(200,'Kimia Aksir');
-
-CREATE TABLE `Student_Programme` (
-  `id` INT,
-  `programme` VARCHAR(8),
-  FOREIGN KEY (`id`) REFERENCES `Students`(`id`),
-  FOREIGN KEY (`programme`) REFERENCES `Programmes`(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO `Student_Programme` VALUES(1,'09UU0002');
-INSERT INTO `Student_Programme` VALUES(2,'09UU0001');
-INSERT INTO `Student_Programme` VALUES(3,'09UU0003');
-INSERT INTO `Student_Programme` VALUES(4,'09UU0001');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -53,6 +53,23 @@ app.get("/login", function (req, res) {
     res.render("loginpage");
 });
 
+app.get("/tutors", function (req, res) {
+    res.send("tutors");
+});
+
+// test database routes.
+
+app.get('/all-tutors', function (req, res) {
+    var sql = "SELECT * FROM tutors";
+    db.query(sql).then(results => {
+        console.log(results);
+        res.json(results);
+    }).catch(err => {
+        console.error(err);
+        res.status(500).send("Database Error");
+    });
+});
+
 // Catch-all route for unhandled requests (404 Page Not Found)
 app.use(function (req, res, next) {
     res.status(404).render('404');
