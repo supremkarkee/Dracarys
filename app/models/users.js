@@ -22,12 +22,12 @@ class User {
     //Get an existing user id from an email address, or return false if not found
 
     async getIdfromEmail() {
-        var sql = "SELECT id FROM Users WHERE Users.email = ?";
+        var sql = "SELECT user_id FROM users WHERE users.email = ?";
         const result = await db.query(sql, [this.email]);
         // TODO LOTS OF ERROR CHECKS HERE..
         if (JSON.stringify(result) != '[]') {
-            this.id = result[0].id;
-            return this.id;
+            this.userId = result[0].user_id;
+            return this.userId;
         }
         else {
             return false;
@@ -39,8 +39,8 @@ class User {
 
     async setUserPassword(password) {
         const pw = await bcrypt.hash(password, 10);
-        var sql = "UPDATE Users SET password = ? WHERE Users.id = ?"
-        const result = await db.query(sql, [pw, this.id]);
+        var sql = "UPDATE users SET password = ? WHERE users.user_id = ?"
+        const result = await db.query(sql, [pw, this.userId]);
         return true;
     }
 
