@@ -1,0 +1,227 @@
+.profile-page {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 40px 80px;
+}
+
+.profile-container {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 48px;
+    align-items: start;
+}
+
+/* Sidebar Styling */
+.profile-sidebar {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.avatar-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 4rem;
+    font-weight: 800;
+    border-radius: 50%;
+    margin-bottom: 24px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.profile-header-info h1 {
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFD70020;
+    color: #B8860B;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.user-id {
+    font-size: 0.85rem;
+    color: var(--soft);
+    margin-bottom: 32px;
+}
+
+.sidebar-section {
+    text-align: left;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    margin-top: 24px;
+}
+
+.sidebar-section h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--soft);
+    margin-bottom: 12px;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.subject-tag {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+/* Main Content Styling */
+.profile-main section {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+}
+
+.profile-main h2 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    color: var(--text);
+}
+
+.bio-section p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--muted);
+}
+
+.stats-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 20px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--soft);
+}
+
+/* Booking Card Mockup */
+.booking-card {
+    background: var(--bg);
+    padding: 32px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+
+.calendar-mockup {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.calendar-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 10px;
+}
+
+.calendar-day {
+    padding: 10px;
+    border: 1px solid var(--bg);
+    color: var(--soft);
+}
+
+.btn-lg {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+}
+
+/* Reviews Section */
+.reviews-section {
+    grid-column: span 2;
+}
+
+.review-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.review-user {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.review-rating {
+    color: #FFD700;
+}
+
+.review-text {
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+.review-date {
+    font-size: 0.8rem;
+    color: var(--soft);
+}
+
+@media (max-width: 900px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+    .reviews-section {
+        grid-column: span 1;
+    }
+}

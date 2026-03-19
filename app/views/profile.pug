@@ -1,0 +1,66 @@
+extends layout
+
+block head
+    link(rel="stylesheet" href="/css/profile.css")
+
+block content
+    main.profile-page
+        .profile-container
+            //- Left Column: Info
+            .profile-sidebar
+                .profile-image
+                    span.avatar-placeholder= tutor.full_name.charAt(0)
+                .profile-header-info
+                    h1= tutor.full_name
+                    .rating-badge
+                        span.star ★
+                        span.score= tutor.rating
+                    p.user-id ID: #{tutor.user_id}
+                
+                .sidebar-section
+                    h3 Qualifications
+                    p= tutor.qualification || "No qualifications listed."
+                
+                .sidebar-section
+                    h3 Expertise
+                    .tag-list
+                        each subject in (tutor.subjects || "").split(',')
+                            span.subject-tag= subject.trim()
+
+            //- Right Column: Details & Booking
+            .profile-main
+                section.bio-section
+                    h2 About Me
+                    p= tutor.description || "This tutor hasn't provided a biography yet."
+                
+                section.stats-section
+                    .stat-card
+                        span.stat-value= tutor.lesson_count || 0
+                        span.stat-label Lessons Given
+                    .stat-card
+                        span.stat-value 100%
+                        span.stat-label Response Rate
+                
+                section.booking-section
+                    h2 Book a Session
+                    p Choose a time that works for you to start your learning journey.
+                    .booking-card
+                        .calendar-mockup
+                            .calendar-header
+                                span March 2026
+                            .calendar-grid
+                                - for (let i = 1; i <= 7; i++)
+                                    .calendar-day= i
+                        button.btn-primary.btn-lg(onclick="alert('Booking feature coming soon!')") Book Now
+        
+        section.reviews-section
+            h2 Recent Feedbacks
+            .review-card
+                .review-header
+                    .review-user Student User
+                    .review-rating ★★★★★
+                p.review-text "Great tutor, really helped me understand complex topics!"
+                span.review-date March 15, 2026
+
+block scripts
+    //- Add any profile-specific scripts here

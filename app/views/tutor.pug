@@ -1,0 +1,27 @@
+extends layout
+
+block content
+    .container
+        h1 Our Tutors
+        p Meet our experienced tutors who are here to help you succeed.
+        table(border=1)
+            thead
+                tr
+                    th Project ID
+                    th Name
+                    th Subjects
+                    th Rating
+                    th Actions
+            tbody
+                if data && data.length
+                    each tutor in data
+                        tr
+                            td #{tutor.user_id}
+                            td #{tutor.full_name}
+                            td #{tutor.subjects}
+                            td #{tutor.rating}
+                            td
+                                a.btn-secondary(href=`/tutor/${tutor.user_id}`) View Profile
+                else
+                    tr
+                        td(colspan=5) No tutors found.

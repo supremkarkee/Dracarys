@@ -1,64 +1,104 @@
-extends site-layout
+extends layout
+
 block content
-    header
-        .logo Dracarys
-        nav
-            ul
-                li
-                    a(href="/") Home
-                li
-                    a.active(href="/about") About
     main
-        section.about-section
-            .story
+        //- Hero Section
+        section.page-hero
+            .page-eyebrow Free. Accessible. Fun.
+            h1 
+                span.highlight Ignite 
+                | Your Potential
+            p.tagline Connecting university mentors with young pupils for affordable, high-quality tuition.
+
+        //- Stats Bar
+        section.stats-bar
+            .stats-inner
+                .stat
+                    .stat-num 10+
+                    .stat-label Verified Tutors
+                .stat
+                    .stat-num 10
+                    .stat-label Subjects Available
+                .stat
+                    .stat-num 100%
+                    .stat-label Safety Verified
+
+        //- Mission & Pillars
+        section.features
+            .section-head
                 h2 Our Mission
-                .mission-statement
-                    h3 Free. Accessible. Fun.
-                    p
-                        | We believe that high-quality education should be a right, not a privilege.
-                        | Our mission is to 
-                        strong bridge the gap
-                        |  between traditional, expensive tuition classes
-                        | and the students who need them most.
-                    p
-                        | By connecting passionate university students with younger pupils, we create a cycle of learning
-                        | and mentorship.
-                        | We aim to 
-                        strong lift the financial burden
-                        |  off parents' shoulders, ensuring that no
-                        | child is left behind due to cost.
-                    p
-                        | Dracarys is more than just a platform; it's a movement to facilitate child growth and make
-                        | learning an enjoyable, community-driven experience.
-            .team
-                center
-                    h2 Meet the Team
-                .team-grid
-                    //- Member 1
-                    .team-member
-                        img.avatar(src="https://ui-avatars.com/api/?name=Suprem+karki&background=ff4d4d&color=fff" alt="Suprem karki")
-                        .name Suprem karki
-                        .role Cyber Security Specialist
-                        p Cyber Security Student emphasing secure by design.
-                    //- Member 2
-                    .team-member
-                        img.avatar(src="https://ui-avatars.com/api/?name=Sadun+Sudu+Dewage&background=ff4d4d&color=fff" alt="Sadun Sudu Dewage")
-                        .name Sadun Sudu Dewage
-                        .role Computing Student
-                        p Crafting pixel-perfect experiences and intuitive user flows.
-                    //- Member 3
-                    .team-member
-                        img.avatar(src="https://ui-avatars.com/api/?name=Raja+Shah&background=ff4d4d&color=fff" alt="Raja Shah")
-                        .name Raja Shah
-                        .role Computer Science Student
-                        p Contributes database knowledge while supporting overall team coordination.
-                    //- Member 4
-                    .team-member
-                        img.avatar(src="https://ui-avatars.com/api/?name=Aman+Lamjel&background=ff4d4d&color=fff" alt="Aman Lamjel")
-                        .name Aman Lamjel
-                        .role Computer Science Student
-                        p Bringing designs to life with modern CSS and JavaScript.
+                p We believe that high-quality education should be a right, not a privilege.
+            
+            .pillars
+                .pillar
+                    .pillar-icon 🌍
+                    h3 Bridge the Gap
+                    p We connect passionate university students with younger pupils to create a cycle of mentorship.
+                .pillar
+                    .pillar-icon 💸
+                    h3 Lift the Burden
+                    p We reduce the financial weight on parents by providing affordable student-led tuition.
+                .pillar
+                    .pillar-icon 🪁
+                    h3 Fun Experience
+                    p We make learning an enjoyable, community-driven experience that facilitates growth.
+
+        //- Team Section
+        section.features-section
+            .section-divider
+                h2 👨‍💻 Meet the Team
+                .line
+            
+            .team-grid
+                //- Member 1
+                .team-card
+                    .team-avatar(style="background: #ff4d4d") SK
+                    .team-name Suprem Karki
+                    .team-role Backend & DevOps
+                    .team-divider
+                    p.team-bio Computer Science student specializing in secure by design systems.
+                
+                //- Member 2
+                .team-card
+                    .team-avatar(style="background: #457B9D") RS
+                    .team-name Raja Shah
+                    .team-role Frontend & Design
+                    .team-divider
+                    p.team-bio Crafting pixel-perfect experiences and intuitive user flows.
+                
+                //- Member 3
+                .team-card
+                    .team-avatar(style="background: #2A9D8F") SS
+                    .team-name Sadun Sudu Dewage
+                    .team-role Database & Docs
+                    .team-divider
+                    p.team-bio Expert in data management and comprehensive technical documentation.
+                
+                //- Member 4
+                .team-card
+                    .team-avatar(style="background: #F4A261") AL
+                    .team-name Aman Lamjel
+                    .team-role Testing & Ethics
+                    .team-divider
+                    p.team-bio Bringing designs to life with modern CSS and ethical search practices.
+
+        //- Safety & Ethics Section
+        section.mission-block
+            h2 🛡️ Safety & Ethics
+            p
+                | Dracarys was designed with child safeguarding at its core. All tutors are verified, and we comply fully with GDPR. 
+                | We include content flagging, moderation controls, and a clear code of conduct for all mentors. 
+                | We are committed to inclusivity, accessibility (WCAG 2.1 AA), and bias-free matching.
+
+        //- Final CTA
+        section.cta
+            .cta-inner
+                h2 Ready to Join the Community?
+                p Whether you're a parent looking for a tutor, or a university student wanting to give back — Dracarys is for you.
+                a.cta-btn(href="/signup") Get Started Today
+
     footer
         p &copy; 2026 Dracarys Team. All rights reserved.
+
 block scripts
     script(src="/script.js")

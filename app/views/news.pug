@@ -1,0 +1,70 @@
+extends layout
+
+block head
+    link(rel="stylesheet" href="/css/news.css")
+
+block content
+    main.news-page
+        section.page-hero
+            .page-eyebrow Stay Connected
+            h1 
+                span.highlight News 
+                | & Feeds
+            p.tagline The latest updates, educational insights, and community highlights from the Dracarys team.
+
+        section.news-grid
+            //- Featured News
+            article.news-card.featured
+                .news-image(style="background: #0aab87") 🎓
+                .news-body
+                    .news-meta
+                        span.tag Official
+                        span.date March 19, 2026
+                    h2 Dracarys Platform v2.0 is Live!
+                    p We've officially launched our new, modernized platform with a clean design, improved navigation, and better mobile support for all our tutors and students.
+                    a.read-more(href="#") Read Full Story →
+
+            //- News Item 1
+            article.news-card
+                .news-image(style="background: #457B9D") 💡
+                .news-body
+                    .news-meta
+                        span.tag Tips
+                        span.date March 15, 2026
+                    h3 5 Tips for Successful Online Learning
+                    p Maximizing your concentration during remote sessions can be tough. Our top tutors share their secrets for staying focused.
+                    a.read-more(href="#") Read More →
+
+            //- News Item 2
+            article.news-card
+                .news-image(style="background: #F4A261") 🤝
+                .news-body
+                    .news-meta
+                        span.tag Community
+                        span.date March 10, 2026
+                    h3 Join our Peer Support Group
+                    p Connect with other students across the UK to discuss difficult topics and share learning resources.
+                    a.read-more(href="#") Read More →
+
+            //- News Item 3
+            article.news-card
+                .news-image(style="background: #E63946") 🛡️
+                .news-body
+                    .news-meta
+                        span.tag Safety
+                        span.date March 05, 2026
+                    h3 New Safety Guidelines for Tutors
+                    p We've updated our safeguarding policies to ensure a secure environment for all young learners on the platform.
+                    a.read-more(href="#") Read More →
+
+        //- Newsletter Signup
+        section.newsletter
+            .newsletter-inner
+                h2 Subscribe to our Feed
+                p Get the latest educational tips and platform updates directly in your inbox.
+                form.news-form
+                    input(type="email" placeholder="Enter your email" required)
+                    button(type="submit") Subscribe
+
+    footer
+        p &copy; 2026 Dracarys Team. All rights reserved.

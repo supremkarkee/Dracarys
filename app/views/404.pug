@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    //- Header (Matching home.pug style)
+    header
+        .logo Dracarys
+        nav
+            ul
+                li
+                    a(href="/") Home
+                li
+                    a(href="/about") About
+
+    main
+        section.page-hero
+            h1.error-code 404
+            h1 Page Not Found
+            p.tagline Sorry, the page you are looking for doesn't exist.
+            a.cta-btn(href="/") Back to Home
+
+    footer
+        p &copy; 2026 Dracarys Team. All rights reserved.
