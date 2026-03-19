@@ -11,13 +11,13 @@ block content
             h1.hero-title Lets stand for free education together
             .login-container
                 h2 Welcome Back
-                form#loginForm
+                form#loginForm(action='/authenticate' method='POST')
                     .input-group
-                        label(for="username") Username
-                        input#username(type="text" placeholder="Enter your username" required)
+                        label(for="email") Email
+                        input#email(type="email" name="email" placeholder="Enter your email" required)
                     .input-group
                         label(for="password") Password
-                        input#password(type="password" placeholder="Enter your password" required)
+                        input#password(type="password" name="password" placeholder="Enter your password" required)
                     button.login-btn(type="submit") Sign In
                     #errorMsg.error Invalid login details
                 .extra-links
@@ -25,29 +25,4 @@ block content
                         a(href="#") Forgot Password?
                     p
                         a(href="/signup") Create Account
-block scripts
-    script.
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const errorMsg = document.getElementById('errorMsg');
-                const btn = document.querySelector('.login-btn');
-                const originalBtnText = btn.innerText;
-                btn.innerText = 'Signing In...';
-                btn.style.opacity = '0.8';
-                setTimeout(() => {
-                    if (username === 'admin' && password === '1234') {
-                        errorMsg.style.display = 'none';
-                        btn.innerText = 'Success!';
-                        btn.style.background = '#48bb78';
-                        setTimeout(() => {
-                            alert('Login successful! Redirecting...');
-                        }, 500);
-                    } else {
-                        errorMsg.style.display = 'block';
-                        btn.innerText = originalBtnText;
-                        btn.style.opacity = '1';
-                    }
-                }, 800);
-            });
+

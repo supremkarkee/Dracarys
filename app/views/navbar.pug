@@ -1,11 +1,17 @@
 nav.navbar
     .logo Dracarys
     ul
-        li
-            a(href="/") Home
-        li
-            a(href="/about") About
-        li
-            a(href="/login") Login
-        li
-            a.btn-nav(href="/signup") Sign Up
+        if loggedIn
+            li
+                a(href="/") Home
+            li
+                a(href="/about") About
+            li
+                a(href="/profile") Profile
+            li
+                a.btn-nav(href="/logout") Log Out
+        else
+            li
+                a(href="/login") Login
+            li
+                a.btn-nav(href="/signup") Sign Up

@@ -168,7 +168,8 @@ INSERT INTO `tutor_subjects` (`tutor_id`, `subject_id`) VALUES
 
 CREATE TABLE `users` (
   `user_id` varchar(10) NOT NULL,
-  `name` varchar(100) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('tutor','tutee') NOT NULL
@@ -178,13 +179,13 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `role`) VALUES
-('U001', 'Alice Johnson', 'alice.johnson@email.com', 'hashed_pass_1', 'tutor'),
-('U002', 'Brian Smith', 'brian.smith@email.com', 'hashed_pass_2', 'tutor'),
-('U003', 'Catherine Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'tutee'),
-('U004', 'Daniel Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'tutee'),
-('U005', 'Emily Davis', 'emily.davis@email.com', 'hashed_pass_5', 'tutor'),
-('U006', 'Frank Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'tutee');
+INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, `role`) VALUES
+('U001', 'Alice', 'Johnson', 'alice.johnson@email.com', 'hashed_pass_1', 'tutor'),
+('U002', 'Brian', 'Smith', 'brian.smith@email.com', 'hashed_pass_2', 'tutor'),
+('U003', 'Catherine', 'Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'tutee'),
+('U004', 'Daniel', 'Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'tutee'),
+('U005', 'Emily', 'Davis', 'emily.davis@email.com', 'hashed_pass_5', 'tutor'),
+('U006', 'Frank', 'Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'tutee');
 
 --
 -- Indexes for dumped tables

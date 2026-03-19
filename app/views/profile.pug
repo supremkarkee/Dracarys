@@ -1,0 +1,12 @@
+extends site-layout
+
+block head
+    title My Profile - Dracarys
+
+block content
+    .container(style="padding: 2rem;")
+        h1 Hi there! 👋
+        p You are logged in. Your session user ID is: 
+            strong #{userId}
+        p This is your profile page — more details coming soon!
+        a(href="/logout") Log out

@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
 // Import the new Class-based User model
-const { User } = require('../models/user');
+const { User } = require('../models/users');
 
 // POST route to handle form submission from signup.pug
 router.post('/signup', async (req, res) => {
     try {
         const { firstName, lastName, userId, email, password, role } = req.body;
-
-        // Combine first and last name into full_name as per DB schema
-        const fullName = `${firstName.trim()} ${lastName.trim()}`;
 
         // Basic validation
         if (!firstName || !lastName || !userId || !email || !password || !role) {
@@ -23,7 +20,7 @@ router.post('/signup', async (req, res) => {
         }
 
         // Use the static class method to create the new user
-        const userData = { fullName, userId, email, password, role };
+        const userData = { firstName: firstName.trim(), lastName: lastName.trim(), userId, email, password, role };
         const newUser = await User.createUser(userData);
 
         // Success - log and redirect to login
