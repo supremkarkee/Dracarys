@@ -36,9 +36,7 @@ block content
                                     span Rating: #{tutor.rating || 'N/A'}
                                 p.tutor-desc #{tutor.description || 'Experienced tutor dedicated to student success.'}
                             
-                            .tutor-profile
-                                strong Qualifications
-                                p #{tutor.qualification || 'Verified Tutor'}
+
                             
                             .tutor-actions
                                 a.btn-message(href=`/tutor/${tutor.tutor_id}`) View Profile

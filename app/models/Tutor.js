@@ -6,7 +6,6 @@ class Tutor {
     full_name;
     rating;
     description;
-    qualification;
     subjects;
     lesson_count;
     points;
@@ -24,7 +23,7 @@ class Tutor {
                 this.full_name = results[0].full_name;
                 this.rating = results[0].rating;
                 this.description = results[0].description;
-                this.qualification = results[0].qualification;
+
                 this.subjects = results[0].subjects;
                 this.lesson_count = results[0].lesson_count;
                 this.points = results[0].points;
@@ -35,12 +34,61 @@ class Tutor {
     static async getTutorOfTheWeek() {
         const sql = 'SELECT * FROM tutors JOIN users ON tutors.user_id = users.user_id ORDER BY points DESC LIMIT 1';
         const results = await db.query(sql);
-        return results[0];
+        if (results.length > 0) {
+            const t = new Tutor(results[0].tutor_id);
+            Object.assign(t, results[0]);
+            return t;
+        }
+        return null;
     }
 
     static async getAll() {
         const sql = 'SELECT * FROM tutors JOIN users ON tutors.user_id = users.user_id';
-        return await db.query(sql);
+        const results = await db.query(sql);
+        return results.map(row => {
+            const t = new Tutor(row.tutor_id);
+            Object.assign(t, row);
+            return t;
+        });
+    }
+
+    static async getBySubject(subjectId) {
+        const sql = `
+            SELECT tutors.*, users.full_name, users.email, users.role 
+            FROM tutors 
+            JOIN users ON tutors.user_id = users.user_id 
+            JOIN tutor_subjects ON tutors.tutor_id = tutor_subjects.tutor_id 
+            WHERE tutor_subjects.subject_id = ?
+        `;
+        const results = await db.query(sql, [subjectId]);
+        return results.map(row => {
+            const t = new Tutor(row.tutor_id);
+            Object.assign(t, row);
+            return t;
+        });
+    }
+
+    static async search(query, subjectId = 'all') {
+        let sql = `
+            SELECT DISTINCT tutors.*, users.full_name, users.email, users.role 
+            FROM tutors 
+            JOIN users ON tutors.user_id = users.user_id 
+            LEFT JOIN tutor_subjects ON tutors.tutor_id = tutor_subjects.tutor_id
+            WHERE (users.full_name LIKE ? OR tutors.subjects LIKE ? OR tutors.description LIKE ?)
+        `;
+        const params = [`%${query}%`, `%${query}%`, `%${query}%` ];
+
+        if (subjectId !== 'all') {
+            sql += ` AND tutors.tutor_id IN (SELECT tutor_id FROM tutor_subjects WHERE subject_id = ?)`;
+            params.push(subjectId);
+        }
+
+        const results = await db.query(sql, params);
+        return results.map(row => {
+            const t = new Tutor(row.tutor_id);
+            Object.assign(t, row);
+            return t;
+        });
     }
 }
 

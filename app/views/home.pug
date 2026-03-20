@@ -26,7 +26,7 @@ block content
                             .feature-body
                                 .feature-tag= (tutor.subjects || "General").split(',')[0]
                                 h3= tutor.full_name
-                                p= tutor.qualification || "Verified Expert"
+
                                 .tutor-rating
                                     span.star Rating:
                                     | #{tutor.rating || "N/A"}
