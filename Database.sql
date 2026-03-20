@@ -179,12 +179,12 @@ CREATE TABLE IF NOT EXISTS users (
 --
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `password_hash`, `role`) VALUES
-('U001', 'Alice Johnson', 'alice.johnson@email.com', 'hashed_pass_1', 'tutor'),
-('U002', 'Brian Smith', 'brian.smith@email.com', 'hashed_pass_2', 'tutor'),
-('U003', 'Catherine Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'tutee'),
-('U004', 'Daniel Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'tutee'),
-('U005', 'Emily Davis', 'emily.davis@email.com', 'hashed_pass_5', 'tutor'),
-('U006', 'Frank Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'tutee');
+('U001', 'Alice Johnson', 'alice.johnson@email.com', 'Alice@123', 'tutor'),
+('U002', 'Brian Smith', 'brian.smith@email.com', 'Brian@123', 'tutor'),
+('U003', 'Catherine Lee', 'catherine.lee@email.com', 'Catherine@123', 'tutee'),
+('U004', 'Daniel Brown', 'daniel.brown@email.com', 'Daniel@123', 'tutee'),
+('U005', 'Emily Davis', 'emily.davis@email.com', 'Emily@123', 'tutor'),
+('U006', 'Frank Wilson', 'frank.wilson@email.com', 'Frank@123', 'tutee');
 --
 -- Indexes for dumped tables
 --
