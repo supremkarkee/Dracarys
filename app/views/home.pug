@@ -1,44 +1,64 @@
 extends layout
+
+block head
+    link(rel="stylesheet" href="/css/home-friend.css")
+
 block content
     section.search-header
-        h1 Find Your Perfect Tutor Today
-        form.search-box(action="/tutors" method="GET")
-            input(type="text" name="q" placeholder="What subject do you need help with?")
-            select(name="level")
-                option(value="") All Levels
-                option(value="primary") Primary
-                option(value="secondary") Secondary
-                option(value="university") University
-            button(type="submit") Search
+        .container
+            h1 Find Your Perfect Tutor Today
+            form.search-box(action="/tutors" method="GET")
+                input(type="text" name="q" placeholder="What subject do you need help with?")
+                button(type="submit") Search
 
     section.features
-        .section-head
-            h2 Featured Tutors
-            p Learn from our top-rated academic experts.
-        
-        .feature-grid
-            if featuredTutors && featuredTutors.length
-                each tutor in featuredTutors
-                    .feature-card
-                        .feature-img
-                            span.img-icon 🎓
-                        .feature-body
-                            .feature-tag= tutor.subjects.split(',')[0]
-                            h3= tutor.full_name
-                            p= tutor.qualification
-                            .tutor-rating
-                                span.star ⭐
-                                | #{tutor.rating}
-                            a.btn-secondary(href=`/tutor/${tutor.tutor_id}`) View Profile
-            else
-                p No tutors featured at the moment.
+        .container
+            .section-head
+                h2 Featured Tutors
+                p Learn from our top-rated academic experts.
+            
+            .feature-grid
+                if featuredTutors && featuredTutors.length
+                    each tutor in featuredTutors
+                        .feature-card.fade-up
+                            .feature-img
+                                span.img-icon Expert
+                            .feature-body
+                                .feature-tag= (tutor.subjects || "General").split(',')[0]
+                                h3= tutor.full_name
+                                p= tutor.qualification || "Verified Expert"
+                                .tutor-rating
+                                    span.star Rating:
+                                    | #{tutor.rating || "N/A"}
+                                a.btn-secondary(href=`/tutor/${tutor.tutor_id}`) View Profile
+                else
+                    .no-results
+                        p No tutors featured at the moment.
+
+    section.features-more
+        .container
+            .feature-grid
+                .feature-card.fade-up
+                    img(src="/images/012.jpg" alt="Interactive")
+                    h3 Interactive Learning
+                    p Engaging sessions designed to help students understand and grow confidently.
+                .feature-card.fade-up
+                    img(src="/images/003.jpg" alt="Progress")
+                    h3 Track Progress
+                    p Parents and tutors can monitor performance and celebrate achievements.
 
     section.cta
-        .cta-inner
-            h2 Ready to start learning?
-            p Join thousands of students achieving their goals with Dracarys.
-            a.cta-btn(href="/signup") Join for Free
+        .container
+            .cta-inner
+                h2 Ready to start your learning journey?
+                p.quote "The beautiful thing about learning is that no one can take it away from you."
+                p.quote "Education is not the filling of a pail, but the lighting of a fire."
+                p Join our growing educational community today.
+                a.cta-btn(href="/signup") Join Now
+
     footer
-        p &copy; 2026 Dracarys Team. All rights reserved.
+        .container
+            p &copy; 2026 Dracarys | Empowering Education Through Community
+
 block scripts
     script(src="/script.js")

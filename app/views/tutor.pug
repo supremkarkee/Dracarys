@@ -1,27 +1,49 @@
 extends layout
 
+block head
+    link(rel="stylesheet" href="/css/styles.css")
+
 block content
-    .container
-        h1 Our Tutors
-        p Meet our experienced tutors who are here to help you succeed.
-        table(border=1)
-            thead
-                tr
-                    th Project ID
-                    th Name
-                    th Subjects
-                    th Rating
-                    th Actions
-            tbody
+    main.search-page
+        section.search-header
+            .container
+                h1 
+                    span.highlight Find 
+                    | Your Perfect Tutor
+                .search-box
+                    form.filter-form(method="GET" action="/tutors")
+                        input(type="text" name="q" placeholder="Search by name or subject..." value=(query || ''))
+                        button(type="submit") Search
+
+        .search-layout
+            aside.filters
+                h3 Subjects
+                a.filter-btn(href="/tutors" class=(selectedSubject === 'all' ? 'active' : '')) All Subjects
+                if subjects
+                    each subject in subjects
+                        a.filter-btn(href=`/tutors?subject=${subject.subject_id}` class=(selectedSubject == subject.subject_id ? 'active' : '')) #{subject.subject_name}
+
+            section.tutor-list
                 if data && data.length
                     each tutor in data
-                        tr
-                            td #{tutor.user_id}
-                            td #{tutor.full_name}
-                            td #{tutor.subjects}
-                            td #{tutor.rating}
-                            td
-                                a.btn-secondary(href=`/tutor/${tutor.user_id}`) View Profile
+                        article.tutor-card.fade-up
+                            .tutor-photo
+                                span Name Icon
+                            .tutor-info
+                                h3.tutor-name #{tutor.full_name}
+                                .tutor-subject #{tutor.subjects || 'General Tutor'}
+                                .tutor-rating 
+                                    span Rating: #{tutor.rating || 'N/A'}
+                                p.tutor-desc #{tutor.description || 'Experienced tutor dedicated to student success.'}
+                            
+                            .tutor-profile
+                                strong Qualifications
+                                p #{tutor.qualification || 'Verified Tutor'}
+                            
+                            .tutor-actions
+                                a.btn-message(href=`/tutor/${tutor.tutor_id}`) View Profile
+                                a.btn-trial(href=`/book/${tutor.tutor_id}`) Book Lesson
                 else
-                    tr
-                        td(colspan=5) No tutors found.
+                    .no-results
+                        p No tutors found matching your criteria.
+                        a.btn-secondary(href="/tutors") View All Tutors
