@@ -1,0 +1,116 @@
+extends layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 Approve Tutors
+            p Total Tutors: #{tutors.length}
+
+        .dashboard-content
+            .dashboard-section
+                h2 Tutor Applications
+                .tutors-table
+                    if tutors && tutors.length
+                        table
+                            thead
+                                tr
+                                    th Tutor ID
+                                    th Name
+                                    th Email
+                                    th Subjects
+                                    th Rating
+                                    th Status
+                                    th Actions
+                            tbody
+                                each tutor in tutors
+                                    tr
+                                        td= tutor.user_id
+                                        td= tutor.full_name
+                                        td= tutor.email
+                                        td= tutor.subjects || 'N/A'
+                                        td= tutor.rating || '0.0'
+                                        td
+                                            if tutor.verified
+                                                span.status-badge.verified VERIFIED
+                                            else
+                                                span.status-badge.pending PENDING
+                                        td
+                                            if !tutor.verified
+                                                button.btn-success.approve-tutor(data-tutor-id=tutor.user_id) Approve
+                    else
+                        p No tutors to approve.
+
+        style.
+            .tutors-table {
+                margin-top: 20px;
+                overflow-x: auto;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            th, td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #eee;
+            }
+            th {
+                background: #f5f5f5;
+                font-weight: 600;
+                color: #333;
+            }
+            .status-badge {
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+            .status-badge.verified {
+                background: #d4edda;
+                color: #155724;
+            }
+            .status-badge.pending {
+                background: #fff3cd;
+                color: #856404;
+            }
+            .btn-success {
+                background: #28a745;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+            }
+            .btn-success:hover {
+                background: #218838;
+            }
+
+script.
+    document.querySelectorAll('.approve-tutor').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const tutorId = this.dataset.tutorId;
+            try {
+                const response = await fetch(`/admin/tutors/approve/${tutorId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Tutor approved successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+    });

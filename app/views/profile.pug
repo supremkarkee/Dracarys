@@ -43,13 +43,8 @@ block content
                     h2 Book a Session
                     p Choose a time that works for you to start your learning journey.
                     .booking-card
-                        .calendar-mockup
-                            .calendar-header
-                                span March 2026
-                            .calendar-grid
-                                - for (let i = 1; i <= 7; i++)
-                                    .calendar-day= i
-                        a.btn-primary.btn-lg(href=`/book/${tutor.tutor_id}`) Book Now
+                        p.booking-info This is a free platform. No payment required.
+                        a.btn-primary.btn-lg(href=`/book/${tutor.user_id}`) Book Now
         
         section.reviews-section
             h2 Recent Feedbacks

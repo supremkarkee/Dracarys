@@ -8,20 +8,20 @@ block content
         section.search-header
             .container
                 h1 
-                    span.highlight Find 
-                    | Your Perfect Tutor
+                    span.highlight Browse 
+                    | Tutors
                 .search-box
-                    form.filter-form(method="GET" action="/tutors")
+                    form.filter-form(method="GET" action="/browse/tutors")
                         input(type="text" name="q" placeholder="Search by name or subject..." value=(query || ''))
                         button(type="submit") Search
 
         .search-layout
             aside.filters
-                h3 Subjects
-                a.filter-btn(href="/tutors" class=(selectedSubject === 'all' ? 'active' : '')) All Subjects
-                if subjects
+                h3 Filter by Subject
+                a.filter-btn(href="/browse/tutors" class=(selectedSubject === 'all' ? 'active' : '')) All Subjects
+                if subjects && subjects.length
                     each subject in subjects
-                        a.filter-btn(href=`/tutors?subject=${subject.subject_name}` class=(selectedSubject == subject.subject_name ? 'active' : '')) #{subject.subject_name}
+                        a.filter-btn(href=`/browse/tutors?subject=${subject.subject_name}` class=(selectedSubject == subject.subject_name ? 'active' : '')) #{subject.subject_name}
 
             section.tutor-list
                 if data && data.length
@@ -35,13 +35,10 @@ block content
                                 .tutor-rating 
                                     span Rating: #{tutor.rating || 'N/A'}
                                 p.tutor-desc #{tutor.description || 'Experienced tutor dedicated to student success.'}
-                            
-
-                            
                             .tutor-actions
-                                a.btn-message(href=`/tutor/${tutor.tutor_id}`) View Profile
-                                a.btn-trial(href=`/book/${tutor.tutor_id}`) Book Lesson
+                                a.btn-message(href=`/tutor/${tutor.user_id}`) View Profile
+                                a.btn-trial(href=`/book/${tutor.user_id}`) Book Lesson
                 else
                     .no-results
                         p No tutors found matching your criteria.
-                        a.btn-secondary(href="/tutors") View All Tutors
+                        a.btn-secondary(href="/browse/tutors") View All Tutors

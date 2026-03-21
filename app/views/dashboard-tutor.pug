@@ -1,0 +1,47 @@
+extends layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 Tutor Dashboard
+            p Welcome back, #{user.full_name}!
+
+        .dashboard-content
+            .dashboard-grid
+                .dashboard-card
+                    .card-icon LESSONS
+                    h3 My Lessons
+                    p 0 Lessons Scheduled
+                    a.btn-secondary(href="#lessons") View Schedule
+
+                .dashboard-card
+                    .card-icon STUDENTS
+                    h3 My Students
+                    p 0 Students
+                    a.btn-secondary(href="#students") Manage Students
+
+                .dashboard-card
+                    .card-icon RATING
+                    h3 My Rating
+                    p 0.0 Stars
+                    a.btn-secondary(href="#rating") View Reviews
+
+            .dashboard-section
+                h2 Profile Settings
+                .profile-settings
+                    p
+                        strong Email: 
+                        = user.email
+                    p
+                        strong Role: 
+                        = user.role
+                    a.btn-secondary(href="#edit-profile") Edit Profile
+
+            .dashboard-section
+                h2 Quick Actions
+                .quick-actions
+                    a.btn-primary(href="#update-schedule") Update Availability
+                    a.btn-primary(href="#add-subjects") Add Subjects

@@ -1,0 +1,51 @@
+extends layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 Admin Dashboard
+            p Welcome, System Administrator
+
+        .dashboard-content
+            .dashboard-grid
+                .dashboard-card
+                    .card-icon USERS
+                    h3 Total Users
+                    p 10 Users
+                    a.btn-secondary(href="#users") Manage Users
+
+                .dashboard-card
+                    .card-icon TUTORS
+                    h3 Total Tutors
+                    p 4 Tutors
+                    a.btn-secondary(href="#tutors") Manage Tutors
+
+                .dashboard-card
+                    .card-icon STUDENTS
+                    h3 Total Students
+                    p 6 Students
+                    a.btn-secondary(href="#students") Manage Students
+
+                .dashboard-card
+                    .card-icon STATS
+                    h3 System Stats
+                    p View Analytics
+                    a.btn-secondary(href="#analytics") View Stats
+
+            .dashboard-section
+                h2 System Management
+                .admin-menu
+                    a.admin-btn(href="/admin/users") Manage All Users
+                    a.admin-btn(href="/admin/approve-tutors") Approve Tutors
+                    a.admin-btn(href="/admin/reports") View Reports
+                    a.admin-btn(href="/admin/settings") System Settings
+                    a.admin-btn(href="/admin/content") Manage Content
+                    a.admin-btn(href="/admin/support") Support Tickets
+
+            .dashboard-section
+                h2 Recent Activity Log
+                .activity-log
+                    p No recent activities to display
