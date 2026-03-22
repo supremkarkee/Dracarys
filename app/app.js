@@ -49,7 +49,8 @@ app.get("/about", function (req, res) {
 // Routes for home page
 
 app.get("/home", function (req, res) {
-    res.render("home", { loggedIn: req.session.loggedIn });
+    const user = new User(req.session.uid);
+    res.render("home", { loggedIn: req.session.loggedIn, user: user });
 });
 
 // Routes for signup page
