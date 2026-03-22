@@ -21,26 +21,22 @@ block content
                 a.back-link(href="/login") Already have an account? Login
             form#signupForm(onsubmit="handleSignup(event)")
                 h2#formTitle Create Account
-                .form-row
-                    .input-group
-                        label(for="firstName") First Name
-                        input#firstName(type="text" required)
-                    .input-group
-                        label(for="lastName") Last Name
-                        input#lastName(type="text" required)
                 .input-group
-                    label(for="userId") User ID
-                    input#userId(type="text" placeholder="Choose a unique ID" required)
+                    label(for="firstName") First Name
+                    input#firstName(type="text" name="firstName" required)
                 .input-group
-                    label(for="email") Gmail Address
-                    input#email(type="email" placeholder="example@gmail.com" required)
+                    label(for="lastName") Last Name
+                    input#lastName(type="text" name="lastName" required)
+                .input-group
+                    label(for="email") Business Email (Gmail)
+                    input#email(type="email" name="email" placeholder="example@gmail.com" required)
                 .input-group
                     label(for="password") Password
-                    input#password(type="password" required)
+                    input#password(type="password" name="password" required)
                 .checkbox-group
                     input#ageCheck(type="checkbox" required)
                     label(for="ageCheck") I confirm that I am 18 years or older.
-                input#selectedRole(type="hidden")
+                input#selectedRole(type="hidden" name="role")
                 button#submitBtn.submit-btn(type="submit") Sign Up
                 div(style="text-align: center;")
                     a.back-link(href="javascript:resetSelection()") Change Role
@@ -59,15 +55,40 @@ block scripts
             document.getElementById('roleSelection').style.display = 'block';
             document.getElementById('signupForm').reset();
         }
-        function handleSignup(event) {
+        async function handleSignup(event) {
             event.preventDefault();
             const btn = document.getElementById('submitBtn');
             const originalText = btn.innerText;
-            const role = document.getElementById('selectedRole').value;
+
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const fullName = `${firstName} ${lastName}`;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('selectedRole').value === 'tutor' ? 'tutor' : 'tutee';
+
             btn.innerText = 'Creating Account...';
             btn.style.opacity = '0.8';
-            setTimeout(() => {
-                alert('Account created successfully for ' + role + '! \nWelcome to Dracarys.');
-                window.location.href = '/login';
-            }, 1000);
+
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, email, password, role })
+                });
+
+                if (response.redirected) {
+                    alert('Account created successfully! Welcome to Dracarys.');
+                    window.location.href = response.url;
+                } else {
+                    alert('Signup failed. Email might already be registered.');
+                    btn.innerText = originalText;
+                    btn.style.opacity = '1';
+                }
+            } catch (err) {
+                console.error('Signup error:', err);
+                alert('An error occurred. Please try again.');
+                btn.innerText = originalText;
+                btn.style.opacity = '1';
+            }
         }

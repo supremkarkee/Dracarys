@@ -19,16 +19,38 @@ class Tutor {
             const sql = 'SELECT * FROM tutors JOIN users ON tutors.user_id = users.user_id WHERE tutors.tutor_id = ?';
             const results = await db.query(sql, [this.tutor_id]);
             if (results.length > 0) {
-                this.user_id = results[0].user_id;
-                this.full_name = results[0].full_name;
-                this.rating = results[0].rating;
-                this.description = results[0].description;
-
-                this.subjects = results[0].subjects;
-                this.lesson_count = results[0].lesson_count;
-                this.points = results[0].points;
+                const row = results[0];
+                this.user_id = row.user_id;
+                this.full_name = row.full_name;
+                this.name = row.full_name;
+                this.rating = row.rating || 0.0;
+                this.avgRating = row.rating || 0.0;
+                this.description = row.description;
+                this.qualification = row.qualification;
+                this.qualifications = row.qualification ? [row.qualification] : [];
+                this.subjects_str = row.subjects;
+                this.subjects = row.subjects ? row.subjects.split(',').map(s => s.trim()) : [];
+                this.lesson_count = row.lesson_count || 0;
+                this.lessonsCount = row.lesson_count || 0;
+                this.points = row.points || 0;
+                this.verified = true; // Hardcoded for now, or add to DB later
+                this.languages = ["English"]; // Default, can be expanded
             }
         }
+    }
+
+    async getReviews() {
+        const sql = `
+            SELECT r.*, u.full_name AS studentName 
+            FROM reviews r
+            JOIN tutees t ON r.tutee_id = t.tutee_id
+            JOIN users u ON t.user_id = u.user_id
+            WHERE r.tutor_id = ?
+            ORDER BY r.review_date DESC
+        `;
+        this.reviews = await db.query(sql, [this.tutor_id]);
+        this.reviewCount = this.reviews.length;
+        return this.reviews;
     }
 
     static async getTutorOfTheWeek() {

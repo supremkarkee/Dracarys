@@ -1,0 +1,44 @@
+extends layout
+block content
+    section.search-header
+        h1 Find Your Perfect Tutor Today
+        form.search-box(action="/tutors" method="GET")
+            input(type="text" name="q" placeholder="What subject do you need help with?")
+            select(name="level")
+                option(value="") All Levels
+                option(value="primary") Primary
+                option(value="secondary") Secondary
+                option(value="university") University
+            button(type="submit") Search
+
+    section.features
+        .section-head
+            h2 Featured Tutors
+            p Learn from our top-rated academic experts.
+        
+        .feature-grid
+            if featuredTutors && featuredTutors.length
+                each tutor in featuredTutors
+                    .feature-card
+                        .feature-img
+                            span.img-icon 🎓
+                        .feature-body
+                            .feature-tag= tutor.subjects.split(',')[0]
+                            h3= tutor.full_name
+                            p= tutor.qualification
+                            .tutor-rating
+                                span.star ⭐
+                                | #{tutor.rating}
+                            a.btn-secondary(href=`/tutor/${tutor.tutor_id}`) View Profile
+            else
+                p No tutors featured at the moment.
+
+    section.cta
+        .cta-inner
+            h2 Ready to start learning?
+            p Join thousands of students achieving their goals with Dracarys.
+            a.cta-btn(href="/signup") Join for Free
+    footer
+        p &copy; 2026 Dracarys Team. All rights reserved.
+block scripts
+    script(src="/script.js")

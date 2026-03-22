@@ -20,6 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `onlinetutoring_platform`
 --
+CREATE DATABASE IF NOT EXISTS `onlinetutoring_platform`
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_general_ci;
 USE `onlinetutoring_platform`;
 
 -- --------------------------------------------------------
@@ -28,7 +31,7 @@ USE `onlinetutoring_platform`;
 -- Table structure for table `reviews`
 --
 
-CREATE TABLE `reviews` (
+CREATE TABLE IF NOT EXISTS `reviews` (
   `review_id` int(11) NOT NULL,
   `tutee_id` int(11) DEFAULT NULL,
   `tutor_id` int(11) DEFAULT NULL,
@@ -52,7 +55,7 @@ INSERT INTO `reviews` (`review_id`, `tutee_id`, `tutor_id`, `rating`, `feedback`
 -- Table structure for table `subjects`
 --
 
-CREATE TABLE `subjects` (
+CREATE TABLE IF NOT EXISTS `subjects` (
   `subject_id` int(11) NOT NULL,
   `subject_name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL
@@ -75,7 +78,7 @@ INSERT INTO `subjects` (`subject_id`, `subject_name`, `description`) VALUES
 -- Table structure for table `tutees`
 --
 
-CREATE TABLE `tutees` (
+CREATE TABLE IF NOT EXISTS `tutees` (
   `tutee_id` int(11) NOT NULL,
   `user_id` varchar(10) NOT NULL,
   `school_level` varchar(50) DEFAULT NULL,
@@ -97,7 +100,7 @@ INSERT INTO `tutees` (`tutee_id`, `user_id`, `school_level`, `grade_level`) VALU
 -- Table structure for table `tutee_subjects`
 --
 
-CREATE TABLE `tutee_subjects` (
+CREATE TABLE IF NOT EXISTS `tutee_subjects` (
   `tutee_id` int(11) NOT NULL,
   `subject_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -119,24 +122,23 @@ INSERT INTO `tutee_subjects` (`tutee_id`, `subject_id`) VALUES
 -- Table structure for table `tutors`
 --
 
-CREATE TABLE `tutors` (
+CREATE TABLE IF NOT EXISTS `tutors` (
   `tutor_id` int(11) NOT NULL,
   `user_id` varchar(10) NOT NULL,
   `rating` decimal(2,1) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `qualification` varchar(255) DEFAULT NULL,
   `subjects` varchar(255) DEFAULT NULL,
-  `lesson_count` int(11) DEFAULT 0
+  `lesson_count` int(11) DEFAULT 0,
+  `points` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tutors`
 --
 
-INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`, `description`, `qualification`, `subjects`, `lesson_count`) VALUES
-(1, 'U001', 4.8, 'Experienced mathematics tutor specializing in algebra and calculus for high school students.', 'MSc Mathematics - University of London', 'Mathematics, Physics', 120),
-(2, 'U002', 4.5, 'Chemistry tutor helping students understand complex concepts through practical examples.', 'BSc Chemistry - University of Manchester', 'Chemistry, Biology', 85),
-(3, 'U005', 4.9, 'Software engineer and programming tutor with strong background in algorithms and problem solving.', 'BSc Computer Science - MIT', 'Computer Science, Programming', 150);
+-- TUTOR seed data is inserted by scripts/seed-db.js (which bcrypt-hashes passwords).
+-- Run: node scripts/seed-db.js  (after docker compose up)
 
 -- --------------------------------------------------------
 
@@ -144,7 +146,7 @@ INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`, `description`, `qualifica
 -- Table structure for table `tutor_subjects`
 --
 
-CREATE TABLE `tutor_subjects` (
+CREATE TABLE IF NOT EXISTS `tutor_subjects` (
   `tutor_id` int(11) NOT NULL,
   `subject_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -178,13 +180,9 @@ CREATE TABLE IF NOT EXISTS users (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `full_name`, `email`, `password_hash`, `role`) VALUES
-('U001', 'Alice Johnson', 'alice.johnson@email.com', 'Alice@123', 'tutor'),
-('U002', 'Brian Smith', 'brian.smith@email.com', 'Brian@123', 'tutor'),
-('U003', 'Catherine Lee', 'catherine.lee@email.com', 'Catherine@123', 'tutee'),
-('U004', 'Daniel Brown', 'daniel.brown@email.com', 'Daniel@123', 'tutee'),
-('U005', 'Emily Davis', 'emily.davis@email.com', 'Emily@123', 'tutor'),
-('U006', 'Frank Wilson', 'frank.wilson@email.com', 'Frank@123', 'tutee');
+-- !! SECURITY FIX: Plaintext passwords have been removed from this file !!
+-- Seed users are now inserted by scripts/seed-db.js using bcrypt-hashed passwords.
+-- After running `docker compose up`, execute:  node scripts/seed-db.js
 --
 -- Indexes for dumped tables
 --

@@ -1,64 +1,175 @@
 extends layout
 
 block head
-    link(rel="stylesheet" href="/css/profile.css")
+  link(rel="stylesheet" href="/css/profile.css")
 
 block content
-    main.profile-page
-        .profile-container
-            //- Left Column: Info
-            .profile-sidebar
-                .profile-image
-                    span.avatar-placeholder= tutor.full_name.charAt(0)
-                .profile-header-info
-                    h1= tutor.full_name
-                    .rating-badge
-                        span.star ★
-                        span.score= tutor.rating
-                    p.user-id ID: #{tutor.user_id}
-                
 
-                
-                .sidebar-section
-                    h3 Expertise
-                    .tag-list
-                        each subject in (tutor.subjects || "").split(',')
-                            span.subject-tag= subject.trim()
+  .profile-page
 
-            //- Right Column: Details & Booking
-            .profile-main
-                section.bio-section
-                    h2 About Me
-                    p= tutor.description || "This tutor hasn't provided a biography yet."
-                
-                section.stats-section
-                    .stat-card
-                        span.stat-value= tutor.lesson_count || 0
-                        span.stat-label Lessons Given
-                    .stat-card
-                        span.stat-value 100%
-                        span.stat-label Response Rate
-                
-                section.booking-section
-                    h2 Book a Session
-                    p Choose a time that works for you to start your learning journey.
-                    .booking-card
-                        .calendar-mockup
-                            .calendar-header
-                                span March 2026
-                            .calendar-grid
-                                - for (let i = 1; i <= 7; i++)
-                                    .calendar-day= i
-                        a.btn-primary.btn-lg(href=`/book/${tutor.tutor_id}`) Book Now
-        
-        section.reviews-section
-            h2 Recent Feedbacks
+    //- ── MAIN GRID ──
+    .profile-grid
+
+     
+      //- LEFT COLUMN
+     
+      .profile-left
+
+        //- Header card
+        .tutor-header
+
+          .tutor-header-photo
+            if tutor.photo
+              img(src=tutor.photo alt=tutor.name)
+            else
+              | #{tutor.initials}
+
+          .tutor-header-info
+
+            .tutor-header-top
+              div
+                h1.tutor-full-name= tutor.name
+                if tutor.verified
+                  span.tutor-verified ✓ Verified Tutor
+
+            .tutor-rating-inline
+              .stars
+                - for(let i = 1; i <= 5; i++)
+                  span(class=i <= Math.round(tutor.avgRating || 0) ? '' : 'empty') ★
+              span.rating-count
+                | #{tutor.avgRating || '0.0'} · #{tutor.reviewCount || 0} reviews
+
+            if tutor.subjects && tutor.subjects.length
+              .tutor-tags
+                each subject in tutor.subjects
+                  span.tutor-tag.subject= subject
+
+            if tutor.languages && tutor.languages.length
+              .tutor-tags
+                each lang in tutor.languages
+                  span.tutor-tag= lang
+
+        //- Qualifications
+        .profile-section
+          h3
+            span.section-icon Q
+            | Qualifications
+          if tutor.qualifications && tutor.qualifications.length
+            ul.qual-list
+              each q in tutor.qualifications
+                li.qual-item= q
+          else
+            p No qualifications listed yet.
+
+        //- Teaching Goals
+        .profile-section
+          h3
+            span.section-icon G
+            | Teaching Goals
+          p= tutor.goals || 'This tutor has not added their teaching goals yet.'
+
+        //- About Me
+        .profile-section
+          h3
+            span.section-icon A
+            | About Me
+          p= tutor.description || 'No description provided yet.'
+
+      
+      //- RIGHT SIDEBAR
+      
+      .profile-sidebar
+
+        .sidebar-booking
+
+          .sidebar-rating-row
+            div
+              .sidebar-rating-label Reviews
+              .sidebar-stars
+                - for(let i = 1; i <= 5; i++)
+                  span ★
+              .sidebar-rating-score
+                | #{tutor.avgRating || '0.0'} out of 5
+
+            button.fav-btn(
+              type="button"
+              aria-label="Save to favourites"
+              data-id=tutor.id
+            ) ♡
+
+          .lessons-count
+            span.lessons-count-label Lessons Completed
+            span.lessons-count-num= tutor.lessonsCount || 0
+
+          if existingBooking
+            .booking-status
+              if existingBooking.status === 'pending'
+                span.badge.status-pending Pending Tutor Approval
+              else if existingBooking.status === 'accepted'
+                span.badge.status-accepted Trial Booked! ✅
+              else
+                span.badge.status-declined Booking Declined
+            
+            button.btn-book-trial(disabled) Booking Submitted
+          else if user && user.role === 'tutee'
+            a.btn-book-trial(href=`/book_lesson/${tutor.id}`) Book a Trial Lesson
+          else if !user || !user.loggedIn
+            a.btn-book-trial(href="/login") Log in to Book
+          else
+            span.text-muted Register as Learner to Book
+          a.btn-send-message(href=`/messages/${tutor.id}`) Send Message
+
+          .availability-block
+            h4 Available Times
+            .availability-slots
+              if tutor.availability && tutor.availability.length
+                each slot in tutor.availability
+                  span.slot= slot
+              else
+                span.slot Contact tutor for availability
+
+   
+    //- REVIEWS — full width
+    
+    .reviews-section
+
+      .reviews-header
+        h2 What students say
+
+      p.reviews-summary
+        | #{tutor.reviewCount || 0} reviews · Average rating #{tutor.avgRating || '0.0'} out of 5
+
+      if tutor.reviews && tutor.reviews.length
+        .reviews-grid
+          each review in tutor.reviews
             .review-card
-                .review-header
-                    .review-user Student User
-                    .review-rating ★★★★★
-                p.review-text "Great tutor, really helped me understand complex topics!"
-                span.review-date March 15, 2026
+              .review-card-top
+                .review-avatar
+                  if review.studentPhoto
+                    img(src=review.studentPhoto alt=review.studentName)
+                  else
+                    | #{review.studentName ? review.studentName.charAt(0).toUpperCase() : 'S'}
+                div
+                  .review-author-name= review.studentName || 'Anonymous'
+                  .review-date= review.date || ''
+              .review-stars
+                - for(let i = 1; i <= 5; i++)
+                  span(class=i <= review.rating ? '' : 'empty') ★
+              p.review-text= review.feedback || ''
+      else
+        p.reviews-summary No reviews yet — be the first to book a session!
+
+  //- ── FOOTER ──
+  footer
+    p © 2026 #[span Dracarys] | Empowering Education Through Community
 
 block scripts
-    //- Add any profile-specific scripts here
+  script.
+    // Favourite button toggle
+    const favBtn = document.querySelector('.fav-btn');
+    if (favBtn) {
+      favBtn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        this.textContent = this.classList.contains('active') ? '♥' : '♡';
+      });
+    }

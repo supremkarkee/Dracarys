@@ -1,0 +1,64 @@
+extends layout
+
+block head
+  link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+  .container.mt-5
+    h1 Tutor Dashboard
+    p Manage your trial lesson bookings here.
+
+    if bookings.length > 0
+      .row
+        each booking in bookings
+          .col-md-6.mb-4
+            .card.booking-card
+              .card-body
+                h5.card-title Trial Lesson Request
+                p.card-text
+                  strong Student: 
+                  | #{booking.student_name}
+                p.card-text
+                  strong Requested on: 
+                  | #{new Date(booking.created_at).toLocaleDateString()}
+                p.card-text
+                  strong Status: 
+                  span(class=`status-badge status-${booking.status}`) #{booking.status.toUpperCase()}
+
+                if booking.status === 'pending'
+                  .d-flex.gap-2.mt-3
+                    form(action="/booking/respond" method="POST")
+                      input(type="hidden" name="booking_id" value=booking.booking_id)
+                      input(type="hidden" name="status" value="accepted")
+                      button.btn.btn-success(type="submit") Accept
+                    
+                    form(action="/booking/respond" method="POST")
+                      input(type="hidden" name="booking_id" value=booking.booking_id)
+                      input(type="hidden" name="status" value="declined")
+                      button.btn.btn-danger(type="submit") Decline
+                else if booking.status === 'accepted'
+                  p.text-success.mt-2 Booking confirmed! Contact the student via email.
+                else
+                  p.text-muted.mt-2 You declined this request.
+    else
+      .alert.alert-info No bookings found.
+
+style.
+  .booking-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: none;
+    transition: transform 0.2s;
+  }
+  .booking-card:hover {
+    transform: translateY(-5px);
+  }
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .status-pending { background: #fff3cd; color: #856404; }
+  .status-accepted { background: #d4edda; color: #155724; }
+  .status-declined { background: #f8d7da; color: #721c24; }

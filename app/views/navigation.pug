@@ -5,8 +5,17 @@ mixin navbar(activePage)
     .nav-links
       a(href='/', class=activePage === 'home' ? 'active' : '') Home
       a(href='/tutors', class=activePage === 'search' ? 'active' : '') Search Tutors
-      a(href='/about', class=activePage === 'about' ? 'active' : '') About
+      a(href='/about', class=activePage === 'about' ? 'active' : '') About Us
       a(href='/news', class=activePage === 'news' ? 'active' : '') News &amp; Feeds
-      a(href='/signup', class=activePage === 'signup' ? 'active' : '') Sign Up
+      if user && user.loggedIn
+        if user.role === 'tutor'
+          a(href='/tutor_dashboard', class=activePage === 'dashboard' ? 'active' : '') Dashboard
+        else
+          a(href='/my_lessons', class=activePage === 'my_lessons' ? 'active' : '') My Lessons
+      else
+        a(href='/signup', class=activePage === 'signup' ? 'active' : '') Sign Up
     .nav-cta
-      a.btn-primary(href='/login') Login
+      if user && user.loggedIn
+        a.btn-primary(href='/logout') Logout
+      else
+        a.btn-primary(href='/login') Login

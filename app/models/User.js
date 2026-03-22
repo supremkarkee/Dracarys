@@ -1,6 +1,6 @@
 const db = require('../services/db');
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const SALT_ROUNDS = 10;
 
 class User {
     user_id;
@@ -18,8 +18,8 @@ class User {
             const results = await db.query(sql, [this.user_id]);
             if (results.length > 0) {
                 this.full_name = results[0].full_name;
-                this.email = results[0].email;
-                this.role = results[0].role;
+                this.email     = results[0].email;
+                this.role      = results[0].role;
             }
         }
     }
@@ -30,18 +30,41 @@ class User {
         if (results.length > 0) {
             const user = results[0];
             const match = await bcrypt.compare(password, user.password_hash);
-            if (match) {
-                return user;
-            }
+            if (match) return user;
         }
         return null;
     }
 
+    /**
+     * Registers a new user and creates the matching tutor/tutee profile row.
+     * Uses a timestamp + random suffix for the user_id to avoid collisions.
+     */
     static async register(fullName, email, password, role) {
-        const passwordHash = await bcrypt.hash(password, saltRounds);
-        const userId = 'U' + Math.floor(Math.random() * 10000).toString().padStart(3, '0');
-        const sql = 'INSERT INTO users (user_id, full_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)';
-        await db.query(sql, [userId, fullName, email, passwordHash, role]);
+        const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+
+        // Generate a collision-resistant ID: 'U' + last 4 digits of timestamp + 2 random digits
+        const userId = 'U' + (Date.now() % 10000).toString().padStart(4, '0')
+                       + Math.floor(Math.random() * 100).toString().padStart(2, '0');
+
+        // Insert into the master users table
+        await db.query(
+            'INSERT INTO users (user_id, full_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)',
+            [userId, fullName, email, passwordHash, role]
+        );
+
+        // Also insert into the role-specific table so the user appears in listings
+        if (role === 'tutor') {
+            await db.query(
+                'INSERT INTO tutors (user_id, rating, lesson_count, points) VALUES (?, 0.0, 0, 0)',
+                [userId]
+            );
+        } else if (role === 'tutee') {
+            await db.query(
+                'INSERT INTO tutees (user_id) VALUES (?)',
+                [userId]
+            );
+        }
+
         return userId;
     }
 

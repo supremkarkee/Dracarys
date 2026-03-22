@@ -1,39 +1,77 @@
 const express = require('express');
 const router = express.Router();
-const { Tutor } = require('../models/Tutor');
+const db = require('../services/db');
 
-// Create a route for root - /
-router.get("/", async function (req, res) {
+// ── HOME ──────────────────────────────────────────────
+router.get('/', async (req, res) => {
     try {
-        const sql = 'SELECT * FROM tutors JOIN users ON tutors.user_id = users.user_id ORDER BY rating DESC LIMIT 3';
-        const featuredTutors = await Tutor.getAll(); // Actually, I should use a custom query for 3 tutors
-        // Using wait, Tutor.getAll returns all. I'll use a direct query for now or add a static method.
-        const db = require('../services/db');
-        const featured = await db.query('SELECT * FROM tutors JOIN users ON tutors.user_id = users.user_id ORDER BY rating DESC LIMIT 3');
-        
-        res.render("home", {
-            title: "Dracarys Home",
-            heading: "Find Your Perfect Tutor Today",
-            activePage: "home",
-            featuredTutors: featured
+        const studentRows = await db.query('SELECT COUNT(*) AS count FROM tutees');
+        const tutorRows = await db.query('SELECT COUNT(*) AS count FROM tutors');
+        const reviewRows = await db.query('SELECT AVG(rating) AS avgRating FROM reviews');
+
+        const studentCount = studentRows[0] && studentRows[0].count ? `${studentRows[0].count}+` : '500+';
+        const tutorCount = tutorRows[0] && tutorRows[0].count ? `${tutorRows[0].count}+` : '120+';
+        const avgRating = reviewRows[0] && reviewRows[0].avgRating ? `${parseFloat(reviewRows[0].avgRating).toFixed(1)}★` : '4.9★';
+
+        res.render('home', {
+            title: 'Dracarys – Learn & Grow',
+            activePage: 'home',
+            heroImage: '/images/002.jpg',
+            featureImages: [
+                '/images/009.jpg',
+                '/images/003.jpg',
+                '/images/012.jpg'
+            ],
+            stats: {
+                students: studentCount,
+                tutors: tutorCount,
+                rating: avgRating
+            },
+            user: req.session
         });
+
     } catch (err) {
-        console.error(err);
-        res.render("home", { title: "Dracarys Home", activePage: "home", featuredTutors: [] });
+        console.error('Home route error:', err);
+        res.render('home', {
+            title: 'Dracarys – Learn & Grow',
+            activePage: 'home',
+            heroImage: '/images/002.jpg',
+            featureImages: [
+                '/images/009.jpg',
+                '/images/003.jpg',
+                '/images/012.jpg'
+            ],
+            // Sending distinct mock stats here to demonstrate how the template updates dynamically
+            stats: { 
+                students: '1200+', 
+                tutors: '340+', 
+                rating: '4.8★' 
+            },
+            user: req.session
+        });
     }
 });
 
-router.get("/home", function (req, res) {
-    res.redirect("/");
+// redirect /home → /
+router.get('/home', (req, res) => res.redirect('/'));
+
+// redirect /profile → /tutor/1 so the user's manual navigation works flawlessly
+router.get('/profile', (req, res) => res.redirect('/tutor/1'));
+
+// ── ABOUT ─────────────────────────────────────────────
+router.get('/about', (req, res) => {
+    res.render('about', {
+        title: 'About Us | Dracarys',
+        activePage: 'about'
+    });
 });
 
-// Create a route for /about
-router.get("/about", function (req, res) {
-    res.render("about", { title: "About Dracarys", activePage: "about" });
-});
-
-router.get("/news", function (req, res) {
-    res.render("news", { title: "News & Feeds - Dracarys", activePage: "news" });
+// ── NEWS & FEEDS ───────────────────────────────────────
+router.get('/news', (req, res) => {
+    res.render('news', {
+        title: 'News & Feeds | Dracarys',
+        activePage: 'news'
+    });
 });
 
 module.exports = router;

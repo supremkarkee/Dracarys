@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { User } = require('../models/User');
+const db = require('../services/db');
 
 router.get("/loginpage", function (req, res) {
     res.redirect("/login");
@@ -17,6 +18,16 @@ router.post("/login", async function (req, res) {
         req.session.userId = user.user_id;
         req.session.role = user.role;
         req.session.loggedIn = true;
+
+        // Fetch role-specific ID
+        if (user.role === 'tutor') {
+            const tutorRows = await db.query('SELECT tutor_id FROM tutors WHERE user_id = ?', [user.user_id]);
+            if (tutorRows.length > 0) req.session.tutorId = tutorRows[0].tutor_id;
+        } else if (user.role === 'tutee') {
+            const tuteeRows = await db.query('SELECT tutee_id FROM tutees WHERE user_id = ?', [user.user_id]);
+            if (tuteeRows.length > 0) req.session.tuteeId = tuteeRows[0].tutee_id;
+        }
+
         res.redirect("/");
     } else {
         res.redirect("/login?error=Invalid email or password");
@@ -34,6 +45,16 @@ router.post("/signup", async function (req, res) {
         req.session.userId = userId;
         req.session.role = role;
         req.session.loggedIn = true;
+
+        // Fetch role-specific ID
+        if (role === 'tutor') {
+            const tutorRows = await db.query('SELECT tutor_id FROM tutors WHERE user_id = ?', [userId]);
+            if (tutorRows.length > 0) req.session.tutorId = tutorRows[0].tutor_id;
+        } else if (role === 'tutee') {
+            const tuteeRows = await db.query('SELECT tutee_id FROM tutees WHERE user_id = ?', [userId]);
+            if (tuteeRows.length > 0) req.session.tuteeId = tuteeRows[0].tutee_id;
+        }
+
         res.redirect("/");
     } catch (err) {
         console.error(err);
