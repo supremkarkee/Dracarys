@@ -74,8 +74,8 @@ class User {
 
     // Fetches the user details from the database and populates the class properties
     async getDetails() {
-        const sql = "SELECT * FROM users WHERE id = ?";
-        const results = await db.query(sql, [this.id]);
+        const sql = "SELECT * FROM users WHERE user_id = ?";
+        const results = await db.query(sql, [this.userId]);
 
         if (results.length > 0) {
             this.userId = results[0].user_id;

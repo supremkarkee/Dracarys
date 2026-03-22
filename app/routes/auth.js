@@ -18,17 +18,16 @@ router.post('/signup', async (req, res) => {
         const userExists = await User.checkUserExists(email);
         if (userExists) {
             console.log("Account already exists");
-            res.redirect('/login?account_exists=true');
-        }
-        else {
-            // Use the static class method to create the new user
-            const userData = { firstName: firstName.trim(), lastName: lastName.trim(), email, password, role };
-            const newUser = await User.createUser(userData);
+            return res.redirect('/login?account_exists=true');
         }
 
+        // Use the static class method to create the new user
+        const userData = { firstName: firstName.trim(), lastName: lastName.trim(), email, password, role };
+        const newUser = await User.createUser(userData);
+
         // Success - log and redirect to login
-        console.log(`New ${role} registered with Database ID: ${newUser.id}`);
-        res.redirect('/login?registered=true');
+        console.log(`New ${role} registered successfully with email: ${email}`);
+        return res.redirect('/login?registered=true');
 
     } catch (error) {
         console.error("Signup Route Error:", error);

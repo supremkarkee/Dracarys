@@ -1,51 +1,105 @@
-extends layout
+extends site-layout
 
 block head
     link(rel="stylesheet" href="/css/dashboard.css")
+    style.
+        .admin-tables { margin-top: 20px; }
+        .table-wrapper { margin-bottom: 40px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f5f5f5; }
+        .btn-danger { background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-success { background: #28a745; color: white; border: none; padding: 10px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .dashboard-card form { display: flex; flex-direction: column; gap: 10px; }
+        .dashboard-card input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
 
 block content
     main.dashboard-container
         .dashboard-header
-            h1 Admin Dashboard
-            p Welcome, Admin #{user.firstName}
+            h1 Default Admin Dashboard
+            p Welcome, #{user.firstName}
 
         .dashboard-content
-            .dashboard-grid
-                .dashboard-card
-                    .card-icon USERS
-                    h3 Total Users
-                    p 10 Users
-                    a.btn-secondary(href="/admin/users") Manage Users
-
-                .dashboard-card
-                    .card-icon TUTORS
-                    h3 Total Tutors
-                    p 4 Tutors
-                    a.btn-secondary(href="#tutors") Manage Tutors
-
-                .dashboard-card
-                    .card-icon STUDENTS
-                    h3 Total Students
-                    p 6 Students
-                    a.btn-secondary(href="#students") Manage Students
-
-                .dashboard-card
-                    .card-icon STATS
-                    h3 System Stats
-                    p View Analytics
-                    a.btn-secondary(href="#analytics") View Stats
-
+            // 1. Create New Admin Form
             .dashboard-section
-                h2 System Management
-                .admin-menu
-                    a.admin-btn(href="/admin/users") Manage All Users
-                    a.admin-btn(href="/admin/approve-tutors") Approve Tutors
-                    a.admin-btn(href="/admin/reports") View Reports
-                    a.admin-btn(href="/admin/settings") System Settings
-                    a.admin-btn(href="/admin/content") Manage Content
-                    a.admin-btn(href="/admin/support") Support Tickets
+                h2 Create Another Admin User
+                .dashboard-card(style="max-width: 400px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);")
+                    form(action="/admin/create-admin" method="POST")
+                        input(type="text" name="firstName" placeholder="First Name" required)
+                        input(type="text" name="lastName" placeholder="Last Name" required)
+                        input(type="email" name="email" placeholder="Email Address" required)
+                        input(type="password" name="password" placeholder="Password" required)
+                        button.btn-success(type="submit") Create Admin Account
 
-            .dashboard-section
-                h2 Recent Activity Log
-                .activity-log
-                    p No recent activities to display
+            // 2. Tutors Table
+            .dashboard-section.admin-tables
+                h2 Manage Tutors
+
+                h3 Active Tutors
+                .table-wrapper
+                    if activeTutors && activeTutors.length
+                        table
+                            thead
+                                tr
+                                    th User ID
+                                    th Name
+                                    th Email
+                                    th Status
+                            tbody
+                                each tutor in activeTutors
+                                    tr
+                                        td= tutor.user_id
+                                        td #{tutor.first_name} #{tutor.last_name}
+                                        td= tutor.email
+                                        td Active
+                    else
+                        p No active tutors found.
+
+                h3 Flagged Tutors
+                .table-wrapper
+                    if flaggedTutors && flaggedTutors.length
+                        table
+                            thead
+                                tr
+                                    th User ID
+                                    th Name
+                                    th Email
+                                    th Status
+                                    th Actions
+                            tbody
+                                each tutor in flaggedTutors
+                                    tr
+                                        td= tutor.user_id
+                                        td #{tutor.first_name} #{tutor.last_name}
+                                        td= tutor.email
+                                        td Flagged
+                                        td
+                                            button.btn-danger.delete-user(data-user-id=tutor.user_id) Delete User
+                    else
+                        p No flagged tutors.
+
+block scripts
+    script.
+        document.querySelectorAll('.delete-user').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const userId = this.dataset.userId;
+                if (confirm('Are you absolutely sure you want to delete this flagged user? This will also cascade and delete their profile forever.')) {
+                    try {
+                        const response = await fetch(`/admin/users/delete/${userId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            alert('User deleted securely!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    } catch (err) {
+                        alert('Error: ' + err.message);
+                    }
+                }
+            });
+        });

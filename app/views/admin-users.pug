@@ -2,12 +2,13 @@ extends site-layout
 
 block head
     link(rel="stylesheet" href="/css/dashboard.css")
+    link(rel="stylesheet" href="/CSS/admin-users.css")
 
 block content
     main.dashboard-container
         .dashboard-header
             h1 Manage Users
-            p Total Users: #{users.length}
+            p Total Users: #{users ? users.length : 0}
 
         .dashboard-content
             .dashboard-section
@@ -22,6 +23,7 @@ block content
                                     th Last Name
                                     th Email
                                     th Role
+                                    th Actions
                             tbody
                                 each user in users
                                     tr
@@ -29,63 +31,13 @@ block content
                                         td= user.firstname
                                         td= user.lastname
                                         td= user.email
+                                        td
                                             span.role-badge(class=`role-${user.role}`)= user.role
+                                        td
+                                            button.btn-danger.delete-user(data-user-id=user.user_id) Delete
                     else
                         p No users found.
 
-        style.
-            .users-table {
-                margin-top: 20px;
-                overflow-x: auto;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                background: white;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                border-radius: 8px;
-                overflow: hidden;
-            }
-            th, td {
-                padding: 12px;
-                text-align: left;
-                border-bottom: 1px solid #eee;
-            }
-            th {
-                background: #f5f5f5;
-                font-weight: 600;
-                color: #333;
-            }
-            .role-badge {
-                padding: 4px 12px;
-                border-radius: 20px;
-                font-size: 12px;
-                font-weight: 600;
-            }
-            .role-tutor {
-                background: #e3f2fd;
-                color: #1976d2;
-            }
-            .role-tutee {
-                background: #f3e5f5;
-                color: #7b1fa2;
-            }
-            .role-admin {
-                background: #ffebee;
-                color: #c62828;
-            }
-            .btn-danger {
-                background: #dc3545;
-                color: white;
-                border: none;
-                padding: 6px 12px;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 12px;
-            }
-            .btn-danger:hover {
-                background: #c82333;
-            }
 
 script.
     document.querySelectorAll('.delete-user').forEach(btn => {
