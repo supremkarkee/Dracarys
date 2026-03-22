@@ -6,26 +6,29 @@ const { User } = require('../models/users');
 // POST route to handle form submission from signup.pug
 router.post('/signup', async (req, res) => {
     try {
-        const { firstName, lastName, userId, email, password, role } = req.body;
+        const { firstName, lastName, email, password, role } = req.body;
 
         // Basic validation
-        if (!firstName || !lastName || !userId || !email || !password || !role) {
+        if (!firstName || !lastName || !email || !password || !role) {
+            console.log("All fields are required");
             return res.status(400).send("All fields are required.");
         }
 
         // Use the static class method to check if user already exists
-        const userExists = await User.checkUserExists(email, userId);
+        const userExists = await User.checkUserExists(email);
         if (userExists) {
-            return res.status(409).send("An account with this Email or User ID already exists.");
+            console.log("Account already exists");
+            res.redirect('/login?account_exists=true');
         }
-
-        // Use the static class method to create the new user
-        const userData = { firstName: firstName.trim(), lastName: lastName.trim(), userId, email, password, role };
-        const newUser = await User.createUser(userData);
+        else {
+            // Use the static class method to create the new user
+            const userData = { firstName: firstName.trim(), lastName: lastName.trim(), email, password, role };
+            const newUser = await User.createUser(userData);
+        }
 
         // Success - log and redirect to login
         console.log(`New ${role} registered with Database ID: ${newUser.id}`);
-        res.redirect('/login?success=true');
+        res.redirect('/login?registered=true');
 
     } catch (error) {
         console.error("Signup Route Error:", error);
