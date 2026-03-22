@@ -9,6 +9,10 @@ block content
     .login-page-wrapper
         .main-content
             h1.hero-title Lets stand for free education together
+            if showSuccess
+                p.success-message Registration successful! Please log in below
+            if accountExists
+                p.error-message An account with this email already exists. Please log in below
             .login-container
                 h2 Welcome Back
                 form#loginForm(action='/authenticate' method='POST')
