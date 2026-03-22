@@ -22,9 +22,9 @@ services:
       - "3309:3306"
     volumes:
       - ./db:/var/lib/mysql
-      - ./Database.sql:/docker-entrypoint-initdb.d/Database.sql
+      - ./sd2-db.sql:/docker-entrypoint-initdb.d/sd2-db.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5

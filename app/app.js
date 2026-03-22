@@ -64,7 +64,19 @@ app.use('/', authRoutes);
 // Routes for login page
 
 app.get("/login", function (req, res) {
-    res.render("loginpage", { loggedIn: req.session.loggedIn });
+    // 1. Check if 'registered=true' is in the URL
+
+    const isRegistered = req.query.registered === 'true';
+    const accountExists = req.query.account_exists === 'true';
+
+
+    // 2. Pass it to Pug using the exact name 'showSuccess'
+    res.render("loginpage",
+        {
+            loggedIn: req.session.loggedIn,
+            showSuccess: isRegistered,
+            accountExists: accountExists,
+        });
 });
 
 // Profile page — only accessible when logged in

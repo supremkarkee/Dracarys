@@ -89,9 +89,9 @@ class User {
     }
 
     // Static method to check if a user already exists before signing up
-    static async checkUserExists(email, userId) {
-        const sql = 'SELECT user_id FROM users WHERE email = ? OR user_id = ?';
-        const rows = await db.query(sql, [email, userId]);
+    static async checkUserExists(email) {
+        const sql = 'SELECT user_id FROM users WHERE email = ?';
+        const rows = await db.query(sql, [email]);
         return rows.length > 0;
     }
 
@@ -103,12 +103,11 @@ class User {
             const hashedPassword = await bcrypt.hash(userData.password, salt);
 
             const sql = `
-                INSERT INTO users (user_id, first_name, last_name, email, password, role)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO users (first_name, last_name, email, password, role)
+                VALUES (?, ?, ?, ?, ?)
             `;
 
             const result = await db.query(sql, [
-                userData.userId,
                 userData.firstName,
                 userData.lastName,
                 userData.email,
@@ -125,6 +124,7 @@ class User {
     }
 }
 
-module.exports = {
+module.exports =
+{
     User
 };

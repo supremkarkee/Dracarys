@@ -52,7 +52,7 @@ INSERT INTO `reviews` (`review_id`, `tutee_id`, `tutor_id`, `rating`, `feedback`
 --
 
 CREATE TABLE `subjects` (
-  `subject_id` int(11) NOT NULL,
+  `subject_id` int(11) NOT NULL AUTO_INCREMENT,
   `subject_name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -75,8 +75,8 @@ INSERT INTO `subjects` (`subject_id`, `subject_name`, `description`) VALUES
 --
 
 CREATE TABLE `tutees` (
-  `tutee_id` int(11) NOT NULL,
-  `user_id` varchar(10) NOT NULL,
+  `tutee_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
   `school_level` varchar(50) DEFAULT NULL,
   `grade_level` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -86,9 +86,9 @@ CREATE TABLE `tutees` (
 --
 
 INSERT INTO `tutees` (`tutee_id`, `user_id`, `school_level`, `grade_level`) VALUES
-(1, 'U003', 'High School', 'Grade 10'),
-(2, 'U004', 'High School', 'Grade 12'),
-(3, 'U006', 'Middle School', 'Grade 8');
+(1, 3, 'High School', 'Grade 10'),
+(2, 4, 'High School', 'Grade 12'),
+(3, 6, 'Middle School', 'Grade 8');
 
 -- --------------------------------------------------------
 
@@ -120,7 +120,7 @@ INSERT INTO `tutee_subjects` (`tutee_id`, `subject_id`) VALUES
 
 CREATE TABLE `tutors` (
   `tutor_id` int(11) NOT NULL,
-  `user_id` varchar(10) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `rating` decimal(2,1) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `qualification` varchar(255) DEFAULT NULL,
@@ -133,9 +133,9 @@ CREATE TABLE `tutors` (
 --
 
 INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`, `description`, `qualification`, `subjects`, `lesson_count`) VALUES
-(1, 'U001', 4.8, 'Experienced mathematics tutor specializing in algebra and calculus for high school students.', 'MSc Mathematics - University of London', 'Mathematics, Physics', 120),
-(2, 'U002', 4.5, 'Chemistry tutor helping students understand complex concepts through practical examples.', 'BSc Chemistry - University of Manchester', 'Chemistry, Biology', 85),
-(3, 'U005', 4.9, 'Software engineer and programming tutor with strong background in algorithms and problem solving.', 'BSc Computer Science - MIT', 'Computer Science, Programming', 150);
+(1, 1, 4.8, 'Experienced mathematics tutor specializing in algebra and calculus for high school students.', 'MSc Mathematics - University of London', 'Mathematics, Physics', 120),
+(2, 2, 4.5, 'Chemistry tutor helping students understand complex concepts through practical examples.', 'BSc Chemistry - University of Manchester', 'Chemistry, Biology', 85),
+(3, 5, 4.9, 'Software engineer and programming tutor with strong background in algorithms and problem solving.', 'BSc Computer Science - MIT', 'Computer Science, Programming', 150);
 
 -- --------------------------------------------------------
 
@@ -167,7 +167,7 @@ INSERT INTO `tutor_subjects` (`tutor_id`, `subject_id`) VALUES
 --
 
 CREATE TABLE `users` (
-  `user_id` varchar(10) NOT NULL,
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `email` varchar(150) NOT NULL,
@@ -180,12 +180,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, `role`) VALUES
-('U001', 'Alice', 'Johnson', 'alice.johnson@email.com', 'hashed_pass_1', 'tutor'),
-('U002', 'Brian', 'Smith', 'brian.smith@email.com', 'hashed_pass_2', 'tutor'),
-('U003', 'Catherine', 'Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'tutee'),
-('U004', 'Daniel', 'Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'tutee'),
-('U005', 'Emily', 'Davis', 'emily.davis@email.com', 'hashed_pass_5', 'tutor'),
-('U006', 'Frank', 'Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'tutee');
+(1, 'Alice', 'Johnson', 'alice.johnson@email.com', 'hashed_pass_1', 'tutor'),
+(2, 'Brian', 'Smith', 'brian.smith@email.com', 'hashed_pass_2', 'tutor'),
+(3, 'Catherine', 'Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'tutee'),
+(4, 'Daniel', 'Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'tutee'),
+(5, 'Emily', 'Davis', 'emily.davis@email.com', 'hashed_pass_5', 'tutor'),
+(6, 'Frank', 'Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'tutee');
 
 --
 -- Indexes for dumped tables
