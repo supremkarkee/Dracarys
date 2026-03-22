@@ -4,6 +4,7 @@ mixin navbar(activePage)
       span arys
     .nav-links
       a(href='/', class=activePage === 'home' ? 'active' : '') Home
+<<<<<<< HEAD
       a(href='/tutors', class=activePage === 'search' ? 'active' : '') Search Tutors
       a(href='/about', class=activePage === 'about' ? 'active' : '') About Us
       a(href='/news', class=activePage === 'news' ? 'active' : '') News &amp; Feeds
@@ -17,5 +18,21 @@ mixin navbar(activePage)
     .nav-cta
       if user && user.loggedIn
         a.btn-primary(href='/logout') Logout
+=======
+      if loggedIn && user && user.role !== 'tutor'
+        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
+      if !loggedIn
+        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
+      a(href='/about', class=activePage === 'about' ? 'active' : '') About
+      a(href='/news', class=activePage === 'news' ? 'active' : '') News &amp; Feeds
+      if loggedIn
+        a(href='/dashboard', class=activePage === 'dashboard' ? 'active' : '') Dashboard
+      if !loggedIn
+        a(href='/signup', class=activePage === 'signup' ? 'active' : '') Sign Up
+    .nav-cta
+      if loggedIn
+        span Welcome, #{user.full_name}
+        a.btn-secondary(href='/logout') Logout
+>>>>>>> db4bc7b8295acbfb565967d21cb15f5eff450efc
       else
         a.btn-primary(href='/login') Login

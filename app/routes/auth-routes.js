@@ -8,6 +8,9 @@ router.get("/loginpage", function (req, res) {
 });
 
 router.get("/login", function (req, res) {
+    if (req.session.loggedIn) {
+        return res.redirect("/");
+    }
     res.render("loginpage", { title: "Login - Dracarys", activePage: "login", error: req.query.error });
 });
 
@@ -35,15 +38,20 @@ router.post("/login", async function (req, res) {
 });
 
 router.get("/signup", function (req, res) {
+    if (req.session.loggedIn) {
+        return res.redirect("/");
+    }
     res.render("signup", { title: "Signup - Dracarys", activePage: "signup" });
 });
 
 router.post("/signup", async function (req, res) {
-    const { fullName, email, password, role } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
+    const fullName = `${firstName} ${lastName}`;
+    const userRole = role === 'learner' ? 'tutee' : role; // Map learner to tutee
     try {
-        const userId = await User.register(fullName, email, password, role);
+        const userId = await User.register(fullName, email, password, userRole);
         req.session.userId = userId;
-        req.session.role = role;
+        req.session.role = userRole;
         req.session.loggedIn = true;
 
         // Fetch role-specific ID

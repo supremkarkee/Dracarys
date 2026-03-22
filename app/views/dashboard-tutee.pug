@@ -1,0 +1,45 @@
+extends layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 Student Dashboard
+            p Welcome back, #{user.full_name}!
+
+        .dashboard-content
+            .dashboard-grid
+                .dashboard-card
+                    .card-icon LESSONS
+                    h3 My Lessons
+                    p 0 Lessons Booked
+                    a.btn-secondary(href="#lessons") View Details
+
+                .dashboard-card
+                    .card-icon PROFILE
+                    h3 My Profile
+                    p Manage your account
+                    a.btn-secondary(href="#profile") Edit Profile
+
+                .dashboard-card
+                    .card-icon TUTORS
+                    h3 My Tutors
+                    p 0 Tutors Assigned
+                    a.btn-secondary(href="#tutors") View Tutors
+
+                .dashboard-card
+                    .card-icon PROGRESS
+                    h3 Progress
+                    p Track your learning
+                    a.btn-secondary(href="#progress") View Progress
+
+            .dashboard-section
+                h2 Recent Activity
+                .activity-list
+                    p No recent activity yet. Start by booking a lesson!
+
+            .dashboard-section
+                h2 Browse Tutors
+                a.btn-primary(href="/tutors") Find a Tutor

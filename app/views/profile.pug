@@ -7,6 +7,7 @@ block content
 
   .profile-page
 
+<<<<<<< HEAD
     //- ── MAIN GRID ──
     .profile-grid
 
@@ -142,6 +143,31 @@ block content
       if tutor.reviews && tutor.reviews.length
         .reviews-grid
           each review in tutor.reviews
+=======
+            //- Right Column: Details & Booking
+            .profile-main
+                section.bio-section
+                    h2 About Me
+                    p= tutor.description || "This tutor hasn't provided a biography yet."
+                
+                section.stats-section
+                    .stat-card
+                        span.stat-value= tutor.lesson_count || 0
+                        span.stat-label Lessons Given
+                    .stat-card
+                        span.stat-value 100%
+                        span.stat-label Response Rate
+                
+                section.booking-section
+                    h2 Book a Session
+                    p Choose a time that works for you to start your learning journey.
+                    .booking-card
+                        p.booking-info This is a free platform. No payment required.
+                        a.btn-primary.btn-lg(href=`/book/${tutor.user_id}`) Book Now
+        
+        section.reviews-section
+            h2 Recent Feedbacks
+>>>>>>> db4bc7b8295acbfb565967d21cb15f5eff450efc
             .review-card
               .review-card-top
                 .review-avatar

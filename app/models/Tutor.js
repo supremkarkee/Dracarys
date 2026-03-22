@@ -16,9 +16,23 @@ class Tutor {
 
     async getTutorDetails() {
         if (typeof this.full_name !== 'string') {
-            const sql = 'SELECT * FROM tutors JOIN users ON tutors.user_id = users.user_id WHERE tutors.tutor_id = ?';
-            const results = await db.query(sql, [this.tutor_id]);
+            // Support both tutor_id and user_id queries
+            let sql = '';
+            let params = [];
+            
+            if (this.tutor_id && !this.tutor_id.startsWith('T') && !this.tutor_id.startsWith('S')) {
+                // Numeric tutor_id
+                sql = 'SELECT tutors.*, users.full_name, users.email, users.role FROM tutors JOIN users ON tutors.user_id = users.user_id WHERE tutors.tutor_id = ?';
+                params = [this.tutor_id];
+            } else {
+                // User_id (starts with T, S, etc.)
+                sql = 'SELECT tutors.*, users.full_name, users.email, users.role FROM tutors JOIN users ON tutors.user_id = users.user_id WHERE tutors.user_id = ?';
+                params = [this.tutor_id];
+            }
+            
+            const results = await db.query(sql, params);
             if (results.length > 0) {
+<<<<<<< HEAD
                 const row = results[0];
                 this.user_id = row.user_id;
                 this.full_name = row.full_name;
@@ -35,6 +49,17 @@ class Tutor {
                 this.points = row.points || 0;
                 this.verified = true; // Hardcoded for now, or add to DB later
                 this.languages = ["English"]; // Default, can be expanded
+=======
+                this.tutor_id = results[0].tutor_id;
+                this.user_id = results[0].user_id;
+                this.full_name = results[0].full_name;
+                this.email = results[0].email;
+                this.rating = results[0].rating || 0;
+                this.description = results[0].description || '';
+                this.subjects = results[0].subjects || '';
+                this.lesson_count = results[0].lesson_count || 0;
+                this.points = results[0].points || 0;
+>>>>>>> db4bc7b8295acbfb565967d21cb15f5eff450efc
             }
         }
     }

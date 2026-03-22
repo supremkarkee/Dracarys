@@ -9,20 +9,31 @@ block content
         h1.hero-title Lets stand for free education together
         .login-container
             h2 Welcome Back
-            form#loginForm
+            if error
+                .error-message= error
+            form#loginForm(action="/login" method="POST")
                 .input-group
+<<<<<<< HEAD
                     label(for="email") Email Address
                     input#email(type="email" placeholder="Enter your email" required)
+=======
+                    label(for="email") Email
+                    input#email(type="email" name="email" placeholder="Enter your email" required)
+>>>>>>> db4bc7b8295acbfb565967d21cb15f5eff450efc
                 .input-group
                     label(for="password") Password
-                    input#password(type="password" placeholder="Enter your password" required)
+                    input#password(type="password" name="password" placeholder="Enter your password" required)
                 button.login-btn(type="submit") Sign In
+<<<<<<< HEAD
                 #errorMsg.error(style="display: none;") Invalid login details
+=======
+>>>>>>> db4bc7b8295acbfb565967d21cb15f5eff450efc
             .extra-links
                 p
                     a(href="#") Forgot Password?
                 p
                     a(href="/signup") Create Account
+<<<<<<< HEAD
 
 block scripts
     script.
@@ -61,3 +72,5 @@ block scripts
                 btn.style.opacity = '1';
             }
         });
+=======
+>>>>>>> db4bc7b8295acbfb565967d21cb15f5eff450efc

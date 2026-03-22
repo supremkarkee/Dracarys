@@ -19,8 +19,9 @@ block content
                         p Find tutors and grow your skills.
                 br
                 a.back-link(href="/login") Already have an account? Login
-            form#signupForm(onsubmit="handleSignup(event)")
+            form#signupForm(action="/signup" method="POST")
                 h2#formTitle Create Account
+<<<<<<< HEAD
                 .input-group
                     label(for="firstName") First Name
                     input#firstName(type="text" name="firstName" required)
@@ -29,6 +30,17 @@ block content
                     input#lastName(type="text" name="lastName" required)
                 .input-group
                     label(for="email") Business Email (Gmail)
+=======
+                .form-row
+                    .input-group
+                        label(for="firstName") First Name
+                        input#firstName(type="text" name="firstName" required)
+                    .input-group
+                        label(for="lastName") Last Name
+                        input#lastName(type="text" name="lastName" required)
+                .input-group
+                    label(for="email") Gmail Address
+>>>>>>> db4bc7b8295acbfb565967d21cb15f5eff450efc
                     input#email(type="email" name="email" placeholder="example@gmail.com" required)
                 .input-group
                     label(for="password") Password
@@ -55,6 +67,7 @@ block scripts
             document.getElementById('roleSelection').style.display = 'block';
             document.getElementById('signupForm').reset();
         }
+<<<<<<< HEAD
         async function handleSignup(event) {
             event.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -92,3 +105,5 @@ block scripts
                 btn.style.opacity = '1';
             }
         }
+=======
+>>>>>>> db4bc7b8295acbfb565967d21cb15f5eff450efc
