@@ -1,44 +1,44 @@
 extends layout
+
+block head
+    link(rel="stylesheet" href="/css/styles.css")
+
 block content
-    section.search-header
-        h1 Find Your Perfect Tutor Today
-        form.search-box(action="/tutors" method="GET")
-            input(type="text" name="q" placeholder="What subject do you need help with?")
-            select(name="level")
-                option(value="") All Levels
-                option(value="primary") Primary
-                option(value="secondary") Secondary
-                option(value="university") University
-            button(type="submit") Search
+    main.search-page
+        section.search-header
+            .container
+                h1 
+                    span.highlight Browse 
+                    | Tutors
+                .search-box
+                    form.filter-form(method="GET" action="/browse/tutors")
+                        input(type="text" name="q" placeholder="Search by name or subject..." value=(query || ''))
+                        button(type="submit") Search
 
-    section.features
-        .section-head
-            h2 Featured Tutors
-            p Learn from our top-rated academic experts.
-        
-        .feature-grid
-            if featuredTutors && featuredTutors.length
-                each tutor in featuredTutors
-                    .feature-card
-                        .feature-img
-                            span.img-icon 🎓
-                        .feature-body
-                            .feature-tag= tutor.subjects.split(',')[0]
-                            h3= tutor.full_name
-                            p= tutor.qualification
-                            .tutor-rating
-                                span.star ⭐
-                                | #{tutor.rating}
-                            a.btn-secondary(href=`/tutor/${tutor.tutor_id}`) View Profile
-            else
-                p No tutors featured at the moment.
+        .search-layout
+            aside.filters
+                h3 Filter by Subject
+                a.filter-btn(href="/browse/tutors" class=(selectedSubject === 'all' ? 'active' : '')) All Subjects
+                if subjects && subjects.length
+                    each subject in subjects
+                        a.filter-btn(href=`/browse/tutors?subject=${subject.subject_name}` class=(selectedSubject == subject.subject_name ? 'active' : '')) #{subject.subject_name}
 
-    section.cta
-        .cta-inner
-            h2 Ready to start learning?
-            p Join thousands of students achieving their goals with Dracarys.
-            a.cta-btn(href="/signup") Join for Free
-    footer
-        p &copy; 2026 Dracarys Team. All rights reserved.
-block scripts
-    script(src="/script.js")
+            section.tutor-list
+                if data && data.length
+                    each tutor in data
+                        article.tutor-card.fade-up
+                            .tutor-photo
+                                span Name Icon
+                            .tutor-info
+                                h3.tutor-name #{tutor.full_name}
+                                .tutor-subject #{tutor.subjects || 'General Tutor'}
+                                .tutor-rating 
+                                    span Rating: #{tutor.rating || 'N/A'}
+                                p.tutor-desc #{tutor.description || 'Experienced tutor dedicated to student success.'}
+                            .tutor-actions
+                                a.btn-message(href=`/tutor/${tutor.user_id}`) View Profile
+                                a.btn-trial(href=`/book/${tutor.user_id}`) Book Lesson
+                else
+                    .no-results
+                        p No tutors found matching your criteria.
+                        a.btn-secondary(href="/browse/tutors") View All Tutors
