@@ -114,9 +114,18 @@ class User {
                 hashedPassword,
                 userData.role
             ]);
+            
+            const userId = result.insertId;
+            
+            // Insert into respective role table
+            if (userData.role === 'tutor') {
+                await db.query('INSERT INTO tutors (user_id) VALUES (?)', [userId]);
+            } else if (userData.role === 'tutee') {
+                await db.query('INSERT INTO tutees (user_id) VALUES (?)', [userId]);
+            }
 
             // Return a new instance of the User class using the newly created ID
-            return new User(result.insertId);
+            return new User(userId);
         } catch (error) {
             console.error("Error creating user:", error);
             throw error;
