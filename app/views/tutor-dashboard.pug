@@ -1,0 +1,37 @@
+extends site-layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 Tutor Dashboard
+            p Welcome to your tutor dashboard.
+
+        .dashboard-content
+            .dashboard-section
+                h2 My Bookings
+                if bookings && bookings.length > 0
+                    table
+                        thead
+                            tr
+                                th Date & Time
+                                th Tutee
+                                th Notes
+                                th Status
+                                th Action
+                        tbody
+                            each b in bookings
+                                tr
+                                    td= new Date(b.booking_date).toLocaleString()
+                                    td #{b.tutee_name}
+                                    td= b.notes || 'None'
+                                    td
+                                        span(class=`status-${b.status}`)= b.status
+                                    td
+                                        if b.status === 'pending'
+                                            form(action=`/bookings/${b.booking_id}/confirm` method="POST" style="display:inline;")
+                                                button.btn-primary(type="submit") Confirm
+                else
+                    p You have no bookings at the moment.

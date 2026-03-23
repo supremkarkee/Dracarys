@@ -1,0 +1,33 @@
+extends site-layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 Tutee Dashboard
+            p Welcome to your dashboard.
+
+        .dashboard-content
+            .dashboard-section
+                h2 My Bookings
+                if bookings && bookings.length > 0
+                    table
+                        thead
+                            tr
+                                th Date & Time
+                                th Tutor
+                                th Notes
+                                th Status
+                        tbody
+                            each b in bookings
+                                tr
+                                    td= new Date(b.booking_date).toLocaleString()
+                                    td #{b.tutor_name}
+                                    td= b.notes || 'None'
+                                    td
+                                        span(class=`status-${b.status}`)= b.status
+                else
+                    p You haven't booked any lessons yet.
+                    a.btn-primary(href="/all-tutors") Find a Tutor

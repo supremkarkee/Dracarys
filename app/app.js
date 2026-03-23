@@ -101,15 +101,130 @@ app.get("/admin-users", function (req, res) {
 
 
 // Routes for tutor dashboard
-app.get("/tutor-dashboard", function (req, res) {
-    if (!req.session.uid) return res.redirect('/login');
-    res.render("tutor-dashboard", { loggedIn: req.session.loggedIn });
+app.get("/tutor-dashboard", async function (req, res) {
+    if (!req.session.uid || req.session.role !== 'tutor') return res.redirect('/login');
+    try {
+        // Find tutor_id for this user
+        const tutors = await db.query("SELECT tutor_id FROM tutors WHERE user_id = ?", [req.session.uid]);
+        if (tutors.length === 0) return res.status(404).send("Tutor profile not found");
+        const tutorId = tutors[0].tutor_id;
+
+        // Fetch bookings for this tutor
+        const bookings = await db.query(`
+            SELECT b.*, u.first_name as tutee_name
+            FROM bookings b
+            JOIN tutees t ON b.tutee_id = t.tutee_id
+            JOIN users u ON t.user_id = u.user_id
+            WHERE b.tutor_id = ?
+            ORDER BY b.booking_date DESC
+        `, [tutorId]);
+        
+        res.render("tutor-dashboard", { loggedIn: req.session.loggedIn, bookings });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database Error");
+    }
 });
 
 // Routes for tutee dashboard
-app.get("/tutee-dashboard", function (req, res) {
-    if (!req.session.uid) return res.redirect('/login');
-    res.render("tutee-dashboard", { loggedIn: req.session.loggedIn });
+app.get("/tutee-dashboard", async function (req, res) {
+    if (!req.session.uid || req.session.role !== 'tutee') return res.redirect('/login');
+    try {
+        // Find tutee_id for this user
+        const tutees = await db.query("SELECT tutee_id FROM tutees WHERE user_id = ?", [req.session.uid]);
+        if (tutees.length === 0) return res.status(404).send("Tutee profile not found");
+        const tuteeId = tutees[0].tutee_id;
+
+        // Fetch bookings for this tutee
+        const bookings = await db.query(`
+            SELECT b.*, u.first_name as tutor_name
+            FROM bookings b
+            JOIN tutors t ON b.tutor_id = t.tutor_id
+            JOIN users u ON t.user_id = u.user_id
+            WHERE b.tutee_id = ?
+            ORDER BY b.booking_date DESC
+        `, [tuteeId]);
+        
+        res.render("tutee-dashboard", { loggedIn: req.session.loggedIn, bookings });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database Error");
+    }
+});
+
+// GET route to show book lesson form
+app.get("/book-lesson/:tutor_id", async function (req, res) {
+    if (!req.session.uid || req.session.role !== 'tutee') return res.redirect('/login');
+    try {
+        const tutorId = req.params.tutor_id;
+        const tutors = await db.query(`
+            SELECT t.tutor_id, u.first_name, u.last_name 
+            FROM tutors t 
+            JOIN users u ON t.user_id = u.user_id 
+            WHERE t.tutor_id = ?
+        `, [tutorId]);
+        
+        if (tutors.length === 0) return res.status(404).send("Tutor not found");
+        
+        res.render("book_lesson", { loggedIn: req.session.loggedIn, tutor: tutors[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database Error");
+    }
+});
+
+// POST route to handle booking submission
+app.post("/book-lesson/:tutor_id", async function (req, res) {
+    if (!req.session.uid || req.session.role !== 'tutee') return res.redirect('/login');
+    try {
+        const tutorId = req.params.tutor_id;
+        const { booking_date, notes } = req.body;
+        
+        // Find tutee_id for this user
+        const tutees = await db.query("SELECT tutee_id FROM tutees WHERE user_id = ?", [req.session.uid]);
+        if (tutees.length === 0) return res.status(404).send("Tutee profile not found");
+        const tuteeId = tutees[0].tutee_id;
+        
+        const result = await db.query(
+            "INSERT INTO bookings (tutee_id, tutor_id, booking_date, notes, status) VALUES (?, ?, ?, ?, 'pending')",
+            [tuteeId, tutorId, booking_date, notes || null]
+        );
+        
+        const bookingId = result.insertId;
+        
+        // Fetch booking details for success page
+        const bookingDetails = await db.query(`
+            SELECT b.*, u.first_name as tutor_name
+            FROM bookings b
+            JOIN tutors t ON b.tutor_id = t.tutor_id
+            JOIN users u ON t.user_id = u.user_id
+            WHERE b.booking_id = ?
+        `, [bookingId]);
+        
+        res.render("booking_success", { loggedIn: req.session.loggedIn, booking: bookingDetails[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database Error");
+    }
+});
+
+// POST route for tutor to confirm booking
+app.post("/bookings/:id/confirm", async function(req, res) {
+    if (!req.session.uid || req.session.role !== 'tutor') return res.redirect('/login');
+    try {
+        const bookingId = req.params.id;
+        
+        // Verify this tutor owns this booking
+        const tutors = await db.query("SELECT tutor_id FROM tutors WHERE user_id = ?", [req.session.uid]);
+        if (tutors.length === 0) return res.status(404).send("Tutor profile not found");
+        const tutorId = tutors[0].tutor_id;
+        
+        await db.query("UPDATE bookings SET status = 'confirmed' WHERE booking_id = ? AND tutor_id = ?", [bookingId, tutorId]);
+        res.redirect("/tutor-dashboard");
+    } catch(err) {
+        console.error(err);
+        res.status(500).send("Database Error");
+    }
 });
 
 // Admin Account Actions
