@@ -1,0 +1,30 @@
+extends site-layout
+
+block head
+    link(rel="stylesheet" href="/css/styles.css")
+    style.
+        .lessons-list { max-width: 900px; margin: 40px auto; }
+        .lesson-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #00b894; }
+        .lesson-info h3 { margin: 0 0 5px 0; color: #2d3436; }
+        .lesson-info p { margin: 0; color: #636e72; font-size: 14px; }
+        .lesson-status { font-weight: 700; text-transform: uppercase; font-size: 12px; padding: 5px 10px; border-radius: 20px; }
+        .status-pending { background: #ffeaa7; color: #d63031; }
+        .status-accepted { background: #55efc4; color: #00b894; }
+        .status-declined { background: #fab1a0; color: #e17055; }
+
+block content
+    main.container
+        h1 My Lessons
+        .lessons-list
+            if lessons && lessons.length
+                each lesson in lessons
+                    .lesson-card
+                        .lesson-info
+                            h3= lesson.tutor_name
+                            p Subject: #{lesson.subject_name || 'General'}
+                            p Date: #{new Date(lesson.lesson_date).toLocaleString()}
+                        .lesson-status(class=`status-${lesson.status}`)= lesson.status
+            else
+                .no-results
+                    p You haven't booked any lessons yet.
+                    a.btn-primary(href="/tutors") Find a Tutor

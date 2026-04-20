@@ -1,0 +1,147 @@
+extends site-layout
+
+block head
+  link(rel="stylesheet" href="/css/news.css")
+
+block content
+
+ 
+  //- BANNER
+  
+  .news-banner
+    h1 News &amp; Feeds
+    p Celebrating our community — top tutors, milestones and latest updates
+
+ 
+  //- BODY
+ 
+  .news-body
+
+    //- ── LEFT COLUMN ──
+    .news-left
+
+      //- Tutor of the Week label
+      .totw-label Tutor of the Week
+
+      //- Tutor of the Week card
+      .totw-card
+        .totw-photo
+          if tutorOfWeek && tutorOfWeek.photo
+            img(src=tutorOfWeek.photo alt=tutorOfWeek.name)
+          else
+            | #{tutorOfWeek ? tutorOfWeek.initials : ''}
+
+        .totw-info
+          p.totw-congrats
+            | Congratulation to our tutor of the week. Keep Going!
+
+          .totw-name= tutorOfWeek ? tutorOfWeek.name : 'No tutor selected yet'
+          .totw-subject= tutorOfWeek ? tutorOfWeek.subject : ''
+
+          if tutorOfWeek && tutorOfWeek.badges && tutorOfWeek.badges.length
+            .totw-badges
+              each badge in tutorOfWeek.badges
+                span.totw-badge(class=badge.type || '')= badge.label
+
+          if tutorOfWeek
+            .totw-stats
+              .totw-stat
+                .totw-stat-num= tutorOfWeek.points || 0
+                .totw-stat-label Points
+              .totw-stat
+                .totw-stat-num= tutorOfWeek.sessions || 0
+                .totw-stat-label Sessions
+              .totw-stat
+                .totw-stat-num= tutorOfWeek.rating || '0.0'
+                .totw-stat-label Rating
+
+          if tutorOfWeek && tutorOfWeek.review
+            p.totw-review= tutorOfWeek.review
+
+      //- ── LEADERBOARD ──
+      .leaderboard-section
+        .lb-header
+          h2 Leaderboards
+          span.lb-period This Week
+
+        .lb-table
+
+          .lb-table-head
+            span Rank
+            span Tutor Name
+            span Points
+            span Sessions
+
+          if leaderboard && leaderboard.length
+            each tutor, index in leaderboard
+              .lb-row(class=index === 0 ? 'top2' : index === 1 ? 'top3' : '')
+                .lb-rank
+                  .rank-badge(class=index === 0 ? 'silver' : index === 1 ? 'bronze' : 'other')
+                    | #{index + 2}
+                .lb-tutor
+                  .lb-avatar= tutor.initials || tutor.name.charAt(0)
+                  .lb-tutor-info
+                    .lb-tutor-name= tutor.name
+                    .lb-tutor-sub= tutor.subject
+                .lb-points= tutor.points
+                .lb-sessions= tutor.sessions + ' session' + (tutor.sessions === 1 ? '' : 's')
+          else
+            .lb-row
+              td(colspan='4' style='text-align:center;padding:20px;color:var(--muted);')
+                | No leaderboard data yet
+
+    //- ── RIGHT SIDEBAR ──
+    .news-sidebar
+
+      //- Community stats card
+      .sidebar-card
+        .sidebar-card-head
+          h3 Community This Week
+        .sidebar-card-body
+          if communityStats
+            .quick-stat-row
+              span.quick-stat-label Sessions Completed
+              span.quick-stat-value= communityStats.sessions || 0
+            .quick-stat-row
+              span.quick-stat-label New Tutors Joined
+              span.quick-stat-value= communityStats.newTutors || 0
+            .quick-stat-row
+              span.quick-stat-label Students Helped
+              span.quick-stat-value= communityStats.students || 0
+            .quick-stat-row
+              span.quick-stat-label Badges Awarded
+              span.quick-stat-value= communityStats.badges || 0
+            .quick-stat-row
+              span.quick-stat-label Avg. Rating
+              span.quick-stat-value= communityStats.rating || '0.0'
+
+      //- Recent activity card
+      .sidebar-card
+        .sidebar-card-head
+          h3 Recent Activity
+        .sidebar-card-body
+          if recentActivity && recentActivity.length
+            each item in recentActivity
+              .activity-item
+                .activity-dot(class=item.color || '')
+                div
+                  .activity-text
+                    strong= item.name
+                    |  #{item.action}
+                  .activity-time= item.time
+          else
+            p(style='font-size:0.88rem;color:var(--muted);padding:8px 0;')
+              | No recent activity yet.
+
+      //- Become a tutor CTA card
+      .sidebar-card.sidebar-cta
+        .sidebar-card-body
+          h3 Become a Tutor
+          p Share your knowledge, earn points and help younger students grow.
+          a.sidebar-cta-btn(href='/signup?role=tutor') Join Now
+
+
+  //- FOOTER
+ 
+  footer
+    p © 2026 #[span Dracarys] | Empowering Education Through Community

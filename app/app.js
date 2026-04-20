@@ -27,7 +27,7 @@ app.use(session({
 const db = require('./services/db');
 const { User } = require('./models/users');
 const authRoutes = require('./routes/auth');
-
+const adminRoutes = require('./routes/admin');
 
 // route for the root
 
@@ -59,45 +59,7 @@ app.get("/signup", function (req, res) {
     res.render("signup", { loggedIn: req.session.loggedIn });
 });
 
-// Routes for admin dashboard
-
-app.get("/admin-dashboard", async function (req, res) {
-    if (req.session.role !== 'admin') return res.redirect('/login');
-    try {
-        const tutors = await db.query(`
-            SELECT u.user_id, u.first_name, u.last_name, u.email, t.status 
-            FROM users u 
-            JOIN tutors t ON u.user_id = t.user_id
-        `);
-        const activeTutors = tutors.filter(t => t.status === 'active' || !t.status);
-        const flaggedTutors = tutors.filter(t => t.status === 'flagged');
-        res.render("admin-dashboard", { 
-            loggedIn: req.session.loggedIn, 
-            activeTutors, 
-            flaggedTutors 
-        });
-    } catch (err) {
-        if (err.message.includes("Unknown column")) {
-            const tutorsFallback = await db.query(`
-                SELECT u.user_id, u.first_name, u.last_name, u.email 
-                FROM users u 
-                JOIN tutors t ON u.user_id = t.user_id
-            `);
-            res.render("admin-dashboard", { 
-                loggedIn: req.session.loggedIn, 
-                activeTutors: tutorsFallback, 
-                flaggedTutors: [] 
-            });
-        }
-        else res.status(500).send("Database Error");
-    }
-});
-
-// Routes for admin users
-
-app.get("/admin-users", function (req, res) {
-    res.render("admin-users", { loggedIn: req.session.loggedIn });
-});
+// --- Admin route endpoints have been moved to /app/routes/admin.js ---
 
 
 // Routes for tutor dashboard
@@ -118,7 +80,7 @@ app.get("/tutor-dashboard", async function (req, res) {
             WHERE b.tutor_id = ?
             ORDER BY b.booking_date DESC
         `, [tutorId]);
-        
+
         res.render("tutor-dashboard", { loggedIn: req.session.loggedIn, bookings });
     } catch (err) {
         console.error(err);
@@ -144,7 +106,7 @@ app.get("/tutee-dashboard", async function (req, res) {
             WHERE b.tutee_id = ?
             ORDER BY b.booking_date DESC
         `, [tuteeId]);
-        
+
         res.render("tutee-dashboard", { loggedIn: req.session.loggedIn, bookings });
     } catch (err) {
         console.error(err);
@@ -163,9 +125,9 @@ app.get("/book-lesson/:tutor_id", async function (req, res) {
             JOIN users u ON t.user_id = u.user_id 
             WHERE t.tutor_id = ?
         `, [tutorId]);
-        
+
         if (tutors.length === 0) return res.status(404).send("Tutor not found");
-        
+
         res.render("book_lesson", { loggedIn: req.session.loggedIn, tutor: tutors[0] });
     } catch (err) {
         console.error(err);
@@ -179,19 +141,19 @@ app.post("/book-lesson/:tutor_id", async function (req, res) {
     try {
         const tutorId = req.params.tutor_id;
         const { booking_date, notes } = req.body;
-        
+
         // Find tutee_id for this user
         const tutees = await db.query("SELECT tutee_id FROM tutees WHERE user_id = ?", [req.session.uid]);
         if (tutees.length === 0) return res.status(404).send("Tutee profile not found");
         const tuteeId = tutees[0].tutee_id;
-        
+
         const result = await db.query(
             "INSERT INTO bookings (tutee_id, tutor_id, booking_date, notes, status) VALUES (?, ?, ?, ?, 'pending')",
             [tuteeId, tutorId, booking_date, notes || null]
         );
-        
+
         const bookingId = result.insertId;
-        
+
         // Fetch booking details for success page
         const bookingDetails = await db.query(`
             SELECT b.*, u.first_name as tutor_name
@@ -200,7 +162,7 @@ app.post("/book-lesson/:tutor_id", async function (req, res) {
             JOIN users u ON t.user_id = u.user_id
             WHERE b.booking_id = ?
         `, [bookingId]);
-        
+
         res.render("booking_success", { loggedIn: req.session.loggedIn, booking: bookingDetails[0] });
     } catch (err) {
         console.error(err);
@@ -209,86 +171,48 @@ app.post("/book-lesson/:tutor_id", async function (req, res) {
 });
 
 // POST route for tutor to confirm booking
-app.post("/bookings/:id/confirm", async function(req, res) {
+app.post("/bookings/:id/confirm", async function (req, res) {
     if (!req.session.uid || req.session.role !== 'tutor') return res.redirect('/login');
     try {
         const bookingId = req.params.id;
-        
+
         // Verify this tutor owns this booking
         const tutors = await db.query("SELECT tutor_id FROM tutors WHERE user_id = ?", [req.session.uid]);
         if (tutors.length === 0) return res.status(404).send("Tutor profile not found");
         const tutorId = tutors[0].tutor_id;
-        
+
         await db.query("UPDATE bookings SET status = 'confirmed' WHERE booking_id = ? AND tutor_id = ?", [bookingId, tutorId]);
         res.redirect("/tutor-dashboard");
-    } catch(err) {
+    } catch (err) {
         console.error(err);
         res.status(500).send("Database Error");
     }
 });
 
-// Admin Account Actions
-app.post('/admin/create-admin', async (req, res) => {
-    if (req.session.role !== 'admin') return res.redirect('/login');
-    try {
-        const { firstName, lastName, email, password } = req.body;
-        const exists = await User.checkUserExists(email);
-        if (exists) return res.send("Admin account already exists!");
-        const adminData = { firstName, lastName, email, password, role: 'admin' };
-        await User.createUser(adminData);
-        res.redirect('/admin-dashboard');
-    } catch (err) {
-        res.status(500).send("Error creating admin");
-    }
-});
-
-app.post('/admin/users/delete/:id', async (req, res) => {
-    if (req.session.role !== 'admin') return res.status(403).json({ error: 'Unauthorized' });
-    try {
-        const userId = req.params.id;
-        
-        const tutees = await db.query("SELECT tutee_id FROM tutees WHERE user_id = ?", [userId]);
-        for (const t of tutees) {
-            await db.query("DELETE FROM reviews WHERE tutee_id = ?", [t.tutee_id]);
-            await db.query("DELETE FROM tutee_subjects WHERE tutee_id = ?", [t.tutee_id]);
-        }
-        
-        const tutors = await db.query("SELECT tutor_id FROM tutors WHERE user_id = ?", [userId]);
-        for (const t of tutors) {
-            await db.query("DELETE FROM reviews WHERE tutor_id = ?", [t.tutor_id]);
-            await db.query("DELETE FROM tutor_subjects WHERE tutor_id = ?", [t.tutor_id]);
-        }
-        
-        await db.query("DELETE FROM tutees WHERE user_id = ?", [userId]);
-        await db.query("DELETE FROM tutors WHERE user_id = ?", [userId]);
-        await db.query("DELETE FROM users WHERE user_id = ?", [userId]);
-
-        res.json({ success: true });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
+// --- Admin auth functionality moved to /app/routes/admin.js ---
 
 // Mount the authentication form submission routes
 app.use('/', authRoutes);
+app.use('/admin', adminRoutes);
 
 // Routes for login page
 
+// Routes for login page
 app.get("/login", function (req, res) {
-    // 1. Check if 'registered=true' is in the URL
-
+    // 1. Catch ALL possible query strings from the URL
     const isRegistered = req.query.registered === 'true';
     const accountExists = req.query.account_exists === 'true';
+    const accountNotFound = req.query.accountNotFound === 'true'; 
+    const invalidPassword = req.query.invalidPassword === 'true';
 
-
-    // 2. Pass it to Pug using the exact name 'showSuccess'
-    res.render("loginpage",
-        {
-            loggedIn: req.session.loggedIn,
-            showSuccess: isRegistered,
-            accountExists: accountExists,
-        });
+    // 2. Pass them all to Pug
+    res.render("loginpage", {
+        loggedIn: req.session.loggedIn,
+        showSuccess: isRegistered,
+        accountExists: accountExists,
+        accountNotFound: accountNotFound,
+        invalidPassword: invalidPassword
+    });
 });
 
 // Profile page — only accessible when logged in
@@ -331,7 +255,7 @@ app.post('/authenticate', async function (req, res) {
         if (uId) {
             const match = await user.authenticate(params.password);
             if (match) {
-                // Valid credentials — set session as per lab
+                // Valid credentials
                 req.session.uid = uId;
                 req.session.loggedIn = true;
 
@@ -341,20 +265,26 @@ app.post('/authenticate', async function (req, res) {
 
                 console.log(`User ${user.email} logged in with role: ${user.role}`);
 
-                // Redirect based on role
-                if (user.role === 'admin') {
-                    res.redirect('/admin-dashboard');
-                } else if (user.role === 'tutor') {
-                    res.redirect('/tutor-dashboard');
-                } else {
-                    res.redirect('/tutee-dashboard');
-                }
+                // EXPLICITLY SAVE THE SESSION BEFORE REDIRECTING
+                req.session.save((err) => {
+                    if (err) {
+                        console.error("Session save error:", err);
+                        return res.status(500).send("Session error");
+                    }
+                    // Redirect based on role
+                    if (user.role === 'admin') {
+                        res.redirect('/admin/dashboard');
+                    } else if (user.role === 'tutor') {
+                        res.redirect('/tutor-dashboard');
+                    } else {
+                        res.redirect('/tutee-dashboard');
+                    }
+                });
             } else {
-                // TODO: improve user journey — render login page with error message
-                res.status(401).send('Invalid password.');
+                res.redirect('/login?invalidPassword=true');
             }
         } else {
-            res.status(401).send('Invalid email — no account found.');
+            res.redirect('/login?accountNotFound=true');
         }
     } catch (err) {
         console.error('Error while authenticating:', err.message);
@@ -384,6 +314,8 @@ app.post('/set-password', async function (req, res) {
         res.status(500).send('An error occurred while setting the password.');
     }
 });
+
+
 
 // Catch-all route for unhandled requests (404 Page Not Found)
 app.use(function (req, res, next) {

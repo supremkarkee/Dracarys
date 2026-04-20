@@ -1,0 +1,25 @@
+extends site-layout
+
+block head
+    link(rel="stylesheet" href="/css/book-lesson.css")
+
+block content
+    main.booking-container
+        .booking-header
+            h1 Book a Lesson
+            if tutor
+                p Booking a lesson with #{tutor.first_name} #{tutor.last_name}
+        
+        .booking-content
+            form(action=`/book-lesson/${tutor.tutor_id}` method="POST")
+                .form-group
+                    label(for="booking_date") Select Date and Time:
+                    input(type="datetime-local" id="booking_date" name="booking_date" required)
+                
+                .form-group
+                    label(for="notes") Notes for tutor (optional):
+                    textarea(id="notes" name="notes" rows="4" placeholder="What would you like to cover in this lesson?")
+                
+                .form-actions
+                    button.btn-primary(type="submit") Confirm Booking
+                    a.btn-secondary(href="/search") Cancel

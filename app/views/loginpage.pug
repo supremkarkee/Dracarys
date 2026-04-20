@@ -8,13 +8,21 @@ block head
 block content
     .login-page-wrapper
         .main-content
-            h1.hero-title Lets stand for free education together
+            //- Dynamic Hero Title Logic
             if showSuccess
-                p.success-message Registration successful! Please log in below
-            if accountExists
-                p.error-message An account with this email already exists. Please log in below
+                h1.hero-title Registration successful! Please log in below
+            else if accountExists
+                h1.hero-title An account with this email already exists. Please log in below
+            else
+                h1.hero-title Lets stand for free education together
+
             .login-container
-                h2 Welcome Back
+                //dynamic login message.
+                if invalidPassword
+                    h2.error-message Invalid Password. Please try again.
+                else
+                    h2 Welcome Back
+                
                 form#loginForm(action='/authenticate' method='POST')
                     .input-group
                         label(for="email") Email
@@ -25,8 +33,6 @@ block content
                     button.login-btn(type="submit") Sign In
                     #errorMsg.error Invalid login details
                 .extra-links
-                    p
-                        a(href="#") Forgot Password?
                     p
                         a(href="/signup") Create Account
 

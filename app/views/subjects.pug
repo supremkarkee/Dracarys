@@ -1,0 +1,14 @@
+extends site-layout
+
+block content
+    .container
+        h1 Available Subjects
+        p Explore the subjects we offer tutoring for.
+        ul
+            if data && data.length
+                each subject in data
+                    li
+                        strong #{subject.subject_name}
+                        p #{subject.description}
+            else
+                li No subjects found.

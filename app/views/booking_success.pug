@@ -1,0 +1,25 @@
+extends site-layout
+
+block head
+    link(rel="stylesheet" href="/css/booking-success.css")
+
+block content
+    main.success-container
+        .success-card
+            .icon-success ✅
+            h1 Booking Successful!
+            p Your lesson has been successfully requested.
+            
+            .booking-details
+                if booking
+                    p #[strong Tutor Name:] #{booking.tutor_name}
+                    p #[strong Date & Time:] #{new Date(booking.booking_date).toLocaleString()}
+                    p #[strong Status:] #{booking.status}
+                    if booking.notes
+                        p #[strong Notes:] #{booking.notes}
+            
+            p The tutor will review and confirm your request shortly.
+            
+            .actions
+                a.btn-primary(href="/tutee-dashboard") Go to Dashboard
+                a.btn-secondary(href="/search") Find More Tutors
