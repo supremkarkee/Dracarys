@@ -1,5 +1,7 @@
-const db = require('../services/db');
+const db = require('../services/db'); // what is this doing ?
 
+
+// user story : as a tutee I want to book a lessoin with a tutor
 class Booking {
     static async getByTutee(tuteeId) {
         const sql = `
@@ -12,6 +14,9 @@ class Booking {
         `;
         return await db.query(sql, [tuteeId]);
     }
+
+
+
 
     static async getByTutor(tutorId) {
         const sql = `
