@@ -2,14 +2,6 @@ extends layout
 
 block head
     link(rel="stylesheet" href="/css/dashboard.css")
-    style.
-        .booking-card { border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: none; transition: transform 0.2s; margin-bottom: 20px; padding: 20px; background: #fff; }
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-accepted { background: #d4edda; color: #155724; }
-        .status-declined { background: #f8d7da; color: #721c24; }
-        .btn-success { background-color: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; }
-        .btn-danger { background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; }
 
 block content
     main.dashboard-container
@@ -78,12 +70,12 @@ block content
                 else
                     p No lesson requests at the moment.
 
-            .dashboard-section#my-students(style="margin-top: 40px;")
+            .dashboard-section#my-students
                 h2 My Students
                 if students && students.length > 0
                     .bookings-list
                         each student in students
-                            .booking-card(style="display: flex; justify-content: space-between; align-items: center;")
+                            .booking-card.student-card
                                 div
                                     h3= student.full_name
                                     p
@@ -95,7 +87,7 @@ block content
                                 div
                                     a.btn-secondary(href=`mailto:${student.email}` style="text-decoration: none;") Contact
                 else
-                    .booking-card(style="text-align: center; padding: 40px;")
-                        p(style="font-size: 1.1rem; color: #666;") You don't have any students yet.
+                    .booking-card.empty-state
+                        p You don't have any students yet.
 
 
