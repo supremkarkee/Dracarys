@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../services/db');
 const { Booking } = require('../models/Booking');
 const { Tutor } = require('../models/Tutor');
-const { Student } = require('../models/Student');
+const { Tutee } = require('../models/Tutee');
 
 // Middleware to check if user is logged in
 const isLoggedIn = (req, res, next) => {
@@ -32,7 +32,7 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
         return res.status(403).send('Access Denied: Only tutors can access this page');
     }
     const bookings = await Booking.getByTutor(req.session.tutorId);
-    const students = await Student.getByTutor(req.session.tutorId);
+    const students = await Tutee.getByTutor(req.session.tutorId);
     
     // Calculate stats
     const uniqueStudents = students.length;

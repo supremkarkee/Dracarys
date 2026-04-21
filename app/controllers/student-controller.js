@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Student } = require('../models/Student');
+const { Tutee } = require('../models/Tutee');
 const { requireLogin } = require('../middleware/auth');
 
 // Redirect old route
@@ -11,7 +11,7 @@ router.get("/all-student", function (req, res) {
 // List all students — protected: must be logged in
 router.get("/students", requireLogin, async function (req, res) {
     try {
-        const results = await Student.getAll();
+        const results = await Tutee.getAll();
         res.render("all-student", { title: "Our Students", data: results });
     } catch (err) {
         console.error("Failed to load students:", err);
