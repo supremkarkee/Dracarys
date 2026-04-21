@@ -32,9 +32,10 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
         return res.status(403).send('Access Denied: Only tutors can access this page');
     }
     const bookings = await Booking.getByTutor(req.session.tutorId);
+    const students = await Student.getByTutor(req.session.tutorId);
     
     // Calculate stats
-    const uniqueStudents = new Set(bookings.map(b => b.tutee_id)).size;
+    const uniqueStudents = students.length;
     
     // Fetch tutor specific data (like points)
     const tutorData = await db.query('SELECT points, lesson_count FROM tutors WHERE tutor_id = ?', [req.session.tutorId]);
@@ -46,6 +47,7 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
         activePage: 'dashboard',
         user: res.locals.user,
         bookings: bookings || [],
+        students: students || [],
         stats: {
             students: uniqueStudents,
             lessons: totalLessons,

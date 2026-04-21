@@ -23,7 +23,7 @@ block content
                     .card-icon STUDENTS
                     h3 My Students
                     p #{stats.students} Unique Students
-                    a.btn-secondary(href="/dashboard/tutor") View List
+                    a.btn-secondary(href="#my-students") View List
 
                 .dashboard-card
                     .card-icon LESSONS
@@ -77,4 +77,25 @@ block content
                                     p(style="color: #dc3545; margin-top: 10px;") ❌ Request declined.
                 else
                     p No lesson requests at the moment.
+
+            .dashboard-section#my-students(style="margin-top: 40px;")
+                h2 My Students
+                if students && students.length > 0
+                    .bookings-list
+                        each student in students
+                            .booking-card(style="display: flex; justify-content: space-between; align-items: center;")
+                                div
+                                    h3= student.full_name
+                                    p
+                                        strong Email: 
+                                        | #{student.email}
+                                    p
+                                        strong Level: 
+                                        | #{student.school_level || 'N/A'} (#{student.grade_level || 'N/A'})
+                                div
+                                    a.btn-secondary(href=`mailto:${student.email}` style="text-decoration: none;") Contact
+                else
+                    .booking-card(style="text-align: center; padding: 40px;")
+                        p(style="font-size: 1.1rem; color: #666;") You don't have any students yet.
+
 

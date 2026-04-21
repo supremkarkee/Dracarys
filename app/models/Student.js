@@ -24,6 +24,17 @@ class Student {
         }
     }
 
+    static async getByTutor(tutorId) {
+        const sql = `
+            SELECT DISTINCT t.tutee_id, u.full_name, u.email, t.school_level, t.grade_level
+            FROM tutees t
+            JOIN users u ON t.user_id = u.user_id
+            JOIN bookings b ON t.tutee_id = b.tutee_id
+            WHERE b.tutor_id = ?
+        `;
+        return await db.query(sql, [tutorId]);
+    }
+
     static async getAll() {
         const sql = 'SELECT t.tutee_id, u.full_name FROM tutees t JOIN users u ON t.user_id = u.user_id';
         return await db.query(sql);
