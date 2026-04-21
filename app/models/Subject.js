@@ -1,5 +1,6 @@
 const db = require('../services/db');
 
+// bla bla bla
 class Subject {
     subject_id;
     subject_name;
