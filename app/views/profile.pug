@@ -29,9 +29,13 @@ block content
                 span.stars(style="color: #f1c40f") ★ #{tutor.rating || 'N/A'}
                 span.review-count  · #{tutor.reviews ? tutor.reviews.length : 0} reviews
                 if role === 'tutee'
-                  button#flagBtn(data-tutor=tutor.tutor_id class=(isFlagged ? 'flagged' : '') style=`padding: 6px 12px; border: 1.5px solid ${isFlagged ? '#ff4757' : '#ccc'}; border-radius: 6px; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: ${isFlagged ? '#fff' : '#888'}; background: ${isFlagged ? '#ff4757' : 'none'}; margin-left: 15px; transition: all 0.2s;`)
-                    span.icon(style="margin-right: 4px;") ⚑
-                    span.text #{isFlagged ? 'Flagged' : 'Flag Tutor'}
+                  .action-buttons(style="display: flex; gap: 10px; margin-left: 15px; align-items: center;")
+                    button#favBtn(data-tutor=tutor.tutor_id class=(isFavorite ? 'favorited' : '') style=`padding: 8px 14px; border: 1.5px solid ${isFavorite ? '#ff4757' : '#ff4757'}; border-radius: 6px; font-size: 0.95rem; font-weight: 700; cursor: pointer; color: ${isFavorite ? '#fff' : '#ff4757'}; background: ${isFavorite ? '#ff4757' : 'none'}; transition: all 0.2s;`)
+                      span.icon(style="margin-right: 4px;") ❤
+                      span.text #{isFavorite ? 'Favorited' : 'Favorite'}
+                    
+                    button#flagBtn(data-tutor=tutor.tutor_id class=(isFlagged ? 'flagged' : '') title="Report this tutor to admin" style=`padding: 6px 10px; border: 1.5px solid #ccc; border-radius: 6px; font-size: 0.8rem; cursor: pointer; color: ${isFlagged ? '#fff' : '#999'}; background: ${isFlagged ? '#999' : 'none'}; transition: all 0.2s;`)
+                      span.icon ⚑
 
               if tutor.subjects
                 .tutor-tags
@@ -104,28 +108,50 @@ block content
 block scripts
   script.
     document.addEventListener("DOMContentLoaded", () => {
+      const favBtn = document.getElementById('favBtn');
+      if (favBtn) {
+        favBtn.addEventListener('click', async () => {
+          const tutorId = favBtn.getAttribute('data-tutor');
+          try {
+            const res = await fetch(`/tutor/${tutorId}/favorite`, { method: 'POST' });
+            if (res.ok) {
+              const data = await res.json();
+              const textSpan = favBtn.querySelector('.text');
+              if (data.action === 'added') {
+                favBtn.style.background = '#ff4757';
+                favBtn.style.color = '#fff';
+                textSpan.innerText = 'Favorited';
+              } else {
+                favBtn.style.background = 'none';
+                favBtn.style.color = '#ff4757';
+                textSpan.innerText = 'Favorite';
+              }
+            }
+          } catch(e) { console.error('Error toggling favorite'); }
+        });
+      }
+
       const flagBtn = document.getElementById('flagBtn');
       if (flagBtn) {
         flagBtn.addEventListener('click', async () => {
           const tutorId = flagBtn.getAttribute('data-tutor');
-          try {
-            const res = await fetch(`/tutor/${tutorId}/flag`, { method: 'POST' });
-            if (res.ok) {
-              const data = await res.json();
-              const textSpan = flagBtn.querySelector('.text');
-              if (data.action === 'added') {
-                flagBtn.style.background = '#ff4757';
-                flagBtn.style.color = '#fff';
-                flagBtn.style.borderColor = '#ff4757';
-                textSpan.innerText = 'Flagged';
-              } else {
-                flagBtn.style.background = 'none';
-                flagBtn.style.color = '#888';
-                flagBtn.style.borderColor = '#ccc';
-                textSpan.innerText = 'Flag Tutor';
+          if (confirm("Are you sure you want to flag (report) this tutor for admin review?")) {
+            try {
+              const res = await fetch(`/tutor/${tutorId}/flag`, { method: 'POST' });
+              if (res.ok) {
+                const data = await res.json();
+                if (data.action === 'added') {
+                  flagBtn.style.background = '#999';
+                  flagBtn.style.color = '#fff';
+                  alert("Tutor has been flagged for review.");
+                } else {
+                  flagBtn.style.background = 'none';
+                  flagBtn.style.color = '#999';
+                  alert("Report retracted.");
+                }
               }
-            }
-          } catch(e) { console.error('Error toggling flag'); }
+            } catch(e) { console.error('Error toggling flag'); }
+          }
         });
       }
     });

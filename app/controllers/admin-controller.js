@@ -62,16 +62,17 @@ router.post('/admin/users/delete/:id', isAdmin, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         
-        // Delete from related tables first
-        await db.query('DELETE FROM tutors WHERE user_id = ?', [userId]);
-        await db.query('DELETE FROM tutees WHERE user_id = ?', [userId]);
+        // Delete the user record.
+        // Thanks to the ON DELETE CASCADE constraints we added to the database,
+        // this will automatically remove records from:
+        // tutors, tutees, bookings, reviews, favourites, etc.
         await db.query('DELETE FROM users WHERE user_id = ?', [userId]);
         
         console.log('User deleted:', userId);
-        res.json({ success: true, message: 'User deleted successfully' });
+        res.json({ success: true, message: 'User and all associated data deleted successfully' });
     } catch (err) {
         console.error('Error deleting user:', err);
-        res.status(500).json({ error: 'Failed to delete user' });
+        res.status(500).json({ error: 'Failed to delete user. There may be unresolved dependencies.' });
     }
 });
 
@@ -125,10 +126,12 @@ router.get('/admin/reports', isAdmin, async (req, res) => {
         const totalUsersSql = 'SELECT COUNT(*) as count FROM users';
         const totalTutorsSql = 'SELECT COUNT(*) as count FROM tutors';
         const totalStudentsSql = 'SELECT COUNT(*) as count FROM tutees';
+        const flaggedTutorsSql = 'SELECT COUNT(DISTINCT tutor_id) as count FROM flagged_tutors';
         
         const totalUsers = await db.query(totalUsersSql);
         const totalTutors = await db.query(totalTutorsSql);
         const totalStudents = await db.query(totalStudentsSql);
+        const totalFlagged = await db.query(flaggedTutorsSql);
         
         // Get user breakdown by role
         const roleSql = 'SELECT role, COUNT(*) as count FROM users GROUP BY role';
@@ -146,6 +149,7 @@ router.get('/admin/reports', isAdmin, async (req, res) => {
             totalUsers: totalUsers[0].count,
             totalTutors: totalTutors[0].count,
             totalStudents: totalStudents[0].count,
+            totalFlagged: totalFlagged[0].count,
             roleStats: roleStats || [],
             recentUsers: recentUsers || [],
             loggedIn: req.session.loggedIn || false
@@ -158,6 +162,7 @@ router.get('/admin/reports', isAdmin, async (req, res) => {
             totalUsers: 0,
             totalTutors: 0,
             totalStudents: 0,
+            totalFlagged: 0,
             roleStats: [],
             recentUsers: [],
             error: 'Failed to load reports',
@@ -281,6 +286,52 @@ router.get('/admin/support', isAdmin, async (req, res) => {
             error: 'Failed to load support tickets',
             loggedIn: req.session.loggedIn || false
         });
+    }
+});
+
+// ==================== FLAGGED TUTORS ====================
+router.get('/admin/flagged', isAdmin, async (req, res) => {
+    try {
+        const sql = `
+            SELECT t.tutor_id, u.user_id, u.full_name, u.email, 
+                   COUNT(f.flag_id) as flag_count
+            FROM tutors t
+            JOIN users u ON t.user_id = u.user_id
+            JOIN flagged_tutors f ON t.tutor_id = f.tutor_id
+            GROUP BY t.tutor_id, u.user_id, u.full_name, u.email
+            ORDER BY flag_count DESC
+        `;
+        const flaggedTutors = await db.query(sql);
+        
+        res.render('admin-flagged', { 
+            title: 'Flagged Tutors',
+            activePage: 'admin-flagged',
+            flaggedTutors: flaggedTutors || [],
+            loggedIn: req.session.loggedIn || false
+        });
+    } catch (err) {
+        console.error('Error loading flagged tutors:', err);
+        res.render('admin-flagged', { 
+            title: 'Flagged Tutors',
+            activePage: 'admin-flagged',
+            flaggedTutors: [],
+            error: 'Failed to load flagged tutors',
+            loggedIn: req.session.loggedIn || false
+        });
+    }
+});
+
+// Resolve (dismiss) flags for a tutor
+router.post('/admin/flagged/resolve/:id', isAdmin, async (req, res) => {
+    try {
+        const tutorId = req.params.id;
+        await db.query('DELETE FROM flagged_tutors WHERE tutor_id = ?', [tutorId]);
+        
+        console.log('Flags resolved for tutor:', tutorId);
+        res.json({ success: true, message: 'Flags dismissed successfully' });
+    } catch (err) {
+        console.error('Error resolving flags:', err);
+        res.status(500).json({ error: 'Failed to resolve flags' });
     }
 });
 

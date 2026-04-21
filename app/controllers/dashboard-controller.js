@@ -87,6 +87,7 @@ router.get('/dashboard/admin', isLoggedIn, async (req, res) => {
     const userCount = await db.query('SELECT COUNT(*) as count FROM users');
     const tutorCount = await db.query('SELECT COUNT(*) as count FROM tutors');
     const studentCount = await db.query('SELECT COUNT(*) as count FROM tutees');
+    const flaggedCount = await db.query('SELECT COUNT(DISTINCT tutor_id) as count FROM flagged_tutors');
 
     res.render('dashboard-admin', { 
         title: 'Admin Dashboard - Dracarys', 
@@ -95,7 +96,8 @@ router.get('/dashboard/admin', isLoggedIn, async (req, res) => {
         stats: {
             users: userCount[0].count,
             tutors: tutorCount[0].count,
-            students: studentCount[0].count
+            students: studentCount[0].count,
+            flagged: flaggedCount[0].count
         }
     });
 });

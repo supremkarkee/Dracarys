@@ -20,9 +20,9 @@ block content
             aside.filters
                 .filter-group
                     h3 Personal
-                    a.filter-box.flag-filter(href=(flaggedOnly ? "/browse/tutors" : "/browse/tutors?flagged=true" ) class=(flaggedOnly ? 'active' : ''))
-                        span.icon ⚑
-                        | Flagged Tutors
+                    a.filter-box.fav-filter(href=(favoritesOnly ? "/browse/tutors" : "/browse/tutors?favorites=true" ) class=(favoritesOnly ? 'active' : ''))
+                        span.icon ❤
+                        | My Favorites
                 
                 .filter-group
                     h3 Selection

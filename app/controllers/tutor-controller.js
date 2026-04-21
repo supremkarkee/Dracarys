@@ -13,6 +13,7 @@ router.get("/browse/tutors", async function (req, res) {
         const subjectFilter = req.query.subject || 'all';
         const languageFilter = req.query.lang || 'all';
         const flaggedOnly = req.query.flagged === 'true';
+        const favoritesOnly = req.query.favorites === 'true';
         
         // Fetch all subjects for the filter sidebar
         const subjects = await Subject.getAll();
@@ -31,7 +32,8 @@ router.get("/browse/tutors", async function (req, res) {
             subjectFilter, 
             flaggedOnly, 
             req.session.tuteeId,
-            languageFilter
+            languageFilter,
+            favoritesOnly
         );
 
         res.render("search", { 
@@ -44,6 +46,7 @@ router.get("/browse/tutors", async function (req, res) {
             selectedSubject: subjectFilter,
             selectedLanguage: languageFilter,
             flaggedOnly: flaggedOnly,
+            favoritesOnly: favoritesOnly,
             role: req.session.role // Passed for UI conditional rendering
         });
     } catch (err) {
@@ -74,8 +77,12 @@ router.get("/tutor/:id", async function (req, res) {
             
             if (req.session.loggedIn && req.session.role === 'tutee') {
                 existingBooking = await Booking.checkExisting(req.session.tuteeId, tutor.tutor_id);
+                
                 const flagCheck = await db.query('SELECT * FROM flagged_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
                 isFlagged = flagCheck.length > 0;
+
+                const favCheck = await db.query('SELECT * FROM favourites_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
+                isFavorite = favCheck.length > 0;
             }
 
             res.render("profile", {
@@ -83,6 +90,7 @@ router.get("/tutor/:id", async function (req, res) {
                 tutor,
                 existingBooking,
                 isFlagged,
+                isFavorite,
                 role: req.session.role,
                 loggedIn: req.session.loggedIn
             });
@@ -209,6 +217,25 @@ router.post("/tutor/:id/flag", requireLogin, async function (req, res) {
         }
     } catch (err) {
         console.error("Flag error:", err);
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/tutor/:id/favorite", requireLogin, async function (req, res) {
+    if (req.session.role !== 'tutee') return res.status(403).json({ success: false });
+    const tutor_id = req.params.id;
+    const tutee_id = req.session.tuteeId;
+    try {
+        const existing = await db.query('SELECT * FROM favourites_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor_id, tutee_id]);
+        if (existing.length > 0) {
+            await db.query('DELETE FROM favourites_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor_id, tutee_id]);
+            res.json({ action: 'removed' });
+        } else {
+            await db.query('INSERT INTO favourites_tutors (tutor_id, tutee_id) VALUES (?, ?)', [tutor_id, tutee_id]);
+            res.json({ action: 'added' });
+        }
+    } catch (err) {
+        console.error("Favorite error:", err);
         res.status(500).json({ success: false });
     }
 });
