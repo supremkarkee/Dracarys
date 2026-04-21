@@ -37,18 +37,18 @@ block content
 
             .dashboard-section
                 h2 User Breakdown by Role
-                .stats-breakdown
+                .admin-grid
                     if roleStats && roleStats.length
                         each stat in roleStats
-                            .stat-item
-                                span.stat-label= stat.role.charAt(0).toUpperCase() + stat.role.slice(1)
-                                span.stat-value= stat.count
+                            .admin-card-item(style="flex-direction: row; justify-content: space-between; align-items: center;")
+                                span.stat-label(style="font-weight: 600; color: #333;")= stat.role.charAt(0).toUpperCase() + stat.role.slice(1)
+                                span.stat-value(style="font-size: 24px; font-weight: 700; color: #007bff;")= stat.count
                     else
                         p No role data available
 
             .dashboard-section
                 h2 Recent Users
-                .recent-users
+                .users-table
                     if recentUsers && recentUsers.length
                         table
                             thead
@@ -67,63 +67,3 @@ block content
                                             span.role-badge(class=`role-${user.role}`)= user.role
                     else
                         p No recent users
-
-        style.
-            .stats-breakdown {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 15px;
-                margin-top: 15px;
-            }
-            .stat-item {
-                background: white;
-                padding: 15px;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .stat-label {
-                font-weight: 600;
-                color: #333;
-            }
-            .stat-value {
-                font-size: 24px;
-                font-weight: 700;
-                color: #007bff;
-            }
-            .recent-users table {
-                width: 100%;
-                border-collapse: collapse;
-                background: white;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                margin-top: 15px;
-            }
-            .recent-users th, .recent-users td {
-                padding: 12px;
-                text-align: left;
-                border-bottom: 1px solid #eee;
-            }
-            .recent-users th {
-                background: #f5f5f5;
-                font-weight: 600;
-            }
-            .role-badge {
-                padding: 4px 12px;
-                border-radius: 20px;
-                font-size: 12px;
-                font-weight: 600;
-            }
-            .role-tutor {
-                background: #e3f2fd;
-                color: #1976d2;
-            }
-            .role-tutee {
-                background: #f3e5f5;
-                color: #7b1fa2;
-            }
-            .role-admin {
-                background: #ffebee;
-                color: #c62828;
-            }

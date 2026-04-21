@@ -12,7 +12,7 @@ block content
         .dashboard-content
             .dashboard-section
                 h2 Add New Subject
-                form#add-subject-form
+                form#add-subject-form.admin-form
                     .form-group
                         label Subject Name
                         input(type="text" name="subject_name" placeholder="Enter subject name" required)
@@ -27,76 +27,14 @@ block content
                 h2 Existing Subjects
                 .subjects-list
                     if subjects && subjects.length
-                        .subjects-grid
+                        .admin-grid
                             each subject in subjects
-                                .subject-item
+                                .admin-card-item
                                     h4= subject.subject_name
                                     p= subject.description || 'No description'
-                                    button.btn-danger.delete-subject(data-subject-id=subject.subject_id) Delete
+                                    button.btn-action-danger.delete-subject(data-subject-id=subject.subject_id) Delete
                     else
                         p No subjects found. Add one to get started!
-
-        style.
-            form {
-                max-width: 500px;
-                margin-top: 20px;
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            }
-            .form-group {
-                margin-bottom: 20px;
-                display: flex;
-                flex-direction: column;
-            }
-            .form-group label {
-                margin-bottom: 8px;
-                font-weight: 600;
-                color: #333;
-            }
-            .form-group input,
-            .form-group textarea {
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 14px;
-                font-family: inherit;
-            }
-            .subjects-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 15px;
-                margin-top: 20px;
-            }
-            .subject-item {
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            }
-            .subject-item h4 {
-                margin: 0 0 10px 0;
-                color: #333;
-                font-size: 16px;
-            }
-            .subject-item p {
-                margin: 0 0 15px 0;
-                color: #666;
-                font-size: 14px;
-            }
-            .btn-danger {
-                background: #dc3545;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 4px;
-                cursor: pointer;
-                width: 100%;
-            }
-            .btn-danger:hover {
-                background: #c82333;
-            }
 
 block scripts
     script.
