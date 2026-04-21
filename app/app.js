@@ -56,14 +56,14 @@ app.set('views', path.join(__dirname, 'views'));
 // Add static files location
 app.use(express.static(path.join(__dirname, '../static')));
 
-// Import all route modules using absolute paths to avoid any resolution issues
-const indexRoutes = require(path.join(__dirname, 'routes', 'index-routes'));
-const authRoutes = require(path.join(__dirname, 'routes', 'auth-routes'));
-const studentRoutes = require(path.join(__dirname, 'routes', 'student-routes'));
-const subjectRoutes = require(path.join(__dirname, 'routes', 'subject-routes'));
-const tutorRoutes = require(path.join(__dirname, 'routes', 'tutors'));
-const dashboardRoutes = require(path.join(__dirname, 'routes', 'dashboard-routes'));
-const adminRoutes = require(path.join(__dirname, 'routes', 'admin-routes'));
+// Import all controller modules using absolute paths to avoid any resolution issues
+const indexRoutes = require(path.join(__dirname, 'controllers', 'index-controller'));
+const authRoutes = require(path.join(__dirname, 'controllers', 'auth-controller'));
+const studentRoutes = require(path.join(__dirname, 'controllers', 'student-controller'));
+const subjectRoutes = require(path.join(__dirname, 'controllers', 'subject-controller'));
+const tutorRoutes = require(path.join(__dirname, 'controllers', 'tutor-controller'));
+const dashboardRoutes = require(path.join(__dirname, 'controllers', 'dashboard-controller'));
+const adminRoutes = require(path.join(__dirname, 'controllers', 'admin-controller'));
 
 // Mount the routes
 app.use('/', indexRoutes);

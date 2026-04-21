@@ -5,13 +5,9 @@ mixin navbar(activePage)
     .nav-links
       if !loggedIn
         a(href='/', class=activePage === 'home' ? 'active' : '') Home
-        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
         a(href='/about', class=activePage === 'about' ? 'active' : '') About Us
-        a(href='/news', class=activePage === 'news' ? 'active' : '') News & Feeds
         a(href='/signup', class=activePage === 'signup' ? 'active' : '') Sign Up
       else if role === 'tutor'
-        a(href='/', class=activePage === 'home' ? 'active' : '') Home
-        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
         a(href='/news', class=activePage === 'news' ? 'active' : '') News & Feeds
         a(href='/dashboard/tutor', class=activePage === 'dashboard' ? 'active' : '') Dashboard
       else if role === 'tutee'
