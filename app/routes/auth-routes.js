@@ -20,6 +20,7 @@ router.post("/login", async function (req, res) {
     if (user) {
         req.session.userId = user.user_id;
         req.session.role = user.role;
+        req.session.full_name = user.full_name;
         req.session.loggedIn = true;
 
         // Fetch role-specific ID
@@ -52,6 +53,7 @@ router.post("/signup", async function (req, res) {
         const userId = await User.register(fullName, email, password, userRole);
         req.session.userId = userId;
         req.session.role = userRole;
+        req.session.full_name = fullName;
         req.session.loggedIn = true;
 
         // Fetch role-specific ID

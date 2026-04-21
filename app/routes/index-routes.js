@@ -55,8 +55,14 @@ router.get('/', async (req, res) => {
 // redirect /home → /
 router.get('/home', (req, res) => res.redirect('/'));
 
-// redirect /profile → /tutor/1 so the user's manual navigation works flawlessly
-router.get('/profile', (req, res) => res.redirect('/tutor/1'));
+// redirect /profile → role-specific dashboard
+router.get('/profile', (req, res) => {
+    if (!req.session.loggedIn) return res.redirect('/login');
+    const role = req.session.role;
+    if (role === 'admin') return res.redirect('/dashboard/admin');
+    if (role === 'tutor') return res.redirect('/dashboard/tutor');
+    return res.redirect('/dashboard/tutee');
+});
 
 // ── ABOUT ─────────────────────────────────────────────
 router.get('/about', (req, res) => {

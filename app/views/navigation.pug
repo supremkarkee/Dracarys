@@ -3,24 +3,29 @@ mixin navbar(activePage)
     a.nav-logo(href='/') Drac
       span arys
     .nav-links
-      a(href='/', class=activePage === 'home' ? 'active' : '') Home
-      if loggedIn && role !== 'tutor'
+      if !loggedIn
+        a(href='/', class=activePage === 'home' ? 'active' : '') Home
         a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
-      else if !loggedIn
-        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
-      
-      a(href='/about', class=activePage === 'about' ? 'active' : '') About Us
-      a(href='/news', class=activePage === 'news' ? 'active' : '') News & Feeds
-
-      if loggedIn
-        if role === 'tutor'
-          a(href='/dashboard/tutor', class=activePage === 'dashboard' ? 'active' : '') Dashboard
-        else
-          a(href='/my_lessons', class=activePage === 'my_lessons' ? 'active' : '') My Lessons
-          a(href='/dashboard/tutee', class=activePage === 'dashboard' ? 'active' : '') Dashboard
-      else
+        a(href='/about', class=activePage === 'about' ? 'active' : '') About Us
+        a(href='/news', class=activePage === 'news' ? 'active' : '') News & Feeds
         a(href='/signup', class=activePage === 'signup' ? 'active' : '') Sign Up
-        
+      else if role === 'tutor'
+        a(href='/', class=activePage === 'home' ? 'active' : '') Home
+        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
+        a(href='/news', class=activePage === 'news' ? 'active' : '') News & Feeds
+        a(href='/dashboard/tutor', class=activePage === 'dashboard' ? 'active' : '') Dashboard
+      else if role === 'tutee'
+        a(href='/', class=activePage === 'home' ? 'active' : '') Home
+        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
+        a(href='/my_lessons', class=activePage === 'my_lessons' ? 'active' : '') My Lessons
+        a(href='/dashboard/tutee', class=activePage === 'dashboard' ? 'active' : '') Dashboard
+      else if role === 'admin'
+        a(href='/dashboard/admin', class=activePage === 'dashboard' ? 'active' : '') Dashboard
+        a(href='/admin/users', class=activePage === 'admin-users' ? 'active' : '') Manage Users
+        a(href='/admin/approve-tutors', class=activePage === 'admin-approve-tutors' ? 'active' : '') Approve Tutors
+      else
+        a(href='/', class=activePage === 'home' ? 'active' : '') Home
+
     .nav-cta
       if loggedIn
         span.welcome-msg Welcome, #{user ? user.full_name : 'User'}

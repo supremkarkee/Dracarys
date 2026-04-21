@@ -17,13 +17,23 @@ const isAdmin = (req, res, next) => {
 // ==================== MANAGE ALL USERS ====================
 router.get('/admin/users', isAdmin, async (req, res) => {
     try {
-        const sql = 'SELECT * FROM users ORDER BY user_id DESC';
-        const users = await db.query(sql);
-        console.log('Users loaded:', users.length);
+        const roleFilter = req.query.role;
+        let sql = 'SELECT * FROM users';
+        let params = [];
+        
+        if (roleFilter) {
+            sql += ' WHERE role = ?';
+            params.push(roleFilter);
+        }
+        
+        sql += ' ORDER BY user_id DESC';
+        const users = await db.query(sql, params);
+        
+        const pageTitle = roleFilter === 'tutee' ? 'Manage Students' : (roleFilter === 'tutor' ? 'Manage Tutors' : 'Manage Users');
         
         res.render('admin-users', { 
-            title: 'Manage Users',
-            activePage: 'admin-users',
+            title: pageTitle,
+            activePage: roleFilter === 'tutee' ? 'admin-students' : 'admin-users',
             users: users || [],
             loggedIn: req.session.loggedIn || false
         });

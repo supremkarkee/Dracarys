@@ -21,28 +21,18 @@ block content
                     .card-icon TUTORS
                     h3 Total Tutors
                     p #{stats.tutors} Tutors
-                    a.btn-secondary(href="/admin/approve-tutors") Manage Tutors
+                    a.btn-secondary(href="/admin/users?role=tutor") Manage Tutors
 
                 .dashboard-card
                     .card-icon STUDENTS
                     h3 Total Students
                     p #{stats.students} Students
-                    a.btn-secondary(href="/admin/users") Manage Students
-
-                .dashboard-card
-                    .card-icon STATS
-                    h3 System Stats
-                    p View Analytics
-                    a.btn-secondary(href="#analytics") View Stats
+                    a.btn-secondary(href="/admin/users?role=tutee") Manage Students
 
             .dashboard-section
                 h2 System Management
                 .admin-menu
                     a.admin-btn(href="/admin/users") Manage All Users
                     a.admin-btn(href="/admin/approve-tutors") Approve Tutors
-                    a.admin-btn(href="/admin/reports") View Reports
-                    a.admin-btn(href="/admin/settings") System Settings
-                    a.admin-btn(href="/admin/content") Manage Content
-                    a.admin-btn(href="/admin/support") Support Tickets
 
 

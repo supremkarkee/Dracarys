@@ -98,47 +98,48 @@ block content
                 background: #c82333;
             }
 
-script.
-    document.getElementById('add-subject-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        try {
-            const formData = new FormData(this);
-            const json = Object.fromEntries(formData.entries());
-            const response = await fetch('/admin/subjects/add', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(json)
-            });
-            const data = await response.json();
-            if (data.success) {
-                alert('Subject added successfully');
-                location.reload();
-            } else {
-                alert('Error: ' + data.error);
-            }
-        } catch (err) {
-            alert('Error: ' + err.message);
-        }
-    });
-
-    document.querySelectorAll('.delete-subject').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            const subjectId = this.dataset.subjectId;
-            if (confirm('Are you sure you want to delete this subject?')) {
-                try {
-                    const response = await fetch(`/admin/subjects/delete/${subjectId}`, {
-                        method: 'POST'
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        alert('Subject deleted successfully');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + data.error);
-                    }
-                } catch (err) {
-                    alert('Error: ' + err.message);
+block scripts
+    script.
+        document.getElementById('add-subject-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            try {
+                const formData = new FormData(this);
+                const json = Object.fromEntries(formData.entries());
+                const response = await fetch('/admin/subjects/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(json)
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Subject added successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
                 }
+            } catch (err) {
+                alert('Error: ' + err.message);
             }
         });
-    });
+
+        document.querySelectorAll('.delete-subject').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const subjectId = this.dataset.subjectId;
+                if (confirm('Are you sure you want to delete this subject?')) {
+                    try {
+                        const response = await fetch(`/admin/subjects/delete/${subjectId}`, {
+                            method: 'POST'
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            alert('Subject deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    } catch (err) {
+                        alert('Error: ' + err.message);
+                    }
+                }
+            });
+        });

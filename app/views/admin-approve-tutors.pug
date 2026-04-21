@@ -93,24 +93,25 @@ block content
                 background: #218838;
             }
 
-script.
-    document.querySelectorAll('.approve-tutor').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            const tutorId = this.dataset.tutorId;
-            try {
-                const response = await fetch(`/admin/tutors/approve/${tutorId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const data = await response.json();
-                if (data.success) {
-                    alert('Tutor approved successfully');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.error);
+block scripts
+    script.
+        document.querySelectorAll('.approve-tutor').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const tutorId = this.dataset.tutorId;
+                try {
+                    const response = await fetch(`/admin/tutors/approve/${tutorId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Tutor approved successfully');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                } catch (err) {
+                    alert('Error: ' + err.message);
                 }
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
+            });
         });
-    });
