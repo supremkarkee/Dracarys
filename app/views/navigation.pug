@@ -1,0 +1,29 @@
+mixin navbar(activePage)
+  nav
+    a.nav-logo(href='/') Drac
+      span arys
+    .nav-links
+      a(href='/', class=activePage === 'home' ? 'active' : '') Home
+      if loggedIn && role !== 'tutor'
+        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
+      else if !loggedIn
+        a(href='/browse/tutors', class=activePage === 'browse-tutors' ? 'active' : '') Search Tutors
+      
+      a(href='/about', class=activePage === 'about' ? 'active' : '') About Us
+      a(href='/news', class=activePage === 'news' ? 'active' : '') News & Feeds
+
+      if loggedIn
+        if role === 'tutor'
+          a(href='/dashboard/tutor', class=activePage === 'dashboard' ? 'active' : '') Dashboard
+        else
+          a(href='/my_lessons', class=activePage === 'my_lessons' ? 'active' : '') My Lessons
+          a(href='/dashboard/tutee', class=activePage === 'dashboard' ? 'active' : '') Dashboard
+      else
+        a(href='/signup', class=activePage === 'signup' ? 'active' : '') Sign Up
+        
+    .nav-cta
+      if loggedIn
+        span.welcome-msg Welcome, #{user ? user.full_name : 'User'}
+        a.btn-secondary(href='/logout') Logout
+      else
+        a.btn-primary(href='/login') Login

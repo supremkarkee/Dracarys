@@ -1,7 +1,7 @@
 extends site-layout
 
 block head
-    link(rel="stylesheet" href="/css/dashboard.css")
+    link(rel="stylesheet" href="/CSS/dashboard.css")
 
 block content
     main.dashboard-container
@@ -10,28 +10,45 @@ block content
             p Welcome to your tutor dashboard.
 
         .dashboard-content
+            //- Stats cards
+            .dashboard-grid
+                .dashboard-card
+                    .card-icon 👨‍🎓
+                    h3 Students
+                    p #{stats.students} Unique Students
+                .dashboard-card
+                    .card-icon 📚
+                    h3 Lessons
+                    p #{stats.lessons} Lessons Taught
+                .dashboard-card
+                    .card-icon ⭐
+                    h3 Points
+                    p #{stats.points} Points Earned
+
+            //- Pending / upcoming requests
             .dashboard-section
-                h2 My Bookings
+                h2 Lesson Requests
                 if bookings && bookings.length > 0
-                    table
-                        thead
-                            tr
-                                th Date & Time
-                                th Tutee
-                                th Notes
-                                th Status
-                                th Action
-                        tbody
-                            each b in bookings
-                                tr
-                                    td= new Date(b.booking_date).toLocaleString()
-                                    td #{b.tutee_name}
-                                    td= b.notes || 'None'
-                                    td
-                                        span(class=`status-${b.status}`)= b.status
-                                    td
-                                        if b.status === 'pending'
-                                            form(action=`/bookings/${b.booking_id}/confirm` method="POST" style="display:inline;")
-                                                button.btn-primary(type="submit") Confirm
+                    .activity-list
+                        each b in bookings
+                            .activity-item
+                                .activity-info
+                                    strong #{b.subject_name || 'General'} Lesson – #{b.student_name}
+                                    p
+                                        | #{new Date(b.lesson_date).toLocaleDateString()}
+                                        |  | #{b.lesson_time ? b.lesson_time.slice(0,5) : '...'} – #{b.end_time ? b.end_time.slice(0,5) : '...'}
+
+                                    if b.status === 'accepted'
+                                        p(style="color:#28a745;font-weight:600;") ✅ Confirmed
+                                    else if b.status === 'declined'
+                                        p(style="color:#dc3545;") ❌ Declined
+                                    else
+                                        //- Accept / Decline form
+                                        form(action="/booking/respond" method="POST" style="margin-top:8px;")
+                                            input(type="hidden" name="booking_id" value=b.booking_id)
+                                            .action-row(style="display:flex;gap:8px;flex-wrap:wrap;")
+                                                button.btn-primary(type="submit" name="status" value="accepted") Accept
+                                                input(type="text" name="message" placeholder="Optional message..." style="flex:1;padding:6px;border:1px solid #ccc;border-radius:5px;")
+                                                button.btn-danger(type="submit" name="status" value="declined") Decline
                 else
-                    p You have no bookings at the moment.
+                    p No lesson requests at the moment.

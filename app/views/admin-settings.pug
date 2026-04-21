@@ -1,0 +1,116 @@
+extends layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 System Settings
+            p Configure platform settings and preferences
+
+        .dashboard-content
+            .dashboard-section
+                h2 Platform Configuration
+                form#settings-form
+                    .form-group
+                        label Platform Name
+                        input(type="text" name="platform_name" value=settings.platform_name placeholder="Enter platform name")
+
+                    .form-group
+                        label Support Email
+                        input(type="email" name="platform_email" value=settings.platform_email placeholder="Enter support email")
+
+                    .form-group
+                        label Maximum Tutors
+                        input(type="number" name="max_tutors" value=settings.max_tutors placeholder="Enter max tutors")
+
+                    .form-group
+                        label Maximum Students
+                        input(type="number" name="max_students" value=settings.max_students placeholder="Enter max students")
+
+                    .form-group
+                        label(style="display: flex; gap: 10px;")
+                            input(type="checkbox" name="maintenance_mode" value="true" checked=settings.maintenance_mode)
+                            span Enable Maintenance Mode
+
+                    button.btn-primary(type="submit") Save Settings
+
+            .dashboard-section
+                h2 System Information
+                .system-info
+                    p
+                        strong Platform: 
+                        span Dracarys Tutoring Platform
+                    p
+                        strong Version: 
+                        span 1.0.0
+                    p
+                        strong Status: 
+                        span.status-active Running
+                    p
+                        strong Database: 
+                        span Connected
+
+        style.
+            form {
+                max-width: 500px;
+                margin-top: 20px;
+            }
+            .form-group {
+                margin-bottom: 20px;
+                display: flex;
+                flex-direction: column;
+            }
+            .form-group label {
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #333;
+            }
+            .form-group input[type="text"],
+            .form-group input[type="email"],
+            .form-group input[type="number"] {
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+            .form-group input[type="checkbox"] {
+                width: auto;
+            }
+            .system-info {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                margin-top: 20px;
+            }
+            .system-info p {
+                margin: 10px 0;
+                display: flex;
+                justify-content: space-between;
+            }
+            .status-active {
+                color: #28a745;
+                font-weight: 600;
+            }
+
+script.
+    document.getElementById('settings-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        try {
+            const formData = new FormData(this);
+            const response = await fetch('/admin/settings/update', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert('Settings updated successfully');
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (err) {
+            alert('Error: ' + err.message);
+        }
+    });

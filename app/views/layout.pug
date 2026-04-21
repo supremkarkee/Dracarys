@@ -7,10 +7,10 @@ html(lang="en")
         link(rel="preconnect" href="https://fonts.googleapis.com")
         link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
         link(href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet")
-        link(rel="stylesheet" href="/CSS/styles.css")
-        link(rel="stylesheet" href="/CSS/nav-styles.css")
+        link(rel="stylesheet" href="/css/styles.css")
         block head
     body
-        include navbar.pug
+        include navigation
+        +navbar(activePage)
         block content
         block scripts

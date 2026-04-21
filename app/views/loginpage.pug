@@ -1,38 +1,27 @@
-extends site-layout
+extends layout
 
 block head
-    title Login - Free Education
     link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet")
-    link(rel="stylesheet" href="/CSS/login-styles.css")
+    link(rel="stylesheet" href="/css/loginpage.css")
 
 block content
-    .login-page-wrapper
-        .main-content
-            //- Dynamic Hero Title Logic
-            if showSuccess
-                h1.hero-title Registration successful! Please log in below
-            else if accountExists
-                h1.hero-title An account with this email already exists. Please log in below
-            else
-                h1.hero-title Lets stand for free education together
-
-            .login-container
-                //dynamic login message.
-                if invalidPassword
-                    h2.error-message Invalid Password. Please try again.
-                else
-                    h2 Welcome Back
-                
-                form#loginForm(action='/authenticate' method='POST')
-                    .input-group
-                        label(for="email") Email
-                        input#email(type="email" name="email" placeholder="Enter your email" required)
-                    .input-group
-                        label(for="password") Password
-                        input#password(type="password" name="password" placeholder="Enter your password" required)
-                    button.login-btn(type="submit") Sign In
-                    #errorMsg.error Invalid login details
-                .extra-links
-                    p
-                        a(href="/signup") Create Account
+    .main-content
+        h1.hero-title Lets stand for free education together
+        .login-container
+            h2 Welcome Back
+            if error
+                .error-message= error
+            form#loginForm(action="/login" method="POST")
+                .input-group
+                    label(for="email") Email Address
+                    input#email(type="email" name="email" placeholder="Enter your email" required)
+                .input-group
+                    label(for="password") Password
+                    input#password(type="password" name="password" placeholder="Enter your password" required)
+                button.login-btn(type="submit") Sign In
+            .extra-links
+                p
+                    a(href="#") Forgot Password?
+                p
+                    a(href="/signup") Create Account
 

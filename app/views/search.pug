@@ -1,4 +1,4 @@
-extends site-layout
+extends layout
 
 block head
     link(rel="stylesheet" href="/css/styles.css")
@@ -18,14 +18,35 @@ block content
 
         .search-layout
             aside.filters
-                if role === 'tutee'
+                .filter-group
                     h3 Personal
-                    a.filter-btn(href="/browse/tutors?favorites=true" class=(favoritesOnly ? 'active' : '')) My Favorites ♥
-                h3 Filter by Subject
-                a.filter-btn(href="/browse/tutors" class=(selectedSubject === 'all' && !favoritesOnly ? 'active' : '')) All Subjects
-                if subjects && subjects.length
-                    each subject in subjects
-                        a.filter-btn(href=`/browse/tutors?subject=${subject.subject_name}` class=(selectedSubject == subject.subject_name && !favoritesOnly ? 'active' : '')) #{subject.subject_name}
+                    a.filter-box.flag-filter(href=(flaggedOnly ? "/browse/tutors" : "/browse/tutors?flagged=true" ) class=(flaggedOnly ? 'active' : ''))
+                        span.icon ⚑
+                        | Flagged Tutors
+                
+                .filter-group
+                    h3 Selection
+                    .dropdown.vertical
+                        button.dropdown-toggle
+                            span Subject: #{selectedSubject === 'all' ? 'All' : selectedSubject}
+                            i.arrow-down
+                        .dropdown-menu
+                            a.dropdown-item(href="/browse/tutors" class=(selectedSubject === 'all' ? 'active' : '')) All Subjects
+                            if subjects
+                                each subject in subjects
+                                    - var sUrl = `/browse/tutors?subject=${subject.subject_name}` + (selectedLanguage !== 'all' ? `&lang=${selectedLanguage}` : '')
+                                    a.dropdown-item(href=sUrl class=(selectedSubject == subject.subject_name ? 'active' : '')) #{subject.subject_name}
+
+                    .dropdown.vertical
+                        button.dropdown-toggle
+                            span Language: #{selectedLanguage === 'all' ? 'All' : selectedLanguage}
+                            i.arrow-down
+                        .dropdown-menu
+                            a.dropdown-item(href="/browse/tutors" class=(selectedLanguage === 'all' ? 'active' : '')) All Languages
+                            if languages
+                                each lang in languages
+                                    - var lUrl = `/browse/tutors?lang=${lang}` + (selectedSubject !== 'all' ? `&subject=${selectedSubject}` : '')
+                                    a.dropdown-item(href=lUrl class=(selectedLanguage == lang ? 'active' : '')) #{lang}
 
             section.tutor-list
                 if data && data.length
@@ -41,8 +62,30 @@ block content
                                 p.tutor-desc #{tutor.description || 'Experienced tutor dedicated to student success.'}
                             .tutor-actions
                                 a.btn-message(href=`/tutor/${tutor.tutor_id}`) View Profile
-                                a.btn-trial(href=`/book-lesson/${tutor.tutor_id}`) Book Lesson
+                                a.btn-trial(href=`/book_lesson/${tutor.tutor_id}`) Book Lesson
                 else
                     .no-results
                         p No tutors found matching your criteria.
                         a.btn-secondary(href="/browse/tutors") View All Tutors
+
+    script.
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdowns = document.querySelectorAll('.dropdown.vertical');
+            
+            dropdowns.forEach(dd => {
+                const toggle = dd.querySelector('.dropdown-toggle');
+                toggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Close others
+                    dropdowns.forEach(other => {
+                        if (other !== dd) other.classList.remove('open');
+                    });
+                    dd.classList.toggle('open');
+                });
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', () => {
+                dropdowns.forEach(dd => dd.classList.remove('open'));
+            });
+        });

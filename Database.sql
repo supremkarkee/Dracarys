@@ -1,311 +1,298 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
+-- MySQL dump 10.13  Distrib 8.0.45, for Linux (x86_64)
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 16, 2026 at 01:57 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
+-- Host: localhost    Database: Dracarys
+-- ------------------------------------------------------
+-- Server version	8.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Database: `onlinetutoring_platform`
+-- Current Database script
 --
 
--- --------------------------------------------------------
+
+--
+-- Table structure for table `bookings`
+--
+
+DROP TABLE IF EXISTS `bookings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bookings` (
+  `booking_id` int NOT NULL AUTO_INCREMENT,
+  `tutee_id` int NOT NULL,
+  `tutor_id` int NOT NULL,
+  `subject_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `lesson_date` date NOT NULL,
+  `lesson_time` time NOT NULL,
+  `end_time` time DEFAULT NULL,
+  `status` enum('pending','accepted','declined') COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `tutor_message` text COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`booking_id`),
+  KEY `tutee_id` (`tutee_id`),
+  KEY `tutor_id` (`tutor_id`),
+  CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`),
+  CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bookings`
+--
+
+LOCK TABLES `bookings` WRITE;
+/*!40000 ALTER TABLE `bookings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bookings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `favorites`
+--
+
+DROP TABLE IF EXISTS `favorites`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `favorites` (
+  `favorite_id` int NOT NULL AUTO_INCREMENT,
+  `tutee_id` int NOT NULL,
+  `tutor_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`favorite_id`),
+  UNIQUE KEY `user_tutor` (`tutee_id`,`tutor_id`),
+  KEY `tutor_id` (`tutor_id`),
+  CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`),
+  CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `favorites`
+--
+
+LOCK TABLES `favorites` WRITE;
+/*!40000 ALTER TABLE `favorites` DISABLE KEYS */;
+INSERT INTO `favorites` VALUES (1,4,1,'2026-03-23 02:31:05');
+/*!40000 ALTER TABLE `favorites` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `reviews`
 --
 
+DROP TABLE IF EXISTS `reviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reviews` (
-  `review_id` int(11) NOT NULL,
-  `tutee_id` int(11) DEFAULT NULL,
-  `tutor_id` int(11) DEFAULT NULL,
-  `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
-  `feedback` text DEFAULT NULL,
-  `review_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `review_id` int NOT NULL AUTO_INCREMENT,
+  `tutee_id` int DEFAULT NULL,
+  `tutor_id` int DEFAULT NULL,
+  `rating` int DEFAULT NULL,
+  `feedback` text COLLATE utf8mb4_general_ci,
+  `review_date` date DEFAULT NULL,
+  PRIMARY KEY (`review_id`),
+  KEY `tutee_id` (`tutee_id`),
+  KEY `tutor_id` (`tutor_id`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`),
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`),
+  CONSTRAINT `reviews_chk_1` CHECK ((`rating` between 1 and 5))
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `reviews`
 --
 
-INSERT INTO `reviews` (`review_id`, `tutee_id`, `tutor_id`, `rating`, `feedback`, `review_date`) VALUES
-(1, 1, 1, 5, 'Alice explains mathematics concepts very clearly', '2025-01-15'),
-(2, 2, 2, 4, 'Great help with chemistry exam preparation', '2025-02-10'),
-(3, 3, 3, 5, 'Excellent programming tutor, very patient', '2025-03-01');
-
--- --------------------------------------------------------
+LOCK TABLES `reviews` WRITE;
+/*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
+INSERT INTO `reviews` VALUES (1,1,1,5,'Alice explains mathematics concepts very clearly','2025-01-15'),(2,2,2,4,'Great help with chemistry exam preparation','2025-02-10'),(3,3,3,5,'Excellent programming tutor, very patient','2025-03-01'),(4,4,1,2,'its perfect lesson','2026-03-23');
+/*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `subjects`
 --
 
+DROP TABLE IF EXISTS `subjects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `subjects` (
-  `subject_id` int(11) NOT NULL AUTO_INCREMENT,
-  `subject_name` varchar(100) NOT NULL,
-  `description` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `subject_id` int NOT NULL AUTO_INCREMENT,
+  `subject_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
+  PRIMARY KEY (`subject_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `subjects`
 --
 
-INSERT INTO `subjects` (`subject_id`, `subject_name`, `description`) VALUES
-(1, 'Mathematics', 'Includes algebra, calculus and geometry'),
-(2, 'Physics', 'Mechanics, motion and energy concepts'),
-(3, 'Chemistry', 'Organic and inorganic chemistry fundamentals'),
-(4, 'English', 'Grammar, writing and literature'),
-(5, 'Computer Science', 'Programming and algorithms');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tutees`
---
-
-CREATE TABLE `tutees` (
-  `tutee_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `school_level` varchar(50) DEFAULT NULL,
-  `grade_level` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tutees`
---
-
-INSERT INTO `tutees` (`tutee_id`, `user_id`, `school_level`, `grade_level`) VALUES
-(1, 3, 'High School', 'Grade 10'),
-(2, 4, 'High School', 'Grade 12'),
-(3, 6, 'Middle School', 'Grade 8');
-
--- --------------------------------------------------------
+LOCK TABLES `subjects` WRITE;
+/*!40000 ALTER TABLE `subjects` DISABLE KEYS */;
+INSERT INTO `subjects` VALUES (1,'Mathematics','Includes algebra, calculus and geometry'),(2,'Physics','Mechanics, motion and energy concepts'),(3,'Chemistry','Organic and inorganic chemistry fundamentals'),(4,'English','Grammar, writing and literature'),(5,'Computer Science','Programming and algorithms'),(6,'History','World history and civilizations'),(7,'Geography','Physical and human geography maps'),(8,'Music','Music theory and instruments'),(9,'Economics','Macro and micro economics principles'),(10,'Biology','Cell biology and genetics');
+/*!40000 ALTER TABLE `subjects` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tutee_subjects`
 --
 
+DROP TABLE IF EXISTS `tutee_subjects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tutee_subjects` (
-  `tutee_id` int(11) NOT NULL,
-  `subject_id` int(11) NOT NULL
+  `tutee_id` int NOT NULL,
+  `subject_id` int NOT NULL,
+  PRIMARY KEY (`tutee_id`,`subject_id`),
+  KEY `subject_id` (`subject_id`),
+  CONSTRAINT `tutee_subjects_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`),
+  CONSTRAINT `tutee_subjects_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tutee_subjects`
 --
 
-INSERT INTO `tutee_subjects` (`tutee_id`, `subject_id`) VALUES
-(1, 1),
-(1, 2),
-(2, 3),
-(3, 1),
-(3, 5);
-
--- --------------------------------------------------------
+LOCK TABLES `tutee_subjects` WRITE;
+/*!40000 ALTER TABLE `tutee_subjects` DISABLE KEYS */;
+INSERT INTO `tutee_subjects` VALUES (1,1),(3,1),(1,2),(2,3),(3,5);
+/*!40000 ALTER TABLE `tutee_subjects` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `tutors`
+-- Table structure for table `tutees`
 --
 
-CREATE TABLE `tutors` (
-  `tutor_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `rating` decimal(2,1) DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `qualification` varchar(255) DEFAULT NULL,
-  `subjects` varchar(255) DEFAULT NULL,
-  `lesson_count` int(11) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `tutees`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tutees` (
+  `tutee_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `school_level` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `grade_level` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`tutee_id`),
+  UNIQUE KEY `user_id_unique` (`user_id`),
+  CONSTRAINT `tutees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tutors`
+-- Dumping data for table `tutees`
 --
 
-INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`, `description`, `qualification`, `subjects`, `lesson_count`) VALUES
-(1, 1, 4.8, 'Experienced mathematics tutor specializing in algebra and calculus for high school students.', 'MSc Mathematics - University of London', 'Mathematics, Physics', 120),
-(2, 2, 4.5, 'Chemistry tutor helping students understand complex concepts through practical examples.', 'BSc Chemistry - University of Manchester', 'Chemistry, Biology', 85),
-(3, 5, 4.9, 'Software engineer and programming tutor with strong background in algorithms and problem solving.', 'BSc Computer Science - MIT', 'Computer Science, Programming', 150);
-
--- --------------------------------------------------------
+LOCK TABLES `tutees` WRITE;
+/*!40000 ALTER TABLE `tutees` DISABLE KEYS */;
+INSERT INTO `tutees` VALUES (1,'U003','High School','Grade 10'),(2,'U004','High School','Grade 12'),(3,'U006','Middle School','Grade 8'),(4,'S001',NULL,NULL);
+/*!40000 ALTER TABLE `tutees` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tutor_subjects`
 --
 
+DROP TABLE IF EXISTS `tutor_subjects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tutor_subjects` (
-  `tutor_id` int(11) NOT NULL,
-  `subject_id` int(11) NOT NULL
+  `tutor_id` int NOT NULL,
+  `subject_id` int NOT NULL,
+  PRIMARY KEY (`tutor_id`,`subject_id`),
+  KEY `subject_id` (`subject_id`),
+  CONSTRAINT `tutor_subjects_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`),
+  CONSTRAINT `tutor_subjects_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tutor_subjects`
 --
 
-INSERT INTO `tutor_subjects` (`tutor_id`, `subject_id`) VALUES
-(1, 1),
-(1, 2),
-(2, 3),
-(2, 4),
-(3, 1),
-(3, 5);
+LOCK TABLES `tutor_subjects` WRITE;
+/*!40000 ALTER TABLE `tutor_subjects` DISABLE KEYS */;
+INSERT INTO `tutor_subjects` VALUES (1,1),(3,1),(1,2),(2,3),(2,4),(3,5),(4,6),(4,7),(5,4),(5,8),(6,1),(6,2),(6,3),(6,5);
+/*!40000 ALTER TABLE `tutor_subjects` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- --------------------------------------------------------
+--
+-- Table structure for table `tutors`
+--
+
+DROP TABLE IF EXISTS `tutors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tutors` (
+  `tutor_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `rating` decimal(2,1) DEFAULT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
+  `qualification` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `languages` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'English',
+  `lesson_count` int DEFAULT '0',
+  `points` int DEFAULT '0',
+  `verified` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`tutor_id`),
+  UNIQUE KEY `user_id_unique` (`user_id`),
+  CONSTRAINT `tutors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tutors`
+--
+
+LOCK TABLES `tutors` WRITE;
+/*!40000 ALTER TABLE `tutors` DISABLE KEYS */;
+INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`, `description`, `qualification`, `lesson_count`, `points`) VALUES (1,'U001',4.8,'Experienced mathematics tutor specializing in algebra and calculus for high school students.','MSc Mathematics - University of London',120,0),(2,'U002',4.5,'Chemistry tutor helping students understand complex concepts through practical examples.','BSc Chemistry - University of Manchester',85,0),(3,'U005',4.9,'Software engineer and programming tutor with strong background in algorithms and problem solving.','BSc Computer Science - MIT',150,0),(4,'U007',4.7,'Passionate History and Geography teacher blending facts with incredible stories.','BA History - Cambridge',95,110),(5,'U008',4.6,'Creative teacher specializing in English literature and Music theory.','MA Literature - Oxford',75,90),(6,'U009',5.0,'Polymath tutor who completely covers Mathematics, Physics, Chemistry, and Computer Science!','PhD Physics - Imperial College',210,200);
+/*!40000 ALTER TABLE `tutors` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` enum('tutor','tutee') NOT NULL
+  `user_id` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `full_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `role` enum('tutor','tutee','admin') COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, `role`) VALUES
-(1, 'Alice', 'Johnson', 'alice.johnson@email.com', 'hashed_pass_1', 'tutor'),
-(2, 'Brian', 'Smith', 'brian.smith@email.com', 'hashed_pass_2', 'tutor'),
-(3, 'Catherine', 'Lee', 'catherine.lee@email.com', 'hashed_pass_3', 'tutee'),
-(4, 'Daniel', 'Brown', 'daniel.brown@email.com', 'hashed_pass_4', 'tutee'),
-(5, 'Emily', 'Davis', 'emily.davis@email.com', 'hashed_pass_5', 'tutor'),
-(6, 'Frank', 'Wilson', 'frank.wilson@email.com', 'hashed_pass_6', 'tutee');
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES ('S001','test test','test1234@gmail.com','$2b$10$/m/X.GQO9hVMqq3PJXgQAuJoqUi27CKYVxleL8wZfWCbSgXsXYptq','tutee'),('U001','Alice Johnson','alice.johnson@email.com','$2b$10$JFlMi1IZQhKegHyguIkm5egs4G/NjrjM9nFXkHPqGJXdEEl8UBxCS','tutor'),('U002','Brian Smith','brian.smith@email.com','$2b$10$RidMoiss1m9/3dwwML01NODwJttGMS7q3Bj5HHLDBqeGlsDpJ/Ls.','tutor'),('U003','Catherine Lee','catherine.lee@email.com','$2b$10$CnLwPJpl/S0eCqlqHenR/O2zZ2m8xbaMYW3f.mo/hOuV0IrwVL.CO','tutee'),('U004','Daniel Brown','daniel.brown@email.com','$2b$10$ZZFSXWmOD64uZ/PnM.qp8.8GD/mMHLT0qBaIlAWVbV3dglbxiekga','tutee'),('U005','Emily Davis','emily.davis@email.com','$2b$10$lFhFrY/PAa.xiogKoDd21OH9R15KFZ6VDGq8g8ywrXgrTn0BwFhMy','tutor'),('U006','Frank Wilson','frank.wilson@email.com','$2b$10$u4mIBJkeyejbTE.53csbQueOfvPIi1.J6cifpKQUsfEUsH/Zh/6cm','tutee'),('U007','George Martin','george.martin@email.com','$2b$10$JFlMi1IZQhKegHyguIkm5egs4G/NjrjM9nFXkHPqGJXdEEl8UBxCS','tutor'),('U008','Hannah Clark','hannah.clark@email.com','$2b$10$JFlMi1IZQhKegHyguIkm5egs4G/NjrjM9nFXkHPqGJXdEEl8UBxCS','tutor'),('U009','Ian Wright','ian.wright@email.com','$2b$10$JFlMi1IZQhKegHyguIkm5egs4G/NjrjM9nFXkHPqGJXdEEl8UBxCS','tutor'),('U486073','sad opl','sss@gmail.com','$2b$10$stirbHwAtCJ7biguVcUoy.AmRCqWzG0Kbh0fLASYww2FqfThD44BK','tutor'),('U700109','bla blaa','blaaa@gmail.com','$2b$10$EgJ8RAatOahru1Gl7.yrwO8cvAAXN2Saswko.Zg4ThB5rMf.vrXLS','tutee'),('U9487','jj ll','bvhj@gmail.com','$2b$10$Q/Wq3n.Mgh8OO.5uFZTwvON2iJ/0vkWfcAWQCkTV5BHM0ahN7SKve','tutor');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `reviews`
---
-ALTER TABLE `reviews`
-  ADD PRIMARY KEY (`review_id`),
-  ADD KEY `tutee_id` (`tutee_id`),
-  ADD KEY `tutor_id` (`tutor_id`);
-
---
--- Indexes for table `subjects`
---
-ALTER TABLE `subjects`
-  ADD PRIMARY KEY (`subject_id`);
-
---
--- Indexes for table `tutees`
---
-ALTER TABLE `tutees`
-  ADD PRIMARY KEY (`tutee_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `tutee_subjects`
---
-ALTER TABLE `tutee_subjects`
-  ADD PRIMARY KEY (`tutee_id`,`subject_id`),
-  ADD KEY `subject_id` (`subject_id`);
-
---
--- Indexes for table `tutors`
---
-ALTER TABLE `tutors`
-  ADD PRIMARY KEY (`tutor_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `tutor_subjects`
---
-ALTER TABLE `tutor_subjects`
-  ADD PRIMARY KEY (`tutor_id`,`subject_id`),
-  ADD KEY `subject_id` (`subject_id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `reviews`
---
-ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `subjects`
---
-ALTER TABLE `subjects`
-  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `tutees`
---
-ALTER TABLE `tutees`
-  MODIFY `tutee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `tutors`
---
-ALTER TABLE `tutors`
-  MODIFY `tutor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `reviews`
---
-ALTER TABLE `reviews`
-  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`),
-  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`);
-
---
--- Constraints for table `tutees`
---
-ALTER TABLE `tutees`
-  ADD CONSTRAINT `tutees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Constraints for table `tutee_subjects`
---
-ALTER TABLE `tutee_subjects`
-  ADD CONSTRAINT `tutee_subjects_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`),
-  ADD CONSTRAINT `tutee_subjects_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`);
-
---
--- Constraints for table `tutors`
---
-ALTER TABLE `tutors`
-  ADD CONSTRAINT `tutors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Constraints for table `tutor_subjects`
---
-ALTER TABLE `tutor_subjects`
-  ADD CONSTRAINT `tutor_subjects_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`),
-  ADD CONSTRAINT `tutor_subjects_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`);
-COMMIT;
-
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-23  2:58:51
