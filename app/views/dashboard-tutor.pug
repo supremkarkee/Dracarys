@@ -32,7 +32,6 @@ block content
                     .card-icon POINTS
                     h3 Points
                     p #{stats.points} Reward Points
-                    a.btn-secondary(href="/dashboard/tutor") My Rewards
             .dashboard-section
                 h2 Pending Lesson Requests
                 if bookings && bookings.length > 0
@@ -69,9 +68,9 @@ block content
                                             input(type="text" name="message" placeholder="Optional decline message..." style="padding: 6px; border: 1px solid #ccc; border-radius: 5px;")
                                             button.btn-danger(type="submit") Decline
                                 else if booking.status === 'accepted'
-                                    p(style="color: #28a745; margin-top: 10px; font-weight: 600;") ✅ Booking confirmed!
+                                    p(style="color: #28a745; margin-top: 10px; font-weight: 600;") Booking confirmed.
                                 else
-                                    p(style="color: #dc3545; margin-top: 10px;") ❌ Request declined.
+                                    p(style="color: #dc3545; margin-top: 10px;") Request declined.
                 else
                     p No lesson requests at the moment.
 

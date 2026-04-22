@@ -29,14 +29,8 @@ block content
                     p #{stats.tutors} Tutors Assigned
                     a.btn-secondary(href="/browse/tutors") Find Tutors
 
-                .dashboard-card
-                    .card-icon PROGRESS
-                    h3 Progress
-                    p Track your learning
-                    a.btn-secondary(href="/my_lessons") Lesson History
-
             .dashboard-section
-                h2 My Upcoming Trial Bookings
+                h2 Your Current Bookings
                 - const upcoming = bookings ? bookings.filter(b => new Date(b.lesson_date) >= new Date().setHours(0,0,0,0)) : [];
                 if upcoming.length > 0
                     .activity-list
@@ -52,15 +46,12 @@ block content
                                             p(style="color: #6c757d; font-style: italic; font-size: 0.85em;") Tutor Note: "#{booking.tutor_message}"
 
                                     if booking.status === 'accepted'
-                                        p(style="color: #28a745; font-size: 0.9em; margin-top: 5px; font-weight: bold;") ✅ Perfectly booked! Can join lesson at scheduled time
+                                        p(style="color: #28a745; font-size: 0.9em; margin-top: 5px; font-weight: bold;") Booking confirmed.
 
                                 .activity-status(style="display: flex; gap: 10px; align-items: center;")
-                                    if booking.status === 'accepted'
-                                        a.btn-primary(href="#" style="background: #00b894; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; font-size: 0.9em;") Join Lesson
-                                    else
-                                        span(class=`status-badge status-${booking.status}`) #{booking.status.toUpperCase()}
-                                        
-                                    if booking.status !== 'declined'
+                                    span(class=`status-badge status-${booking.status}`) #{booking.status.toUpperCase()}
+                                    
+                                    if booking.status === 'pending'
                                         form(action="/booking/cancel" method="POST" style="margin:0;")
                                             input(type="hidden" name="booking_id" value=booking.booking_id)
                                             button(type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; text-decoration: underline; font-size: 0.9em;") Cancel
@@ -69,24 +60,3 @@ block content
                         p No upcoming bookings yet. Start by finding a tutor! 
                         a.btn-primary(href="/browse/tutors") Browse Tutors
 
-            .dashboard-section
-                h2 Previous Booking Histories 
-                - const past = bookings ? bookings.filter(b => new Date(b.lesson_date) < new Date().setHours(0,0,0,0)) : [];
-                if past.length > 0
-                    .activity-list
-                        each booking in past
-                            .activity-item(style="opacity: 0.7;")
-                                .activity-info
-                                    strong #{booking.subject_name || 'General'} Lesson with #{booking.tutor_name}
-                                    p #{new Date(booking.lesson_date).toLocaleDateString()} | #{booking.lesson_time ? booking.lesson_time.slice(0,5) : '...'} - #{booking.end_time ? booking.end_time.slice(0,5) : '...'}
-                                    
-                                    if booking.status === 'declined'
-                                        p(style="color: #dc3545; font-size: 0.9em; margin-top: 5px;") Booking unsuccessful.
-                                        if booking.tutor_message
-                                            p(style="color: #6c757d; font-style: italic; font-size: 0.85em;") Tutor Note: "#{booking.tutor_message}"
-
-                                .activity-status
-                                    span(class=`status-badge status-${booking.status}`) #{booking.status.toUpperCase()}
-                else
-                    .activity-list
-                        p No past histories.
