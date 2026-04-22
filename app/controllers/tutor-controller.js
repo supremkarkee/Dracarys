@@ -74,6 +74,7 @@ router.get("/tutor/:id", async function (req, res) {
         if (tutor.full_name) {
             let existingBooking = null;
             let isFlagged = false;
+            let isFavorite = false;
             
             if (req.session.loggedIn && req.session.role === 'tutee') {
                 existingBooking = await Booking.checkExisting(req.session.tuteeId, tutor.tutor_id);
