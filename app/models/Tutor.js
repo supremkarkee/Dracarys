@@ -101,7 +101,7 @@ class Tutor {
         });
     }
 
-    static async search(query, subjectFilter = 'all', flaggedOnly = false, tuteeId = null, languageFilter = 'all') {
+    static async search(query, subjectFilter = 'all', flaggedOnly = false, tuteeId = null, languageFilter = 'all', favoritesOnly = false) {
         let sql = `
             SELECT t.*, u.full_name, u.email,
                    GROUP_CONCAT(DISTINCT s.subject_name SEPARATOR ', ') AS subjects_list
@@ -116,6 +116,11 @@ class Tutor {
 
         if (flaggedOnly && tuteeId) {
             sql += ' AND t.tutor_id IN (SELECT tutor_id FROM flagged_tutors WHERE tutee_id = ?)';
+            params.push(tuteeId);
+        }
+
+        if (favoritesOnly && tuteeId) {
+            sql += ' AND t.tutor_id IN (SELECT tutor_id FROM favourites_tutors WHERE tutee_id = ?)';
             params.push(tuteeId);
         }
 
@@ -145,6 +150,22 @@ class Tutor {
             t.subjects = row.subjects_list ? row.subjects_list.split(',').map(s => s.trim()) : [];
             return t;
         });
+    }
+
+    /**
+     * Updates the tutor's profile information in the database.
+     * @param {number} tutor_id - The ID of the tutor to update.
+     * @param {string} description - The tutor's profile description.
+     * @param {string} qualification - The tutor's academic/professional qualification.
+     * @param {string} languages - Comma-separated list of languages spoken by the tutor.
+     */
+    static async updateProfile(tutor_id, description, qualification, languages) {
+        const sql = `
+            UPDATE tutors 
+            SET description = ?, qualification = ?, languages = ? 
+            WHERE tutor_id = ?
+        `;
+        return await db.query(sql, [description, qualification, languages, tutor_id]);
     }
 }
 

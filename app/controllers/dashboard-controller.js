@@ -4,6 +4,7 @@ const db = require('../services/db');
 const { Booking } = require('../models/Booking');
 const { Tutor } = require('../models/Tutor');
 const { Tutee } = require('../models/Tutee');
+const { Subject } = require('../models/Subject');
 
 // Middleware to check if user is logged in
 const isLoggedIn = (req, res, next) => {
@@ -75,6 +76,40 @@ router.post('/dashboard/tutor/profile', isLoggedIn, async (req, res) => {
     } catch (err) {
         console.error("Error updating tutor profile:", err);
         res.redirect('/dashboard/tutor?error=Failed to update profile');
+    }
+});
+
+// Add Tutor Subject
+router.post('/dashboard/tutor/subject/add', isLoggedIn, async (req, res) => {
+    if (req.session.role !== 'tutor') {
+        return res.status(403).send('Access Denied: Only tutors can perform this action');
+    }
+    
+    const { subject_name } = req.body;
+    
+    try {
+        await Subject.addTutorSubject(req.session.tutorId, subject_name);
+        res.redirect('/dashboard/tutor?success=Subject added successfully');
+    } catch (err) {
+        console.error("Error adding tutor subject:", err);
+        res.redirect('/dashboard/tutor?error=Failed to add subject');
+    }
+});
+
+// Remove Tutor Subject
+router.post('/dashboard/tutor/subject/remove', isLoggedIn, async (req, res) => {
+    if (req.session.role !== 'tutor') {
+        return res.status(403).send('Access Denied: Only tutors can perform this action');
+    }
+    
+    const { subject_name } = req.body;
+    
+    try {
+        await Subject.removeTutorSubject(req.session.tutorId, subject_name);
+        res.redirect('/dashboard/tutor?success=Subject removed successfully');
+    } catch (err) {
+        console.error("Error removing tutor subject:", err);
+        res.redirect('/dashboard/tutor?error=Failed to remove subject');
     }
 });
 

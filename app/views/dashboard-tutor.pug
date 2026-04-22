@@ -95,6 +95,24 @@ block content
                     .booking-card.empty-state
                         p You don't have any students yet.
 
+            .dashboard-section#my-subjects
+                h2 My Subjects
+                .booking-card
+                    if tutorProfile && tutorProfile.subjects && tutorProfile.subjects.length > 0
+                        div(style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;")
+                            each subject in tutorProfile.subjects
+                                div(style="display: flex; align-items: center; background: #f8f9fa; border: 1px solid #ccc; padding: 5px 10px; border-radius: 20px; gap: 10px;")
+                                    span(style="font-weight: 500; color: #333;")= subject
+                                    form(action="/dashboard/tutor/subject/remove" method="POST" style="margin: 0;")
+                                        input(type="hidden" name="subject_name" value=subject)
+                                        button(type="submit" style="background: none; border: none; color: #dc3545; font-weight: bold; cursor: pointer; padding: 0;" title="Remove subject") &times;
+                    else
+                        p(style="margin-bottom: 20px; color: #666;") You have not added any subjects yet.
+
+                    form(action="/dashboard/tutor/subject/add" method="POST" style="display: flex; gap: 10px; align-items: center;")
+                        input(type="text" name="subject_name" placeholder="e.g. Machine Learning" required style="flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                        button.btn-success(type="submit" style="padding: 10px 20px; white-space: nowrap;") Add Subject
+
             .dashboard-section#edit-profile
                 h2 Edit Profile
                 .booking-card
