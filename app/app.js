@@ -1,10 +1,13 @@
 // Import express.js
+// Imports express framework
 const express = require("express");
 
 // Create express app
 var app = express();
 
 const session = require('express-session');
+
+// Internal framework tools
 const path = require('path');
 
 // Import models at top level
@@ -14,11 +17,25 @@ const { User } = require('./models/User');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configure sessions
+// Configure sessions: This middleware sets up session management for the application
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'dracarys-dev-secret-change-in-production',
+    // secret: The key used to sign the session ID cookie. 
+    // It uses an environment variable for security in production, 
+    // or falls back to a random string for local development.
+    secret: process.env.SESSION_SECRET || 'x9k2mP5vL8nQwRt3yH7bZc4jF1sV0aE6',
+
+    // resave: Forces the session to be saved back to the session store, 
+    // even if the session was never modified during the request. 
+    // Setting to false optimizes performance and avoids race conditions.
     resave: false,
+
+    // saveUninitialized: Forces a session that is "uninitialized" to be saved to the store.
+    // Setting to false helps implement login sessions and complies with laws that require permission before setting a cookie.
     saveUninitialized: false,
+
+    // cookie: Settings object for the session ID cookie.
+    // secure: false means the cookie will be sent over HTTP (not requiring HTTPS). 
+    // This is necessary for local development without SSL.
     cookie: { secure: false }
 }));
 
@@ -44,7 +61,8 @@ app.use(function (req, res, next) {
                 console.error("Session User Hydration Error:", err);
                 next();
             });
-    } else {
+    }
+    else {
         next();
     }
 });
