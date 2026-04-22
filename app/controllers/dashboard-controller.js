@@ -37,23 +37,45 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
     // Calculate stats
     const uniqueStudents = students.length;
     
-    // Fetch tutor specific data (like points)
-    const tutorData = await db.query('SELECT points, lesson_count FROM tutors WHERE tutor_id = ?', [req.session.tutorId]);
-    const points = tutorData.length > 0 ? tutorData[0].points : 0;
-    const totalLessons = tutorData.length > 0 ? tutorData[0].lesson_count : bookings.length;
+    // Fetch full tutor specific data using the Tutor model
+    const tutorProfile = new Tutor(req.session.tutorId);
+    await tutorProfile.getTutorDetails();
+
+    const points = tutorProfile.points || 0;
+    const totalLessons = tutorProfile.lesson_count || bookings.length;
 
     res.render('dashboard-tutor', { 
         title: 'Tutor Dashboard - Dracarys', 
         activePage: 'dashboard',
         user: res.locals.user,
+        tutorProfile: tutorProfile,
         bookings: bookings || [],
         students: students || [],
+        success: req.query.success,
+        error: req.query.error,
         stats: {
             students: uniqueStudents,
             lessons: totalLessons,
             points: points
         }
     });
+});
+
+// Update Tutor Profile
+router.post('/dashboard/tutor/profile', isLoggedIn, async (req, res) => {
+    if (req.session.role !== 'tutor') {
+        return res.status(403).send('Access Denied: Only tutors can perform this action');
+    }
+    
+    const { description, qualification, languages } = req.body;
+    
+    try {
+        await Tutor.updateProfile(req.session.tutorId, description, qualification, languages);
+        res.redirect('/dashboard/tutor?success=Profile updated successfully');
+    } catch (err) {
+        console.error("Error updating tutor profile:", err);
+        res.redirect('/dashboard/tutor?error=Failed to update profile');
+    }
 });
 
 // Tutee (Student) Dashboard

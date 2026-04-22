@@ -8,6 +8,8 @@ block content
     .main-content
         h1.hero-title Join Dracarys
         .container
+            if error
+                .error-message(style="color: white; background: #ff4757; padding: 10px; border-radius: 5px; margin-bottom: 20px; text-align: center;") #{error}
             #roleSelection
                 h2 I want to join as a...
                 .role-selection
@@ -24,16 +26,16 @@ block content
                 .form-row
                     .input-group
                         label(for="firstName") First Name
-                        input#firstName(type="text" name="firstName" required)
+                        input#firstName(type="text" name="firstName" pattern="^[^0-9]+$" title="Names cannot contain numbers" required)
                     .input-group
                         label(for="lastName") Last Name
-                        input#lastName(type="text" name="lastName" required)
+                        input#lastName(type="text" name="lastName" pattern="^[^0-9]+$" title="Names cannot contain numbers" required)
                 .input-group
                     label(for="email") Gmail Address
                     input#email(type="email" name="email" placeholder="example@gmail.com" required)
                 .input-group
                     label(for="password") Password
-                    input#password(type="password" name="password" required)
+                    input#password(type="password" name="password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}" title="Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character" required)
                 .checkbox-group
                     input#ageCheck(type="checkbox" required)
                     label(for="ageCheck") I confirm that I am 18 years or older.

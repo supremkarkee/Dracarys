@@ -10,6 +10,11 @@ block content
             p Welcome back, #{user.full_name}!
 
         .dashboard-content
+            if success
+                .alert.alert-success(style="color: white; background: #28a745; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{success}
+            if error
+                .alert.alert-danger(style="color: white; background: #dc3545; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{error}
+            
             .dashboard-grid
                 .dashboard-card
                     .card-icon STUDENTS
@@ -89,5 +94,24 @@ block content
                 else
                     .booking-card.empty-state
                         p You don't have any students yet.
+
+            .dashboard-section#edit-profile
+                h2 Edit Profile
+                .booking-card
+                    form(action="/dashboard/tutor/profile" method="POST" style="display: flex; flex-direction: column; gap: 15px;")
+                        div
+                            label(for="qualification" style="font-weight: 600; display: block; margin-bottom: 5px;") Qualification
+                            input#qualification(type="text" name="qualification" value=(tutorProfile && tutorProfile.qualification ? tutorProfile.qualification : '') placeholder="e.g. BSc Computer Science" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                        
+                        div
+                            label(for="languages" style="font-weight: 600; display: block; margin-bottom: 5px;") Languages (comma separated)
+                            input#languages(type="text" name="languages" value=(tutorProfile && tutorProfile.languages ? tutorProfile.languages.join(', ') : 'English') placeholder="e.g. English, Spanish" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                        
+                        div
+                            label(for="description" style="font-weight: 600; display: block; margin-bottom: 5px;") Profile Description
+                            textarea#description(name="description" rows="5" placeholder="Tell students about yourself and your teaching style..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: vertical;") #{tutorProfile && tutorProfile.description ? tutorProfile.description : ''}
+                        
+                        div
+                            button.btn-success(type="submit" style="padding: 10px 20px; font-size: 1rem;") Save Changes
 
 

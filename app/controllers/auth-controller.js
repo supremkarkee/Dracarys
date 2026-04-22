@@ -42,11 +42,29 @@ router.get("/signup", function (req, res) {
     if (req.session.loggedIn) {
         return res.redirect("/");
     }
-    res.render("signup", { title: "Signup - Dracarys", activePage: "signup" });
+    // Read the error from query params and pass it to the Pug template
+    // This allows the frontend to dynamically display validation errors
+    res.render("signup", { 
+        title: "Signup - Dracarys", 
+        activePage: "signup",
+        error: req.query.error
+    });
 });
 
 router.post("/signup", async function (req, res) {
     const { firstName, lastName, email, password, role } = req.body;
+    
+    // Ensure names do not contain numbers
+    if (/\d/.test(firstName) || /\d/.test(lastName)) {
+        return res.redirect("/signup?error=Names cannot contain numbers.");
+    }
+    
+    // Ensure password is strong (8+ chars, upper, lower, number, special)
+    const strongPasswordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}/;
+    if (!strongPasswordRegex.test(password)) {
+        return res.redirect("/signup?error=Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character.");
+    }
+
     const fullName = `${firstName} ${lastName}`;
     const userRole = role === 'learner' ? 'tutee' : role; // Map learner to tutee
     try {

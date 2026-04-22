@@ -151,6 +151,22 @@ class Tutor {
             return t;
         });
     }
+
+    /**
+     * Updates the tutor's profile information in the database.
+     * @param {number} tutor_id - The ID of the tutor to update.
+     * @param {string} description - The tutor's profile description.
+     * @param {string} qualification - The tutor's academic/professional qualification.
+     * @param {string} languages - Comma-separated list of languages spoken by the tutor.
+     */
+    static async updateProfile(tutor_id, description, qualification, languages) {
+        const sql = `
+            UPDATE tutors 
+            SET description = ?, qualification = ?, languages = ? 
+            WHERE tutor_id = ?
+        `;
+        return await db.query(sql, [description, qualification, languages, tutor_id]);
+    }
 }
 
 module.exports = { Tutor };
