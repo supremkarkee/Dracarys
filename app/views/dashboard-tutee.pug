@@ -10,6 +10,11 @@ block content
             p Welcome back, #{user.full_name}!
 
         .dashboard-content
+            if success
+                .alert.alert-success(style="color: white; background: #28a745; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{success}
+            if error
+                .alert.alert-danger(style="color: white; background: #dc3545; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{error}
+
             .dashboard-grid
                 .dashboard-card
                     .card-icon LESSONS
@@ -20,8 +25,8 @@ block content
                 .dashboard-card
                     .card-icon PROFILE
                     h3 My Profile
-                    p Manage your account
-                    a.btn-secondary(href="/browse/tutors?favorites=true") My Favorites
+                    p School: #{tuteeProfile && tuteeProfile.school_level ? tuteeProfile.school_level : 'Not set'}
+                    a.btn-secondary(href="#edit-education") Edit Education
 
                 .dashboard-card
                     .card-icon TUTORS
@@ -60,3 +65,16 @@ block content
                         p No upcoming bookings yet. Start by finding a tutor! 
                         a.btn-primary(href="/browse/tutors") Browse Tutors
 
+
+            .dashboard-section#edit-education
+                h2 Edit Education Profile
+                .booking-card
+                    form(action="/dashboard/tutee/education" method="POST" style="display: flex; flex-direction: column; gap: 15px;")
+                        div
+                            label(for="school_level" style="font-weight: 600; display: block; margin-bottom: 5px;") School Level
+                            input#school_level(type="text" name="school_level" value=(tuteeProfile && tuteeProfile.school_level ? tuteeProfile.school_level : '') placeholder="e.g. High School, University" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                        div
+                            label(for="grade_level" style="font-weight: 600; display: block; margin-bottom: 5px;") Grade / Year Level
+                            input#grade_level(type="text" name="grade_level" value=(tuteeProfile && tuteeProfile.grade_level ? tuteeProfile.grade_level : '') placeholder="e.g. Grade 10, Year 2" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                        div
+                            button.btn-success(type="submit" style="padding: 10px 20px; font-size: 1rem;") Save Changes

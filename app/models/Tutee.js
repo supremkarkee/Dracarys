@@ -39,6 +39,17 @@ class Tutee {
         const sql = 'SELECT t.tutee_id, u.full_name FROM tutees t JOIN users u ON t.user_id = u.user_id';
         return await db.query(sql);
     }
+
+    /**
+     * Updates the tutee's education level in the database.
+     * @param {number} tutee_id - The ID of the tutee to update.
+     * @param {string} school_level - e.g. 'High School', 'University'.
+     * @param {string} grade_level - e.g. 'Grade 10', 'Year 2'.
+     */
+    static async updateEducation(tutee_id, school_level, grade_level) {
+        const sql = 'UPDATE tutees SET school_level = ?, grade_level = ? WHERE tutee_id = ?';
+        return await db.query(sql, [school_level, grade_level, tutee_id]);
+    }
 }
 
 module.exports = { Tutee };

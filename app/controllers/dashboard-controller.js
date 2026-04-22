@@ -120,6 +120,10 @@ router.get('/dashboard/tutee', isLoggedIn, async (req, res) => {
     }
     const bookings = await Booking.getByTutee(req.session.tuteeId);
     
+    // Fetch the tutee's full profile (school_level, grade_level)
+    const tutee = new Tutee(req.session.tuteeId);
+    await tutee.getTuteeDetails();
+
     // Calculate stats
     const uniqueTutors = new Set(bookings.map(b => b.tutor_id)).size;
     const totalLessons = bookings.length;
@@ -128,12 +132,32 @@ router.get('/dashboard/tutee', isLoggedIn, async (req, res) => {
         title: 'Student Dashboard - Dracarys', 
         activePage: 'dashboard',
         user: res.locals.user,
+        tuteeProfile: tutee,
         bookings: bookings || [],
+        success: req.query.success,
+        error: req.query.error,
         stats: {
             tutors: uniqueTutors,
             lessons: totalLessons
         }
     });
+});
+
+// Update Tutee Education Level
+router.post('/dashboard/tutee/education', isLoggedIn, async (req, res) => {
+    if (req.session.role !== 'tutee') {
+        return res.status(403).send('Access Denied: Only students can perform this action');
+    }
+
+    const { school_level, grade_level } = req.body;
+
+    try {
+        await Tutee.updateEducation(req.session.tuteeId, school_level, grade_level);
+        res.redirect('/dashboard/tutee?success=Education profile updated successfully');
+    } catch (err) {
+        console.error('Error updating tutee education:', err);
+        res.redirect('/dashboard/tutee?error=Failed to update education profile');
+    }
 });
 
 // Admin Dashboard

@@ -88,8 +88,6 @@ block content
                                     p
                                         strong Level: 
                                         | #{student.school_level || 'N/A'} (#{student.grade_level || 'N/A'})
-                                div
-                                    a.btn-secondary(href=`mailto:${student.email}` style="text-decoration: none;") Contact
                 else
                     .booking-card.empty-state
                         p You don't have any students yet.
