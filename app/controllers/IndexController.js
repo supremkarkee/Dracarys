@@ -1,8 +1,21 @@
+/**
+ * Home Controller
+ * 
+ * This file handles the public pages that anyone can visit:
+ * the homepage (with live stats), about page, news & feeds, 
+ * and a few helpful redirects for /home and /profile.
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../services/db');
 
-// ── HOME ──────────────────────────────────────────────
+/**
+ * GET /
+ * Main homepage of the platform.
+ * Shows hero section, live stats (students, tutors, average rating), 
+ * and some featured images.
+ */
 router.get('/', async (req, res) => {
     try {
         const studentRows = await db.query('SELECT COUNT(*) AS count FROM tutees');
@@ -11,7 +24,9 @@ router.get('/', async (req, res) => {
 
         const studentCount = studentRows[0] && studentRows[0].count ? `${studentRows[0].count}+` : '500+';
         const tutorCount = tutorRows[0] && tutorRows[0].count ? `${tutorRows[0].count}+` : '120+';
-        const avgRating = reviewRows[0] && reviewRows[0].avgRating ? `${parseFloat(reviewRows[0].avgRating).toFixed(1)}★` : '4.9★';
+        const avgRating = reviewRows[0] && reviewRows[0].avgRating 
+            ? `${parseFloat(reviewRows[0].avgRating).toFixed(1)}★` 
+            : '4.9★';
 
         res.render('Home', {
             title: 'Dracarys – Learn & Grow',
@@ -32,6 +47,8 @@ router.get('/', async (req, res) => {
 
     } catch (err) {
         console.error('Home route error:', err);
+
+        // If the database fails, still show the page with nice fallback numbers
         res.render('Home', {
             title: 'Dracarys – Learn & Grow',
             activePage: 'home',
@@ -41,7 +58,6 @@ router.get('/', async (req, res) => {
                 '/images/003.jpg',
                 '/images/012.jpg'
             ],
-            // Sending distinct mock stats here to demonstrate how the template updates dynamically
             stats: { 
                 students: '1200+', 
                 tutors: '340+', 
@@ -52,19 +68,40 @@ router.get('/', async (req, res) => {
     }
 });
 
-// redirect /home → /
+/**
+ * GET /home
+ * Old URL that just redirects to the main homepage.
+ */
 router.get('/home', (req, res) => res.redirect('/'));
 
-// redirect /profile → role-specific dashboard
+/**
+ * GET /profile
+ * Smart redirect: sends logged-in users to their correct dashboard
+ * based on their role (tutor, tutee, or admin).
+ * Guests are sent to login.
+ */
 router.get('/profile', (req, res) => {
-    if (!req.session.loggedIn) return res.redirect('/login');
+    if (!req.session.loggedIn) {
+        return res.redirect('/login');
+    }
+
     const role = req.session.role;
-    if (role === 'admin') return res.redirect('/dashboard/admin');
-    if (role === 'tutor') return res.redirect('/dashboard/tutor');
-    return res.redirect('/dashboard/tutee');
+
+    if (role === 'admin') {
+        return res.redirect('/dashboard/admin');
+    }
+    if (role === 'tutor') {
+        return res.redirect('/dashboard/tutor');
+    }
+
+    // Default for tutee (student)
+    res.redirect('/dashboard/tutee');
 });
 
-// ── ABOUT ─────────────────────────────────────────────
+/**
+ * GET /about
+ * Simple static about-us page.
+ */
 router.get('/about', (req, res) => {
     res.render('About', {
         title: 'About Us | Dracarys',
@@ -72,7 +109,11 @@ router.get('/about', (req, res) => {
     });
 });
 
-// ── NEWS & FEEDS ───────────────────────────────────────
+/**
+ * GET /news
+ * News & feeds page that highlights the current "Tutor of the Week".
+ * Pulls the top-rated tutor with their subjects and stats.
+ */
 router.get('/news', async (req, res) => {
     try {
         const sql = `
@@ -88,7 +129,9 @@ router.get('/news', async (req, res) => {
             ORDER BY review_count DESC, t.rating DESC
             LIMIT 1
         `;
+
         const results = await db.query(sql);
+
         let tutorOfWeek = null;
         if (results.length > 0) {
             const top = results[0];
@@ -96,7 +139,7 @@ router.get('/news', async (req, res) => {
                 name: top.full_name,
                 subject: top.subjects,
                 rating: top.rating,
-                review: '"' + top.description + '"',
+                review: `"${top.description}"`,
                 initials: top.full_name.charAt(0).toUpperCase(),
                 points: top.points || 0,
                 sessions: top.lesson_count || 0,
@@ -112,8 +155,10 @@ router.get('/news', async (req, res) => {
             activePage: 'news',
             tutorOfWeek
         });
+
     } catch (err) {
         console.error('Error fetching news:', err);
+
         res.render('News', {
             title: 'News & Feeds | Dracarys',
             activePage: 'news',
