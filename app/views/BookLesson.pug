@@ -1,0 +1,64 @@
+extends Layout
+
+block head
+    link(rel="stylesheet" href="/css/styles.css")
+    style.
+        .booking-container { max-width: 600px; margin: 50px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .booking-form h2 { margin-bottom: 20px; color: #2d3436; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #636e72; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #dfe6e9; border-radius: 8px; font-size: 16px; }
+        .btn-book { width: 100%; padding: 15px; background: linear-gradient(135deg, #00b894, #00cec9); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
+        .btn-book:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,184,148,0.3); }
+
+block content
+    main.container
+        .booking-container
+            form.booking-form(method="POST" action=`/book/${tutor.tutor_id}`)
+                h2 Book a Lesson with #{tutor.full_name}
+                
+                .form-group
+                    label(for="subject_name") Select Subject
+                    select(name="subject_name" required)
+                        each subject in subjects
+                            option(value=subject.subject_name)= subject.subject_name
+                
+                .form-group
+                    label(for="date") Preferred Date
+                    input(type="date" id="date" name="date" required min=new Date().toISOString().split('T')[0])
+                
+                .form-group
+                    label(for="time") Start Time (from 09:00 to 19:00)
+                    input(type="time" id="time" name="time" min="09:00" max="19:00" required)
+                    small.text-muted Standard hours: 9 AM to 8 PM
+                
+                .form-group
+                    label(for="end_time") End Time (1 to 3 hours duration)
+                    input(type="time" id="end_time" name="end_time" required)
+                
+                button.btn-book(type="submit") Confirm Booking
+
+block scripts
+    script.
+        document.querySelector('.booking-form').addEventListener('submit', function(e) {
+            const start = document.getElementById('time').value;
+            const end = document.getElementById('end_time').value;
+            
+            if (start && end) {
+                const startTime = new Date(`1970-01-01T${start}`);
+                const endTime = new Date(`1970-01-01T${end}`);
+                const hours = (endTime - startTime) / (1000 * 60 * 60);
+                
+                if (startTime.getHours() < 9 || startTime.getHours() > 19) {
+                    alert("Lessons can only start between 9:00 AM and 7:00 PM to finish by 8:00 PM.");
+                    e.preventDefault();
+                    return;
+                }
+                
+                if (hours < 1 || hours > 3) {
+                    alert("A lesson must be between 1 and 3 hours long.");
+                    e.preventDefault();
+                    return;
+                }
+            }
+        });
