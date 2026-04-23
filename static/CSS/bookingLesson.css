@@ -1,0 +1,7 @@
+.booking-container { max-width: 600px; margin: 50px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.booking-form h2 { margin-bottom: 20px; color: #2d3436; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #636e72; }
+.form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #dfe6e9; border-radius: 8px; font-size: 16px; }
+.btn-book { width: 100%; padding: 15px; background: linear-gradient(135deg, #00b894, #00cec9); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
+.btn-book:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,184,148,0.3); }
