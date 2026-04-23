@@ -52,8 +52,13 @@ router.get("/signup", function (req, res) {
 });
 
 router.post("/signup", async function (req, res) {
-    const { firstName, lastName, email, password, role } = req.body;
-    
+    const { firstName, lastName, email, password, confirmPassword, role } = req.body;
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+        return res.redirect("/signup?error=Passwords do not match.");
+    }
+
     // Ensure names do not contain numbers
     if (/\d/.test(firstName) || /\d/.test(lastName)) {
         return res.redirect("/signup?error=Names cannot contain numbers.");

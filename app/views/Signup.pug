@@ -36,6 +36,10 @@ block content
                 .input-group
                     label(for="password") Password
                     input#password(type="password" name="password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}" title="Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character" required)
+                .input-group
+                    label(for="confirmPassword") Confirm Password
+                    input#confirmPassword(type="password" name="confirmPassword" required)
+                    #passwordError(style="color: #ff4757; font-size: 0.85rem; margin-top: 5px; display: none;") Passwords do not match.
                 .checkbox-group
                     input#ageCheck(type="checkbox" required)
                     label(for="ageCheck") I confirm that I am 18 years or older.
@@ -57,5 +61,33 @@ block scripts
             document.getElementById('signupForm').style.display = 'none';
             document.getElementById('roleSelection').style.display = 'block';
             document.getElementById('signupForm').reset();
+            document.getElementById('passwordError').style.display = 'none';
         }
+
+        // Real-time password matching validation
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const passwordError = document.getElementById('passwordError');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function validatePasswords() {
+            if (confirmPassword.value && password.value !== confirmPassword.value) {
+                passwordError.style.display = 'block';
+                confirmPassword.style.borderColor = '#ff4757';
+                return false;
+            } else {
+                passwordError.style.display = 'none';
+                confirmPassword.style.borderColor = '';
+                return true;
+            }
+        }
+
+        password.addEventListener('input', validatePasswords);
+        confirmPassword.addEventListener('input', validatePasswords);
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            if (!validatePasswords()) {
+                e.preventDefault();
+            }
+        });
 

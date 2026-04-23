@@ -32,6 +32,12 @@ block content
                     .card-icon POINTS
                     h3 Points
                     p #{stats.points} Reward Points
+                
+                .dashboard-card
+                    .card-icon RATING
+                    h3 My Rating
+                    p #{stats.rating} / 5.0 (#{stats.reviewCount} reviews)
+                    a.btn-secondary(href="#my-reviews") Read Feedback
             .dashboard-section
                 h2 Pending Lesson Requests
                 if bookings && bookings.length > 0
@@ -91,6 +97,23 @@ block content
                 else
                     .booking-card.empty-state
                         p You don't have any students yet.
+
+            .dashboard-section#my-reviews
+                h2 My Reviews
+                if reviews && reviews.length > 0
+                    .bookings-list
+                        each review in reviews
+                            .booking-card
+                                div(style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;")
+                                    div
+                                        h3= review.studentName
+                                        span(style="color: #666; font-size: 0.85rem;")= new Date(review.review_date).toLocaleDateString()
+                                    div(style="background: #f1f1f1; padding: 5px 12px; border-radius: 20px; font-weight: 700; color: #ff9800;")
+                                        | #{review.rating} ★
+                                p(style="font-style: italic; color: #333; line-height: 1.5; margin-top: 10px;") "#{review.feedback}"
+                else
+                    .booking-card.empty-state
+                        p You haven't received any reviews yet.
 
             .dashboard-section#my-subjects
                 h2 My Subjects

@@ -1,84 +1,77 @@
-extends site-layout
+extends Layout
 
 block head
-    link(rel="stylesheet" href="/CSS/about-custom.css")
+    title About Dracarys - Empowering Education
 
 block content
-    //- The site-layout already has the base typography and structure.
-    
-    section.hero
-        h1 About Dracarys
-        p We believe every child deserves access to an inspiring, affordable, and safe learning experience — no matter their background or budget.
-        
-    //- REMOVED the extra 'main' tag from here so CSS grids can work properly
-    section.mission
-        h2 Our Mission
-        p Dracarys is a community-driven tuition marketplace built by university students, for school students. We connect enthusiastic university students and subject experts with primary and secondary school pupils, bridging the gap between academic levels through peer-to-peer learning. Our platform makes education more <strong>accessible</strong>, more <strong>affordable</strong>, and genuinely more <strong>fun</strong>.
-        
-    section.stats
-        .stat-box
-            .num 10+
-            .label Verified Tutors
-        .stat-box
-            .num 10
-            .label Subjects Available
-        .stat-box
-            .num 100%
-            .label Safety Verified
+    .page-wrapper
+        section.page-hero
+            .page-eyebrow About Dracarys
+            h1
+                span.highlight Our Mission
+            p.tagline We believe every child deserves access to an inspiring, affordable, and safe learning experience — no matter their background or budget.
             
-    section.team
-        h2 Meet the Team
-        .team-grid
-            .member
-                .avatar(style="background:var(--primary)") SK
-                h4 Suprem Karki
-                p.student-id A00020626
-                p.role Backend & Cyber Security
-            .member
-                .avatar(style="background:var(--secondary)") RS
-                h4 Raja Shah
-                p.student-id A00020547
-                p.role Full Stack Developer
-            .member
-                .avatar(style="background:var(--success)") SS
-                h4 Sadun Sudu Dewage
-                p.student-id A00019034
-                p.role Frontend Specialist & Designer
-            .member
-                .avatar(style="background:var(--gold)") AL
-                h4 Aman Lamjel
-                p.student-id A00016965
-                p.role Testing & Ethics
-                
-    section.values
-        h2 Our Core Values
-        .values-grid
-            .value-card
-                h4 Accessibility
+        section.mission-block
+            p Dracarys is a community-driven tuition marketplace built by university students, for school students. We connect enthusiastic university students and subject experts with primary and secondary school pupils, bridging the gap between academic levels through peer-to-peer learning.
+            p Our platform makes education more <span class="hl">accessible</span>, more <span class="hl">affordable</span>, and genuinely more <span class="hl">fun</span>.
+            
+        .section-divider
+            h2 Our Core Pillars
+            .line
+            
+        .pillars
+            .pillar
+                .pillar-icon 🌍
+                h3 Accessibility
                 p Quality education should not be limited by financial barriers. We offer affordable community-based tutoring for all families.
-            .value-card
-                h4 Child Safety
+            .pillar
+                .pillar-icon 🛡️
+                h3 Child Safety
                 p Every tutee is a minor. We verify all tutors, provide parental oversight tools, and monitor all communications for safety.
-            .value-card
-                h4 Engagement
+            .pillar
+                .pillar-icon 💡
+                h3 Engagement
                 p Learning should be exciting. Our tutors use interactive methods, games, and real-life examples to make subjects come alive.
-            .value-card
-                h4 Community
-                p We believe in sharing knowledge cooperatively, for mutual benefit. Dracarys is built on the principle of giving back.
-            .value-card
-                h4 Fairness
-                p Transparent pricing, fair treatment of tutors, and equal access regardless of background, gender, or learning needs.
-            .value-card
-                h4 Growth
-                p We track and celebrate progress. Every session note, every review, and every badge represents a step forward.
-                
-    section.ethics
-        h2 Our Commitment to Safety & Ethics
-        p Dracarys was designed with child safeguarding at its core. All tutors are verified with university email addresses. Parents have full visibility over all messaging between tutors and their children. We comply fully with GDPR — collecting only the minimum data required. Our platform includes a content flagging system, moderation controls, and a clear code of conduct for all tutors. We are committed to inclusivity, accessibility (WCAG 2.1 AA), and bias-free matching.
-        
-    section.about-cta
-        h2 Ready to Join the Community?
-        p Whether you're a parent looking for a tutor, or a university student wanting to give back — Dracarys is for you.
-        //- Updated the href to point to your actual signup route
-        a.btn(href="/signup") Get Started Today
-        a.btn(href="/login") Already have an account ? Sign in
+
+        .section-divider
+            h2 Meet the Team
+            .line
+
+        .team-grid
+            .team-card
+                .team-avatar SK
+                .team-name Suprem Karki
+                .team-role Backend & Cyber Security
+                .team-divider
+                p.team-bio A00020626
+            .team-card
+                .team-avatar RS
+                .team-name Raja Shah
+                .team-role Full Stack Developer
+                .team-divider
+                p.team-bio A00020547
+            .team-card
+                .team-avatar SS
+                .team-name Sadun Sudu Dewage
+                .team-role Frontend specialist & Designer
+                .team-divider
+                p.team-bio A00019034
+            .team-card
+                .team-avatar AL
+                .team-name Aman Lamjel
+                .team-role Testing & Ethics
+                .team-divider
+                p.team-bio A00016965
+
+        section.mission-block(style="margin-top: 80px;")
+            h2 Our Commitment to Safety & Ethics
+            p Dracarys was designed with child safeguarding at its core. All tutors are verified with university email addresses. Parents have full visibility over all messaging between tutors and their children.
+            p We comply fully with GDPR — collecting only the minimum data required. Our platform includes a content flagging system, moderation controls, and a clear code of conduct for all tutors.
+
+        section.cta-section(style="border-radius: 24px; margin-bottom: 80px;")
+            .cta-inner
+                h2 Ready to Join the Community?
+                p Whether you're a parent looking for a tutor, or a university student wanting to give back — Dracarys is for you.
+                .hero-buttons(style="justify-content: center;")
+                    a.hero-btn.primary(href="/signup") Get Started Today
+                    a.hero-btn.outline(href="/login") Already have an account? Sign in

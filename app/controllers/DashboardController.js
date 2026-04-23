@@ -49,6 +49,8 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
         // Fetch full tutor specific data using the Tutor model
         const tutorProfile = new Tutor(req.session.tutorId);
         await tutorProfile.getTutorDetails();
+        const reviews = await tutorProfile.getReviews();
+        const avgRating = await tutorProfile.calculateAvgRating();
 
         const points = tutorProfile.points || 0;
         const totalLessons = tutorProfile.lesson_count || bookings.length;
@@ -60,12 +62,15 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
             tutorProfile: tutorProfile,
             bookings: bookings || [],
             students: students || [],
+            reviews: reviews || [],
             success: req.query.success,
             error: req.query.error,
             stats: {
                 students: uniqueStudents,
                 lessons: totalLessons,
-                points: points
+                points: points,
+                rating: avgRating,
+                reviewCount: reviews.length
             }
         });
     } catch (err) {

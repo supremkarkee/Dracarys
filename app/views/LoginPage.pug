@@ -1,9 +1,9 @@
-extends site-layout
+extends Layout
 
 block head
     title Login - Free Education
     link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet")
-    link(rel="stylesheet" href="/CSS/login-styles.css")
+    link(rel="stylesheet" href="/css/loginpage.css")
 
 block content
     .login-page-wrapper
@@ -18,12 +18,12 @@ block content
 
             .login-container
                 //dynamic login message.
-                if invalidPassword
-                    h2.error-message Invalid Password. Please try again.
+                if error
+                    h2.error-message Invalid Email or Password
                 else
                     h2 Welcome Back
                 
-                form#loginForm(action='/authenticate' method='POST')
+                form#loginForm(action='/login' method='POST')
                     .input-group
                         label(for="email") Email
                         input#email(type="email" name="email" placeholder="Enter your email" required)
@@ -31,8 +31,6 @@ block content
                         label(for="password") Password
                         input#password(type="password" name="password" placeholder="Enter your password" required)
                     button.login-btn(type="submit") Sign In
-                    #errorMsg.error Invalid login details
                 .extra-links
                     p
                         a(href="/signup") Create Account
-

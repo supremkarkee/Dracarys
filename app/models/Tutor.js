@@ -58,6 +58,21 @@ class Tutor {
         return this.reviews;
     }
 
+    /**
+     * Calculates the average rating from the reviews table and updates the tutor record.
+     */
+    async calculateAvgRating() {
+        const sql = 'SELECT AVG(rating) as avgRating FROM reviews WHERE tutor_id = ?';
+        const results = await db.query(sql, [this.tutor_id]);
+        const avg = results[0].avgRating || 0.0;
+        
+        // Update the tutors table with the new average
+        await db.query('UPDATE tutors SET rating = ? WHERE tutor_id = ?', [avg, this.tutor_id]);
+        
+        this.avgRating = parseFloat(avg).toFixed(1);
+        return this.avgRating;
+    }
+
     static async getTutorOfTheWeek() {
         const sql = `
             SELECT t.*, u.full_name, u.email,
