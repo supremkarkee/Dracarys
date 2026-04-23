@@ -110,6 +110,16 @@ INSERT INTO `bookings` (`booking_id`, `tutee_id`, `tutor_id`, `subject_id`, `les
 
 -- --------------------------------------------------------
 
+-- Table structure for table `flagged_tutors`
+CREATE TABLE `flagged_tutors` (
+  `flagged_id` int(11) NOT NULL,
+  `tutee_id` int(11) NOT NULL,
+  `tutor_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 -- Table structure for table `favorites`
 CREATE TABLE `favorites` (
   `favorite_id` int(11) NOT NULL,
@@ -215,6 +225,7 @@ ALTER TABLE `subjects` MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO
 ALTER TABLE `tutors` MODIFY `tutor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 ALTER TABLE `tutees` MODIFY `tutee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 ALTER TABLE `bookings` MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE `flagged_tutors` MODIFY `flagged_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 ALTER TABLE `favorites` MODIFY `favorite_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 ALTER TABLE `reviews` MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 

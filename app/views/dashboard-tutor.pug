@@ -23,20 +23,37 @@ block content
                     .card-icon STUDENTS
                     h3 My Students
                     p #{stats.students} Unique Students
-                    a.btn-secondary(href="/dashboard/tutor") View List
+                    a.btn-secondary(href="#my-students-section") View List
 
                 .dashboard-card
                     .card-icon LESSONS
                     h3 Lessons
                     p #{stats.lessons} Completed Lessons
-                    a.btn-secondary(href="/dashboard/tutor") View History
+                    a.btn-secondary(href="#pending-requests") View History
 
                 .dashboard-card
                     .card-icon POINTS
                     h3 Points
                     p #{stats.points} Reward Points
                     a.btn-secondary(href="/dashboard/tutor") My Rewards
-            .dashboard-section
+            if myStudents && myStudents.length > 0
+                .dashboard-section#my-students-section
+                    h2 My Students
+                    .bookings-list
+                        each student in myStudents
+                            .booking-card(style="display:flex; justify-content: space-between; align-items: center;")
+                                div
+                                    h3 #{student.name}
+                                    p
+                                        strong Email: 
+                                        a(href=`mailto:${student.email}`) #{student.email}
+                                    p
+                                        strong Level: 
+                                        span #{student.school_level || 'N/A'} - #{student.grade_level || 'N/A'}
+                                div
+                                    span(class="status-badge status-accepted") Student
+            
+            .dashboard-section#pending-requests
                 h2 Pending Lesson Requests
                 if bookings && bookings.length > 0
                     .bookings-list

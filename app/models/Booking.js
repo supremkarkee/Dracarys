@@ -15,7 +15,7 @@ class Booking {
 
     static async getByTutor(tutorId) {
         const sql = `
-            SELECT b.*, u.full_name as student_name
+            SELECT b.*, u.full_name as student_name, u.email as student_email, t.grade_level, t.school_level
             FROM bookings b
             JOIN tutees t ON b.tutee_id = t.tutee_id
             JOIN users u ON t.user_id = u.user_id

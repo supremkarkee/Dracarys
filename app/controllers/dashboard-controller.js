@@ -36,6 +36,20 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
     // Calculate stats
     const uniqueStudents = new Set(bookings.map(b => b.tutee_id)).size;
     
+    const myStudentsMap = new Map();
+    bookings.forEach(b => {
+        if (!myStudentsMap.has(b.tutee_id)) {
+            myStudentsMap.set(b.tutee_id, {
+                tutee_id: b.tutee_id,
+                name: b.student_name,
+                email: b.student_email,
+                school_level: b.school_level,
+                grade_level: b.grade_level
+            });
+        }
+    });
+    const myStudents = Array.from(myStudentsMap.values());
+    
     // Fetch tutor specific data (like points)
     const tutorData = await db.query('SELECT points, lesson_count FROM tutors WHERE tutor_id = ?', [req.session.tutorId]);
     const points = tutorData.length > 0 ? tutorData[0].points : 0;
@@ -46,6 +60,7 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
         activePage: 'dashboard',
         user: res.locals.user,
         bookings: bookings || [],
+        myStudents: myStudents,
         stats: {
             students: uniqueStudents,
             lessons: totalLessons,

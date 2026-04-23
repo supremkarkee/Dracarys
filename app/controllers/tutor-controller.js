@@ -74,6 +74,7 @@ router.get("/tutor/:id", async function (req, res) {
         if (tutor.full_name) {
             let existingBooking = null;
             let isFlagged = false;
+            let isFavorite = false;
             
             if (req.session.loggedIn && req.session.role === 'tutee') {
                 existingBooking = await Booking.checkExisting(req.session.tuteeId, tutor.tutor_id);
@@ -81,7 +82,7 @@ router.get("/tutor/:id", async function (req, res) {
                 const flagCheck = await db.query('SELECT * FROM flagged_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
                 isFlagged = flagCheck.length > 0;
 
-                const favCheck = await db.query('SELECT * FROM favourites_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
+                const favCheck = await db.query('SELECT * FROM favorites WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
                 isFavorite = favCheck.length > 0;
             }
 
@@ -226,12 +227,12 @@ router.post("/tutor/:id/favorite", requireLogin, async function (req, res) {
     const tutor_id = req.params.id;
     const tutee_id = req.session.tuteeId;
     try {
-        const existing = await db.query('SELECT * FROM favourites_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor_id, tutee_id]);
+        const existing = await db.query('SELECT * FROM favorites WHERE tutor_id = ? AND tutee_id = ?', [tutor_id, tutee_id]);
         if (existing.length > 0) {
-            await db.query('DELETE FROM favourites_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor_id, tutee_id]);
+            await db.query('DELETE FROM favorites WHERE tutor_id = ? AND tutee_id = ?', [tutor_id, tutee_id]);
             res.json({ action: 'removed' });
         } else {
-            await db.query('INSERT INTO favourites_tutors (tutor_id, tutee_id) VALUES (?, ?)', [tutor_id, tutee_id]);
+            await db.query('INSERT INTO favorites (tutor_id, tutee_id) VALUES (?, ?)', [tutor_id, tutee_id]);
             res.json({ action: 'added' });
         }
     } catch (err) {

@@ -120,7 +120,7 @@ class Tutor {
         }
 
         if (favoritesOnly && tuteeId) {
-            sql += ' AND t.tutor_id IN (SELECT tutor_id FROM favourites_tutors WHERE tutee_id = ?)';
+            sql += ' AND t.tutor_id IN (SELECT tutor_id FROM favorites WHERE tutee_id = ?)';
             params.push(tuteeId);
         }
 
