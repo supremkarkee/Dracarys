@@ -59,7 +59,7 @@ block content
                                     if booking.status === 'pending'
                                         form(action="/booking/cancel" method="POST" style="margin:0;")
                                             input(type="hidden" name="booking_id" value=booking.booking_id)
-                                            button(type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; text-decoration: underline; font-size: 0.9em;") Cancel
+                                            button.btn-cancel-mini(type="submit") Cancel
                 else
                     .activity-list
                         p No upcoming bookings yet. Start by finding a tutor! 

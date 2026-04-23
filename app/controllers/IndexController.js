@@ -107,10 +107,32 @@ router.get('/news', async (req, res) => {
             };
         }
 
+        // Fetch Leaderboard (Top 10 Tutors by points)
+        const lbSql = `
+            SELECT u.full_name, t.points, t.lesson_count,
+                   GROUP_CONCAT(DISTINCT s.subject_name SEPARATOR ', ') as subjects
+            FROM tutors t
+            JOIN users u ON t.user_id = u.user_id
+            LEFT JOIN tutor_subjects ts ON t.tutor_id = ts.tutor_id
+            LEFT JOIN subjects s ON ts.subject_id = s.subject_id
+            GROUP BY t.tutor_id, u.full_name, t.points, t.lesson_count
+            ORDER BY t.points DESC, t.lesson_count DESC
+            LIMIT 10
+        `;
+        const leaderboardRaw = await db.query(lbSql);
+        const leaderboard = leaderboardRaw.map(t => ({
+            name: t.full_name,
+            points: t.points || 0,
+            sessions: t.lesson_count || 0,
+            subject: t.subjects || 'General',
+            initials: t.full_name.charAt(0).toUpperCase()
+        }));
+
         res.render('News', {
             title: 'News & Feeds | Dracarys',
             activePage: 'news',
-            tutorOfWeek
+            tutorOfWeek,
+            leaderboard
         });
     } catch (err) {
         console.error('Error fetching news:', err);
