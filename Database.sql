@@ -56,6 +56,26 @@ LOCK TABLES `bookings` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `flagged_tutors`
+--
+
+DROP TABLE IF EXISTS `flagged_tutors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `flagged_tutors` (
+  `flagged_id` int NOT NULL AUTO_INCREMENT,
+  `tutee_id` int NOT NULL,
+  `tutor_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`flagged_id`),
+  UNIQUE KEY `user_tutor_unique` (`tutee_id`,`tutor_id`),
+  KEY `tutor_id` (`tutor_id`),
+  CONSTRAINT `flagged_tutors_ibfk_1` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`) ON DELETE CASCADE,
+  CONSTRAINT `flagged_tutors_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `favorites`
 --
 

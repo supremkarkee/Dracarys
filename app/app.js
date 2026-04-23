@@ -1,57 +1,63 @@
-// Import express.js
-// Imports express framework
+/**
+ * Main App Setup
+ * 
+ * This is the central file that brings the entire Dracarys platform together.
+ * It creates the Express server, sets up sessions, loads all controllers,
+ * configures the view engine (Pug), and handles errors.
+ */
+
 const express = require("express");
-
-// Create express app
-var app = express();
-
 const session = require('express-session');
-
-// Internal framework tools
 const path = require('path');
 
-// Import models at top level
+// Import our User model (used in the session middleware below)
 const { User } = require('./models/User');
 
-// Support JSON and URL encoded bodies
+// Create the Express application
+const app = express();
+
+// Support JSON and form data in requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configure sessions: This middleware sets up session management for the application
+/**
+ * Session Configuration
+ * 
+ * This middleware handles user login sessions across the whole website.
+ * It remembers who is logged in between page visits.
+ */
 app.use(session({
-    // secret: The key used to sign the session ID cookie. 
-    // It uses an environment variable for security in production, 
-    // or falls back to a random string for local development.
+    // Secret key used to sign the session cookie (keeps it secure)
     secret: process.env.SESSION_SECRET || 'x9k2mP5vL8nQwRt3yH7bZc4jF1sV0aE6',
-
-    // resave: Forces the session to be saved back to the session store, 
-    // even if the session was never modified during the request. 
-    // Setting to false optimizes performance and avoids race conditions.
+    
+    // Don't save the session if nothing changed (better performance)
     resave: false,
-
-    // saveUninitialized: Forces a session that is "uninitialized" to be saved to the store.
-    // Setting to false helps implement login sessions and complies with laws that require permission before setting a cookie.
+    
+    // Don't create a session until the user actually logs in
     saveUninitialized: false,
-
-    // cookie: Settings object for the session ID cookie.
-    // secure: false means the cookie will be sent over HTTP (not requiring HTTPS). 
-    // This is necessary for local development without SSL.
+    
+    // Cookie settings (secure: false = works on localhost without HTTPS)
     cookie: { secure: false }
 }));
 
-// Simple middleware to attach user session data to res.locals
+/**
+ * Custom Middleware: Attach User Info to Every View
+ * 
+ * This runs on every request and makes the logged-in user's data
+ * available to all Pug templates (so we can show "Welcome, Alex" etc.).
+ */
 app.use(function (req, res, next) {
     res.locals.loggedIn = req.session.loggedIn || false;
-    res.locals.userId = req.session.userId || null;
-    res.locals.role = req.session.role || null;
-    res.locals.tutorId = req.session.tutorId || null;
-    res.locals.tuteeId = req.session.tuteeId || null;
-    res.locals.user = null;
+    res.locals.userId   = req.session.userId || null;
+    res.locals.role     = req.session.role || null;
+    res.locals.tutorId  = req.session.tutorId || null;
+    res.locals.tuteeId  = req.session.tuteeId || null;
+    res.locals.user     = null;
 
-    // Only attempt to hydrate user object if logged in
+    // If the user is logged in, load their full details once
     if (req.session.loggedIn && req.session.userId) {
-        // Fix Bug 8: User is already imported at the top of the file, no need to require again
         const user = new User(req.session.userId);
+        
         user.getUserDetails()
             .then(() => {
                 res.locals.user = user;
@@ -61,29 +67,28 @@ app.use(function (req, res, next) {
                 console.error("Session User Hydration Error:", err);
                 next();
             });
-    }
-    else {
+    } else {
         next();
     }
 });
 
-// Set the view engine to pug
+// Set Pug as our template engine
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
-// Add static files location
+// Serve static files (CSS, images, JavaScript) from the static folder
 app.use(express.static(path.join(__dirname, '../static')));
 
-// Import all controller modules using absolute paths to avoid any resolution issues
-const indexRoutes = require(path.join(__dirname, 'controllers', 'IndexController'));
-const authRoutes = require(path.join(__dirname, 'controllers', 'AuthController'));
-const studentRoutes = require(path.join(__dirname, 'controllers', 'StudentController'));
-const subjectRoutes = require(path.join(__dirname, 'controllers', 'SubjectController'));
-const tutorRoutes = require(path.join(__dirname, 'controllers', 'TutorController'));
+// Import all our cleaned controllers
+const indexRoutes     = require(path.join(__dirname, 'controllers', 'IndexController'));
+const authRoutes      = require(path.join(__dirname, 'controllers', 'AuthController'));
+const studentRoutes   = require(path.join(__dirname, 'controllers', 'StudentController'));
+const subjectRoutes   = require(path.join(__dirname, 'controllers', 'SubjectController'));
+const tutorRoutes     = require(path.join(__dirname, 'controllers', 'TutorController'));
 const dashboardRoutes = require(path.join(__dirname, 'controllers', 'DashboardController'));
-const adminRoutes = require(path.join(__dirname, 'controllers', 'AdminController'));
+const adminRoutes     = require(path.join(__dirname, 'controllers', 'AdminController'));
 
-// Mount the routes
+// Mount all routes
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/', studentRoutes);
@@ -92,12 +97,15 @@ app.use('/', tutorRoutes);
 app.use('/', dashboardRoutes);
 app.use('/', adminRoutes);
 
-// Error handling - 404
-app.use(function (req, res, next) {
-    res.status(404).render("Error404", { title: "404 - Not Found", activePage: null });
+// 404 Error Page
+app.use(function (req, res) {
+    res.status(404).render("Error404", { 
+        title: "404 - Not Found", 
+        activePage: null 
+    });
 });
 
-// Error handling - General (Enhanced for diagnostics)
+// General Error Handler (for unexpected crashes)
 app.use(function (err, req, res, next) {
     console.error("Express Error Handler:", err && (err.stack || err));
     res.status(500).send(`
@@ -106,5 +114,5 @@ app.use(function (err, req, res, next) {
     `);
 });
 
-// Export the app for use in index.js
+// Export the app so index.js can start the server
 module.exports = app;

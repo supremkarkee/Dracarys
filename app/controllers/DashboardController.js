@@ -1,3 +1,11 @@
+/**
+ * Dashboard Controller
+ * 
+ * This file handles the main dashboard for every user type (tutor, tutee, admin).
+ * It redirects users to the correct dashboard based on their role and includes
+ * profile editing, subject management, booking actions, and stats.
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../services/db');
@@ -6,7 +14,12 @@ const { Tutor } = require('../models/Tutor');
 const { Tutee } = require('../models/Tutee');
 const { Subject } = require('../models/Subject');
 
-// Middleware to check if user is logged in
+/**
+ * Middleware: Check if user is logged in
+ * 
+ * This runs before every dashboard route.
+ * If someone isn't logged in, it sends them back to the login page.
+ */
 const isLoggedIn = (req, res, next) => {
     if (!req.session.loggedIn) {
         return res.redirect('/login?error=Please login to access dashboard');
@@ -14,9 +27,14 @@ const isLoggedIn = (req, res, next) => {
     next();
 };
 
-// Route to main dashboard (redirects based on role)
+/**
+ * GET /dashboard
+ * Main dashboard entry point.
+ * It looks at the user's role and redirects them to the correct dashboard.
+ */
 router.get('/dashboard', isLoggedIn, (req, res) => {
     const role = req.session.role;
+
     if (role === 'tutor') {
         return res.redirect('/dashboard/tutor');
     } else if (role === 'tutee') {
@@ -24,16 +42,20 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
     } else if (role === 'admin') {
         return res.redirect('/dashboard/admin');
     }
+
     res.redirect('/');
 });
 
-// Tutor Dashboard
+/**
+ * GET /dashboard/tutor
+ * Shows the tutor dashboard with bookings, students, profile, reviews, and stats.
+ */
 router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
     if (req.session.role !== 'tutor') {
         return res.status(403).send('Access Denied: Only tutors can access this page');
     }
 
-    // Guard: tutorId must exist in session (set at login)
+    // Safety check: make sure the tutor ID is in the session
     if (!req.session.tutorId) {
         console.error('Tutor dashboard: tutorId missing from session for userId:', req.session.userId);
         return res.redirect('/logout');
@@ -42,11 +64,8 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
     try {
         const bookings = await Booking.getByTutor(req.session.tutorId);
         const students = await Tutee.getByTutor(req.session.tutorId);
-        
-        // Calculate stats
-        const uniqueStudents = students.length;
-        
-        // Fetch full tutor specific data using the Tutor model
+
+        // Load full tutor profile, reviews, and rating using the Tutor model
         const tutorProfile = new Tutor(req.session.tutorId);
         await tutorProfile.getTutorDetails();
         const reviews = await tutorProfile.getReviews();
@@ -66,26 +85,30 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
             success: req.query.success,
             error: req.query.error,
             stats: {
-                students: uniqueStudents,
+                students: students.length,
                 lessons: totalLessons,
                 rating: avgRating,
                 reviewCount: reviews.length
             }
         });
+
     } catch (err) {
         console.error('Tutor dashboard error:', err);
         res.redirect('/dashboard/tutor?error=Failed to load dashboard data');
     }
 });
 
-// Update Tutor Profile
+/**
+ * POST /dashboard/tutor/profile
+ * Updates a tutor's description, qualifications, and languages.
+ */
 router.post('/dashboard/tutor/profile', isLoggedIn, async (req, res) => {
     if (req.session.role !== 'tutor') {
         return res.status(403).send('Access Denied: Only tutors can perform this action');
     }
-    
+
     const { description, qualification, languages } = req.body;
-    
+
     try {
         await Tutor.updateProfile(req.session.tutorId, description, qualification, languages);
         res.redirect('/dashboard/tutor?success=Profile updated successfully');
@@ -95,14 +118,17 @@ router.post('/dashboard/tutor/profile', isLoggedIn, async (req, res) => {
     }
 });
 
-// Mark Booking as Completed
+/**
+ * POST /dashboard/tutor/booking/complete
+ * Marks a booking as completed (used by tutors).
+ */
 router.post('/dashboard/tutor/booking/complete', isLoggedIn, async (req, res) => {
     if (req.session.role !== 'tutor') {
         return res.status(403).send('Access Denied');
     }
-    
+
     const { booking_id } = req.body;
-    
+
     try {
         await Booking.complete(booking_id);
         res.redirect('/dashboard/tutor?success=Lesson marked as completed!');
@@ -112,14 +138,17 @@ router.post('/dashboard/tutor/booking/complete', isLoggedIn, async (req, res) =>
     }
 });
 
-// Add Tutor Subject
+/**
+ * POST /dashboard/tutor/subject/add
+ * Adds a new subject that the tutor teaches.
+ */
 router.post('/dashboard/tutor/subject/add', isLoggedIn, async (req, res) => {
     if (req.session.role !== 'tutor') {
         return res.status(403).send('Access Denied: Only tutors can perform this action');
     }
-    
+
     const { subject_name } = req.body;
-    
+
     try {
         await Subject.addTutorSubject(req.session.tutorId, subject_name);
         res.redirect('/dashboard/tutor?success=Subject added successfully');
@@ -129,14 +158,17 @@ router.post('/dashboard/tutor/subject/add', isLoggedIn, async (req, res) => {
     }
 });
 
-// Remove Tutor Subject
+/**
+ * POST /dashboard/tutor/subject/remove
+ * Removes a subject that the tutor teaches.
+ */
 router.post('/dashboard/tutor/subject/remove', isLoggedIn, async (req, res) => {
     if (req.session.role !== 'tutor') {
         return res.status(403).send('Access Denied: Only tutors can perform this action');
     }
-    
+
     const { subject_name } = req.body;
-    
+
     try {
         await Subject.removeTutorSubject(req.session.tutorId, subject_name);
         res.redirect('/dashboard/tutor?success=Subject removed successfully');
@@ -146,13 +178,16 @@ router.post('/dashboard/tutor/subject/remove', isLoggedIn, async (req, res) => {
     }
 });
 
-// Tutee (Student) Dashboard
+/**
+ * GET /dashboard/tutee
+ * Shows the student dashboard with bookings and education profile.
+ */
 router.get('/dashboard/tutee', isLoggedIn, async (req, res) => {
     if (req.session.role !== 'tutee') {
         return res.status(403).send('Access Denied: Only students can access this page');
     }
 
-    // Guard: tuteeId must exist in session (set at login)
+    // Safety check: make sure the tutee ID is in the session
     if (!req.session.tuteeId) {
         console.error('Tutee dashboard: tuteeId missing from session for userId:', req.session.userId);
         return res.redirect('/logout');
@@ -160,14 +195,12 @@ router.get('/dashboard/tutee', isLoggedIn, async (req, res) => {
 
     try {
         const bookings = await Booking.getByTutee(req.session.tuteeId);
-        
-        // Fetch the tutee's full profile (school_level, grade_level)
+
+        // Load the student's full profile (school level, grade level)
         const tutee = new Tutee(req.session.tuteeId);
         await tutee.getTuteeDetails();
 
-        // Calculate stats
         const uniqueTutors = new Set(bookings.map(b => b.tutor_id)).size;
-        const totalLessons = bookings.length;
 
         res.render('DashboardTutee', { 
             title: 'Student Dashboard - Dracarys', 
@@ -179,16 +212,20 @@ router.get('/dashboard/tutee', isLoggedIn, async (req, res) => {
             error: req.query.error,
             stats: {
                 tutors: uniqueTutors,
-                lessons: totalLessons
+                lessons: bookings.length
             }
         });
+
     } catch (err) {
         console.error('Tutee dashboard error:', err);
         res.redirect('/dashboard/tutee?error=Failed to load dashboard data');
     }
 });
 
-// Update Tutee Education Level
+/**
+ * POST /dashboard/tutee/education
+ * Updates a student's school level and grade level.
+ */
 router.post('/dashboard/tutee/education', isLoggedIn, async (req, res) => {
     if (req.session.role !== 'tutee') {
         return res.status(403).send('Access Denied: Only students can perform this action');
@@ -205,14 +242,16 @@ router.post('/dashboard/tutee/education', isLoggedIn, async (req, res) => {
     }
 });
 
-// Admin Dashboard
+/**
+ * GET /dashboard/admin
+ * Shows the admin dashboard with overall platform statistics.
+ */
 router.get('/dashboard/admin', isLoggedIn, async (req, res) => {
     if (req.session.role !== 'admin') {
         return res.status(403).send('Access Denied: Only admins can access this page');
     }
 
     try {
-        // Fetch counts for admin cards
         const userCount = await db.query('SELECT COUNT(*) as count FROM users');
         const tutorCount = await db.query('SELECT COUNT(*) as count FROM tutors');
         const studentCount = await db.query('SELECT COUNT(*) as count FROM tutees');
@@ -229,6 +268,7 @@ router.get('/dashboard/admin', isLoggedIn, async (req, res) => {
                 flagged: flaggedCount[0].count
             }
         });
+
     } catch (err) {
         console.error('Admin dashboard error:', err);
         res.status(500).send('Failed to load admin dashboard');
