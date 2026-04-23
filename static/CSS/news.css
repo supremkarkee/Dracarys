@@ -1,0 +1,244 @@
+/* ============================================================
+   DRACARYS — News & Feeds Page (Simplified)
+   ============================================================ */
+
+:root {
+    --accent: #0aab87;
+    --accent-dark: #087d6b;
+    --text: #2c3e50;
+    --muted: #7f8c8d;
+    --border: #ecf0f1;
+    --bg-muted: #f8f9fa;
+}
+
+/* ── BANNER ── */
+.news-banner {
+    background: linear-gradient(135deg, #0aab87 0%, #0a7d8c 100%);
+    padding: 60px 20px;
+    text-align: center;
+    color: white;
+}
+
+.news-banner h1 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.news-banner p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ── BODY LAYOUT ── */
+.news-body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 50px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.news-main-full {
+    width: 100%;
+}
+
+/* ── LEADERBOARD ── */
+.leaderboard-section {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.lb-header {
+    padding: 30px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lb-header h2 {
+    font-size: 1.5rem;
+    color: var(--text);
+    margin: 0;
+}
+
+.lb-period {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.lb-table {
+    width: 100%;
+}
+
+.lb-table-head {
+    display: grid;
+    grid-template-columns: 80px 1fr 120px 120px;
+    padding: 15px 30px;
+    background: var(--bg-muted);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+}
+
+.lb-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 120px 120px;
+    padding: 20px 30px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.lb-row:last-child {
+    border-bottom: none;
+}
+
+.lb-row:hover {
+    background: #fafffe;
+}
+
+.lb-row.top-rank {
+    background: linear-gradient(90deg, rgba(10, 171, 135, 0.03) 0%, transparent 100%);
+}
+
+/* Rank Badge */
+.lb-rank {
+    display: flex;
+    justify-content: center;
+}
+
+.rank-badge {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.rank-badge.gold { background: #ffd700; color: #856a00; box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3); }
+.rank-badge.silver { background: #e0e0e0; color: #555; }
+.rank-badge.bronze { background: #cd7f32; color: #fff; }
+.rank-badge.other { background: var(--bg-muted); color: var(--muted); }
+
+/* Tutor Info */
+.lb-tutor {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.lb-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.lb-tutor-name {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+.lb-tutor-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+/* Stats */
+.lb-points, .lb-sessions {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.points-value, .sessions-value {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--text);
+}
+
+.points-label, .sessions-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.points-value { color: var(--accent); }
+
+/* ── CTA ROW ── */
+.news-cta-row {
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar-cta {
+    background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+.sidebar-cta h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.sidebar-cta p {
+    opacity: 0.8;
+    margin-bottom: 25px;
+}
+
+.sidebar-cta-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 12px 35px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.sidebar-cta-btn:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+    .lb-table-head, .lb-row {
+        grid-template-columns: 60px 1fr 100px;
+    }
+    .lb-sessions { display: none; }
+    .lb-table-head span:last-child { display: none; }
+}

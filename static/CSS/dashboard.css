@@ -428,3 +428,24 @@
     border-bottom: 1px solid #f8f9fa;
     padding-bottom: 5px;
 }
+
+/* Simplified Cancel Button */
+.btn-cancel-mini {
+    background: transparent;
+    border: 1px solid #ff4757;
+    color: #ff4757;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-cancel-mini:hover {
+    background: #ff4757;
+    color: white;
+    transform: scale(1.05);
+}
