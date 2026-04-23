@@ -73,6 +73,36 @@ class Tutor {
         return this.avgRating;
     }
 
+    /**
+     * Recalculates the tutor's points based on lessons, reviews, and rating.
+     */
+    async calculatePoints() {
+        // Count accepted lessons
+        const lessonSql = 'SELECT COUNT(*) as count FROM bookings WHERE tutor_id = ? AND status = "accepted"';
+        const lessonRes = await db.query(lessonSql, [this.tutor_id]);
+        const lessonCount = lessonRes[0].count || 0;
+
+        // Count reviews
+        const reviewSql = 'SELECT COUNT(*) as count FROM reviews WHERE tutor_id = ?';
+        const reviewRes = await db.query(reviewSql, [this.tutor_id]);
+        const reviewCount = reviewRes[0].count || 0;
+
+        // Get rating
+        const ratingSql = 'SELECT rating FROM tutors WHERE tutor_id = ?';
+        const ratingRes = await db.query(ratingSql, [this.tutor_id]);
+        const rating = ratingRes[0].rating || 0.0;
+
+        // Calculate points: (Lessons * 10) + (Reviews * 5) + (Rating * 20)
+        const newPoints = Math.round((lessonCount * 10) + (reviewCount * 5) + (rating * 20));
+
+        // Update the database
+        await db.query('UPDATE tutors SET points = ?, lesson_count = ? WHERE tutor_id = ?', [newPoints, lessonCount, this.tutor_id]);
+
+        this.points = newPoints;
+        this.lesson_count = lessonCount;
+        return newPoints;
+    }
+
     static async getTutorOfTheWeek() {
         const sql = `
             SELECT t.*, u.full_name, u.email,

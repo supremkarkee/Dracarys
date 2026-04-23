@@ -12,13 +12,39 @@ block content
 
   //- BODY
   .news-body
-    //- ── MAIN CONTENT (Leaderboard) ──
+    if leaderboard && leaderboard.length
+      //- ── FEATURED TUTOR (#1 Rank) ──
+      - const topTutor = leaderboard[0]
+      .congrats-header
+        h2 Congratulations to our Tutor of the Week!
+        p Celebrating excellence and dedication in our learning community.
+
+      .featured-section
+        .featured-card
+          .featured-badge #1 RANKED
+          .featured-card-content
+            .featured-avatar
+              | #{topTutor.initials}
+            .featured-info
+              .featured-name= topTutor.name
+              .featured-subjects= topTutor.subject
+              .featured-stats
+                .stat-item
+                  span.stat-val= topTutor.points
+                  span.stat-label Points
+                .stat-item
+                  span.stat-val= topTutor.sessions
+                  span.stat-label Sessions
+            .featured-actions
+              a.btn-view-profile(href=`/tutor/${topTutor.id}`) View Profile
+
+    //- ── MAIN CONTENT (Leaderboard for 2nd onwards) ──
     .news-main-full
       .leaderboard-section
         .lb-header
-          h2 Dracarys Leaderboards
-          span.lb-period Real-time Rankings
-
+          h2 Leaderboard Rankings
+          span.lb-period Real-time
+        
         .lb-table
           .lb-table-head
             span Rank
@@ -26,21 +52,20 @@ block content
             span Points
             span Sessions
 
-          if leaderboard && leaderboard.length
-            each tutor, index in leaderboard
-              .lb-row(class=(index < 3 ? 'top-rank' : ''))
+          if leaderboard && leaderboard.length > 1
+            each tutor, index in leaderboard.slice(1)
+              - const rank = index + 2
+              .lb-row(class=(rank <= 3 ? 'top-rank' : ''))
                 .lb-rank
-                  if index === 0
-                    .rank-badge.gold 1
-                  else if index === 1
+                  if rank === 2
                     .rank-badge.silver 2
-                  else if index === 2
+                  else if rank === 3
                     .rank-badge.bronze 3
                   else
-                    .rank-badge.other= index + 1
+                    .rank-badge.other= rank
                 
                 .lb-tutor
-                  .lb-avatar(style=`background: ${index < 3 ? 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)' : 'var(--bg-muted)'}`)
+                  .lb-avatar(style=`background: ${rank <= 3 ? 'linear-gradient(135deg, #0aab87 0%, #00c853 100%)' : 'var(--bg-muted)'}`)
                     | #{tutor.initials}
                   .lb-tutor-info
                     .lb-tutor-name= tutor.name
@@ -53,6 +78,9 @@ block content
                 .lb-sessions
                   span.sessions-value= tutor.sessions
                   span.sessions-label sessions
+          else if leaderboard && leaderboard.length === 1
+            .lb-empty
+              p More tutors will appear here as they join the leaderboard.
           else
             .lb-empty
               p No leaderboard data available at this time.

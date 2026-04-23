@@ -152,7 +152,7 @@ router.get('/news', async (req, res) => {
 
         // Fetch Leaderboard (Top 10 Tutors by points)
         const lbSql = `
-            SELECT u.full_name, t.points, t.lesson_count,
+            SELECT t.tutor_id, u.full_name, t.points, t.lesson_count,
                    GROUP_CONCAT(DISTINCT s.subject_name SEPARATOR ', ') as subjects
             FROM tutors t
             JOIN users u ON t.user_id = u.user_id
@@ -164,6 +164,7 @@ router.get('/news', async (req, res) => {
         `;
         const leaderboardRaw = await db.query(lbSql);
         const leaderboard = leaderboardRaw.map(t => ({
+            id: t.tutor_id,
             name: t.full_name,
             points: t.points || 0,
             sessions: t.lesson_count || 0,
