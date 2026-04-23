@@ -15,6 +15,9 @@ block content
             if error
                 .alert.alert-danger(style="color: white; background: #dc3545; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{error}
             
+            .dashboard-section
+                h2 Tutor Teaching History
+            
             .dashboard-grid
                 .dashboard-card
                     .card-icon STUDENTS
@@ -28,10 +31,6 @@ block content
                     p #{stats.lessons} Completed Lessons
                     a.btn-secondary(href="/dashboard/tutor") View History
 
-                .dashboard-card
-                    .card-icon POINTS
-                    h3 Points
-                    p #{stats.points} Reward Points
                 
                 .dashboard-card
                     .card-icon RATING
@@ -75,6 +74,11 @@ block content
                                             button.btn-danger(type="submit") Decline
                                 else if booking.status === 'accepted'
                                     p(style="color: #28a745; margin-top: 10px; font-weight: 600;") Booking confirmed.
+                                    form(action="/dashboard/tutor/booking/complete" method="POST" style="margin-top: 10px;")
+                                        input(type="hidden" name="booking_id" value=booking.booking_id)
+                                        button.btn-success(type="submit" style="background: #007bff;") Mark as Completed
+                                else if booking.status === 'completed'
+                                    p(style="color: #6c757d; margin-top: 10px; font-weight: 600;") Lesson completed.
                                 else
                                     p(style="color: #dc3545; margin-top: 10px;") Request declined.
                 else

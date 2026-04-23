@@ -68,7 +68,6 @@ router.get('/dashboard/tutor', isLoggedIn, async (req, res) => {
             stats: {
                 students: uniqueStudents,
                 lessons: totalLessons,
-                points: points,
                 rating: avgRating,
                 reviewCount: reviews.length
             }
@@ -93,6 +92,23 @@ router.post('/dashboard/tutor/profile', isLoggedIn, async (req, res) => {
     } catch (err) {
         console.error("Error updating tutor profile:", err);
         res.redirect('/dashboard/tutor?error=Failed to update profile');
+    }
+});
+
+// Mark Booking as Completed
+router.post('/dashboard/tutor/booking/complete', isLoggedIn, async (req, res) => {
+    if (req.session.role !== 'tutor') {
+        return res.status(403).send('Access Denied');
+    }
+    
+    const { booking_id } = req.body;
+    
+    try {
+        await Booking.complete(booking_id);
+        res.redirect('/dashboard/tutor?success=Lesson marked as completed!');
+    } catch (err) {
+        console.error("Error completing booking:", err);
+        res.redirect('/dashboard/tutor?error=Failed to complete lesson');
     }
 });
 

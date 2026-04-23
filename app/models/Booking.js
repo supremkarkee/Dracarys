@@ -52,6 +52,28 @@ class Booking {
         const sql = 'DELETE FROM bookings WHERE booking_id = ? AND tutee_id = ?';
         return await db.query(sql, [bookingId, tuteeId]);
     }
+
+    /**
+     * Marks a booking as completed and increments the tutor's lesson count.
+     */
+    static async complete(bookingId) {
+        // Get tutor_id for this booking
+        const bookingSql = 'SELECT tutor_id FROM bookings WHERE booking_id = ?';
+        const bookingResult = await db.query(bookingSql, [bookingId]);
+        
+        if (bookingResult.length > 0) {
+            const tutorId = bookingResult[0].tutor_id;
+            
+            // Update booking status
+            await db.query('UPDATE bookings SET status = "completed" WHERE booking_id = ?', [bookingId]);
+            
+            // Increment tutor lesson count
+            await db.query('UPDATE tutors SET lesson_count = lesson_count + 1 WHERE tutor_id = ?', [tutorId]);
+            
+            return true;
+        }
+        return false;
+    }
 }
 
 module.exports = { Booking };
