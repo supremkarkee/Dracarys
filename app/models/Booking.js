@@ -23,6 +23,8 @@ class Booking {
             WHERE b.tutee_id = ?
             ORDER BY b.lesson_date DESC, b.lesson_time DESC
         `;
+
+        // return bookings for this tutor
         return await db.query(sql, [tuteeId]);
     }
 
@@ -39,6 +41,8 @@ class Booking {
             WHERE b.tutor_id = ?
             ORDER BY b.lesson_date DESC, b.lesson_time DESC
         `;
+
+        // return bookings for this tutor
         return await db.query(sql, [tutorId]);
     }
 
@@ -108,6 +112,7 @@ class Booking {
             return true;
         }
 
+        // booking not found
         return false;
     }
 }
