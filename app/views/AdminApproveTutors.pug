@@ -1,0 +1,67 @@
+extends Layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 Approve Tutors
+            p Total Tutors: #{tutors.length}
+
+        .dashboard-content
+            .dashboard-section
+                h2 Tutor Applications
+                .tutors-table
+                    if tutors && tutors.length
+                        table
+                            thead
+                                tr
+                                    th Tutor ID
+                                    th Name
+                                    th Email
+                                    th Subjects
+                                    th Rating
+                                    th Status
+                                    th Actions
+                            tbody
+                                each tutor in tutors
+                                    tr
+                                        td= tutor.user_id
+                                        td= tutor.full_name
+                                        td= tutor.email
+                                        td= tutor.subjects || 'N/A'
+                                        td= tutor.rating || '0.0'
+                                        td
+                                            if tutor.verified
+                                                span.status-badge.status-verified VERIFIED
+                                            else
+                                                span.status-badge.status-pending PENDING
+                                        td
+                                            if !tutor.verified
+                                                button.btn-success.approve-tutor(data-tutor-id=tutor.tutor_id) Approve
+                    else
+                        p No tutors to approve.
+
+block scripts
+    script.
+        document.querySelectorAll('.approve-tutor').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const tutorId = this.dataset.tutorId;
+                try {
+                    const response = await fetch(`/admin/tutors/approve/${tutorId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Tutor approved successfully');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                } catch (err) {
+                    alert('Error: ' + err.message);
+                }
+            });
+        });
