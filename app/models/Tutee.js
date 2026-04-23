@@ -6,7 +6,7 @@
  * their education details (school level and grade level).
  */
 
-const db = require('../services/db');   // This imports our database service so we can run SQL queries
+const db = require('../services/db'); // database connection
 
 class Tutee {
 
@@ -36,6 +36,7 @@ class Tutee {
 
             const results = await db.query(sql, [this.tutee_id]);
 
+            // if student found, save data into object
             if (results.length > 0) {
                 this.user_id = results[0].user_id;
                 this.full_name = results[0].full_name;
@@ -57,6 +58,8 @@ class Tutee {
             JOIN bookings b ON t.tutee_id = b.tutee_id
             WHERE b.tutor_id = ?
         `;
+
+        // return list of students for this tutor
         return await db.query(sql, [tutorId]);
     }
 
@@ -70,6 +73,8 @@ class Tutee {
             FROM tutees t 
             JOIN users u ON t.user_id = u.user_id
         `;
+
+        // return all students
         return await db.query(sql);
     }
 
@@ -79,6 +84,8 @@ class Tutee {
      */
     static async updateEducation(tutee_id, school_level, grade_level) {
         const sql = 'UPDATE tutees SET school_level = ?, grade_level = ? WHERE tutee_id = ?';
+
+        // save updated school and grade info
         return await db.query(sql, [school_level, grade_level, tutee_id]);
     }
 }
