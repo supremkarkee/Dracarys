@@ -101,7 +101,7 @@ class Tutor {
         });
     }
 
-    static async search(query, subjectFilter = 'all', flaggedOnly = false, tuteeId = null, languageFilter = 'all', favoritesOnly = false) {
+    static async search(query, subjectFilter = 'all', flaggedOnly = false, tuteeId = null, languageFilter = 'all') {
         let sql = `
             SELECT t.*, u.full_name, u.email,
                    GROUP_CONCAT(DISTINCT s.subject_name SEPARATOR ', ') AS subjects_list
@@ -116,11 +116,6 @@ class Tutor {
 
         if (flaggedOnly && tuteeId) {
             sql += ' AND t.tutor_id IN (SELECT tutor_id FROM flagged_tutors WHERE tutee_id = ?)';
-            params.push(tuteeId);
-        }
-
-        if (favoritesOnly && tuteeId) {
-            sql += ' AND t.tutor_id IN (SELECT tutor_id FROM favourites_tutors WHERE tutee_id = ?)';
             params.push(tuteeId);
         }
 

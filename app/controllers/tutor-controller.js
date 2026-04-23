@@ -74,14 +74,17 @@ router.get("/tutor/:id", async function (req, res) {
         if (tutor.full_name) {
             let existingBooking = null;
             let isFlagged = false;
+            let isFavorite = false;
             
             if (req.session.loggedIn && req.session.role === 'tutee') {
                 existingBooking = await Booking.checkExisting(req.session.tuteeId, tutor.tutor_id);
                 
-                const flagCheck = await db.query('SELECT * FROM flagged_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
-                isFlagged = flagCheck.length > 0;
+                // Check if tutor is flagged (table doesn't exist yet, so this will be false)
+                // const flagCheck = await db.query('SELECT * FROM flagged_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
+                // isFlagged = flagCheck.length > 0;
 
-                const favCheck = await db.query('SELECT * FROM favourites_tutors WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
+                // Check if tutor is favorited
+                const favCheck = await db.query('SELECT * FROM favorites WHERE tutor_id = ? AND tutee_id = ?', [tutor.tutor_id, req.session.tuteeId]);
                 isFavorite = favCheck.length > 0;
             }
 
