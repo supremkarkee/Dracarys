@@ -259,6 +259,40 @@ INSERT INTO `tutors` (`tutor_id`, `user_id`, `rating`, `description`, `qualifica
 UNLOCK TABLES;
 
 --
+-- Table structure for table `favourites_tutors`
+--
+
+DROP TABLE IF EXISTS `favourites_tutors`;
+CREATE TABLE `favourites_tutors` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tutor_id` int NOT NULL,
+  `tutee_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_fav` (`tutor_id`,`tutee_id`),
+  KEY `favourites_tutors_ibfk_2` (`tutee_id`),
+  CONSTRAINT `favourites_tutors_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`) ON DELETE CASCADE,
+  CONSTRAINT `favourites_tutors_ibfk_2` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Table structure for table `flagged_tutors`
+--
+
+DROP TABLE IF EXISTS `flagged_tutors`;
+CREATE TABLE `flagged_tutors` (
+  `flag_id` int NOT NULL AUTO_INCREMENT,
+  `tutor_id` int NOT NULL,
+  `tutee_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`flag_id`),
+  UNIQUE KEY `unique_flag` (`tutor_id`,`tutee_id`),
+  KEY `flagged_tutors_ibfk_2` (`tutee_id`),
+  CONSTRAINT `flagged_tutors_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`) ON DELETE CASCADE,
+  CONSTRAINT `flagged_tutors_ibfk_2` FOREIGN KEY (`tutee_id`) REFERENCES `tutees` (`tutee_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
 -- Table structure for table `users`
 --
 

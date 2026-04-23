@@ -1,0 +1,64 @@
+extends Layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 #{title}
+            p Total: #{users.length}
+
+        .dashboard-content
+            .dashboard-section
+                h2 All Users
+                .users-table
+                    if users && users.length
+                        table
+                            thead
+                                tr
+                                    th User ID
+                                    th Full Name
+                                    th Email
+                                    th Role
+                                    th Actions
+                            tbody
+                                each user in users
+                                    tr
+                                        td= user.user_id
+                                        td= user.full_name
+                                        td= user.email
+                                        td
+                                            span.role-badge(class=`role-${user.role}`)= user.role
+                                        td
+                                            if role === 'admin'
+                                                button.btn-danger.delete-user(data-user-id=user.user_id) Delete
+                                            else
+                                                span No actions available
+                    else
+                        p No users found.
+
+block scripts
+    script.
+        document.querySelectorAll('.delete-user').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const userId = this.dataset.userId;
+                if (confirm('Are you sure you want to delete this user?')) {
+                    try {
+                        const response = await fetch(`/admin/users/delete/${userId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            alert('User deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    } catch (err) {
+                        alert('Error: ' + err.message);
+                    }
+                }
+            });
+        });

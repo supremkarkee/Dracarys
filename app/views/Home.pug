@@ -1,0 +1,49 @@
+extends Layout
+
+block head
+    title Dracarys - Learn & Grow
+    //- Pooppins font is already in Layout or can be added here if specific to home
+    link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet")
+
+block content
+    //- Hero Section
+    section.hero
+        .hero-text
+            if loggedIn && user
+                h1 Welcome #{user.full_name.split(' ')[0]}
+            h1 Learn. Create. Grow.
+            p Dracarys is a community-driven platform that connects passionate tutors and motivated students in a safe and engaging environment.
+            p.quote "Education is not a way to escape poverty; it is a way of fighting it".
+            .hero-buttons
+                a.btn-primary(href="/signup") Get Started
+                a.btn-secondary(href="/about") Learn More
+        .hero-image
+            img(src="/images/002.jpg" alt="Students Learning")
+
+    //- Features Section
+    section.features
+        h2 Why Choose Dracarys?
+        .feature-grid
+            .feature-card
+                img(src="/images/009.jpg" alt="Community")
+                h3 Safe Community
+                p Verified tutors and secure communication ensure a trustworthy learning experience.
+            .feature-card
+                img(src="/images/012.jpg" alt="Interactive")
+                h3 Interactive Learning
+                p Engaging sessions designed to help students understand and grow confidently.
+            .feature-card
+                img(src="/images/003.jpg" alt="Progress")
+                h3 Track Progress
+                p Parents and tutors can monitor performance and celebrate achievements.
+
+    //- Call to Action
+    section.cta
+        h2 Ready to Start Your Learning Journey?
+        p.quote "The beautiful thing about learning is that no one can take it away from you."
+        p.quote "Education is not the filling of a pail, but the lighting of a fire."
+        p Join our growing educational community today.
+        a.btn-primary(href="/signup") Join Now
+
+    footer
+        p © 2026 Dracarys | Empowering Education Through Community

@@ -1,0 +1,36 @@
+extends Layout
+
+block head
+    title Login - Free Education
+    link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet")
+    link(rel="stylesheet" href="/css/loginpage.css")
+
+block content
+    .login-page-wrapper
+        .main-content
+            //- Dynamic Hero Title Logic
+            if showSuccess
+                h1.hero-title Registration successful! Please log in below
+            else if accountExists
+                h1.hero-title An account with this email already exists. Please log in below
+            else
+                h1.hero-title Lets stand for free education together
+
+            .login-container
+                //dynamic login message.
+                if error
+                    h2.error-message Invalid Email or Password
+                else
+                    h2 Welcome Back
+                
+                form#loginForm(action='/login' method='POST')
+                    .input-group
+                        label(for="email") Email
+                        input#email(type="email" name="email" placeholder="Enter your email" required)
+                    .input-group
+                        label(for="password") Password
+                        input#password(type="password" name="password" placeholder="Enter your password" required)
+                    button.login-btn(type="submit") Sign In
+                .extra-links
+                    p
+                        a(href="/signup") Create Account

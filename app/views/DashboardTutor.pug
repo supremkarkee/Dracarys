@@ -1,0 +1,159 @@
+extends Layout
+
+block head
+    link(rel="stylesheet" href="/css/dashboard.css")
+
+block content
+    main.dashboard-container
+        .dashboard-header
+            h1 Tutor Dashboard
+            p Welcome back, #{user.full_name}!
+
+        .dashboard-content
+            if success
+                .alert.alert-success(style="color: white; background: #28a745; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{success}
+            if error
+                .alert.alert-danger(style="color: white; background: #dc3545; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{error}
+            
+            .dashboard-section
+                h2 Tutor Teaching History
+            
+            .dashboard-grid
+                .dashboard-card
+                    .card-icon STUDENTS
+                    h3 My Students
+                    p #{stats.students} Unique Students
+                    a.btn-secondary(href="#my-students") View List
+
+                .dashboard-card
+                    .card-icon LESSONS
+                    h3 Lessons
+                    p #{stats.lessons} Completed Lessons
+                    a.btn-secondary(href="/dashboard/tutor") View History
+
+                
+                .dashboard-card
+                    .card-icon RATING
+                    h3 My Rating
+                    p #{stats.rating} / 5.0 (#{stats.reviewCount} reviews)
+                    a.btn-secondary(href="#my-reviews") Read Feedback
+            .dashboard-section
+                h2 Pending Lesson Requests
+                if bookings && bookings.length > 0
+                    .bookings-list
+                        each booking in bookings
+                            .booking-card
+                                h3 Trial Lesson Request
+                                p
+                                    strong Validation: 
+                                    | #{booking.subject_name || 'General'} Lesson
+                                p
+                                    strong Student: 
+                                    | #{booking.student_name}
+                                p
+                                    strong Lesson Date: 
+                                    | #{new Date(booking.lesson_date).toLocaleDateString()}
+                                p
+                                    strong Lesson Time: 
+                                    | #{booking.lesson_time ? booking.lesson_time.slice(0,5) : '...'} to #{booking.end_time ? booking.end_time.slice(0,5) : '...'}
+                                p
+                                    strong Status: 
+                                    span(class=`status-badge status-${booking.status}`) #{booking.status.toUpperCase()}
+
+                                if booking.status === 'pending'
+                                    .d-flex.gap-2.mt-3(style="display: flex; gap: 10px; margin-top: 15px;")
+                                        form(action="/booking/respond" method="POST")
+                                            input(type="hidden" name="booking_id" value=booking.booking_id)
+                                            input(type="hidden" name="status" value="accepted")
+                                            button.btn-success(type="submit") Accept
+                                        
+                                        form(action="/booking/respond" method="POST" style="display: flex; gap: 10px; align-items: center;")
+                                            input(type="hidden" name="booking_id" value=booking.booking_id)
+                                            input(type="hidden" name="status" value="declined")
+                                            input(type="text" name="message" placeholder="Optional decline message..." style="padding: 6px; border: 1px solid #ccc; border-radius: 5px;")
+                                            button.btn-danger(type="submit") Decline
+                                else if booking.status === 'accepted'
+                                    p(style="color: #28a745; margin-top: 10px; font-weight: 600;") Booking confirmed.
+                                    form(action="/dashboard/tutor/booking/complete" method="POST" style="margin-top: 10px;")
+                                        input(type="hidden" name="booking_id" value=booking.booking_id)
+                                        button.btn-success(type="submit" style="background: #007bff;") Mark as Completed
+                                else if booking.status === 'completed'
+                                    p(style="color: #6c757d; margin-top: 10px; font-weight: 600;") Lesson completed.
+                                else
+                                    p(style="color: #dc3545; margin-top: 10px;") Request declined.
+                else
+                    p No lesson requests at the moment.
+
+            .dashboard-section#my-students
+                h2 My Students
+                if students && students.length > 0
+                    .bookings-list
+                        each student in students
+                            .booking-card.student-card
+                                div
+                                    h3= student.full_name
+                                    p
+                                        strong Email: 
+                                        | #{student.email}
+                                    p
+                                        strong Level: 
+                                        | #{student.school_level || 'N/A'} (#{student.grade_level || 'N/A'})
+                else
+                    .booking-card.empty-state
+                        p You don't have any students yet.
+
+            .dashboard-section#my-reviews
+                h2 My Reviews
+                if reviews && reviews.length > 0
+                    .bookings-list
+                        each review in reviews
+                            .booking-card
+                                div(style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;")
+                                    div
+                                        h3= review.studentName
+                                        span(style="color: #666; font-size: 0.85rem;")= new Date(review.review_date).toLocaleDateString()
+                                    div(style="background: #f1f1f1; padding: 5px 12px; border-radius: 20px; font-weight: 700; color: #ff9800;")
+                                        | #{review.rating} ★
+                                p(style="font-style: italic; color: #333; line-height: 1.5; margin-top: 10px;") "#{review.feedback}"
+                else
+                    .booking-card.empty-state
+                        p You haven't received any reviews yet.
+
+            .dashboard-section#my-subjects
+                h2 My Subjects
+                .booking-card
+                    if tutorProfile && tutorProfile.subjects && tutorProfile.subjects.length > 0
+                        div(style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;")
+                            each subject in tutorProfile.subjects
+                                div(style="display: flex; align-items: center; background: #f8f9fa; border: 1px solid #ccc; padding: 5px 10px; border-radius: 20px; gap: 10px;")
+                                    span(style="font-weight: 500; color: #333;")= subject
+                                    form(action="/dashboard/tutor/subject/remove" method="POST" style="margin: 0;")
+                                        input(type="hidden" name="subject_name" value=subject)
+                                        button(type="submit" style="background: none; border: none; color: #dc3545; font-weight: bold; cursor: pointer; padding: 0;" title="Remove subject") &times;
+                    else
+                        p(style="margin-bottom: 20px; color: #666;") You have not added any subjects yet.
+
+                    form(action="/dashboard/tutor/subject/add" method="POST" style="display: flex; gap: 10px; align-items: center;")
+                        input(type="text" name="subject_name" placeholder="e.g. Machine Learning" required style="flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                        button.btn-success(type="submit" style="padding: 10px 20px; white-space: nowrap;") Add Subject
+
+            .dashboard-section#edit-profile
+                h2 Edit Profile
+                .booking-card
+                    form(action="/dashboard/tutor/profile" method="POST" style="display: flex; flex-direction: column; gap: 15px;")
+                        div
+                            label(for="qualification" style="font-weight: 600; display: block; margin-bottom: 5px;") Qualification
+                            input#qualification(type="text" name="qualification" value=(tutorProfile && tutorProfile.qualification ? tutorProfile.qualification : '') placeholder="e.g. BSc Computer Science" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                        
+                        div
+                            label(for="languages" style="font-weight: 600; display: block; margin-bottom: 5px;") Languages (comma separated)
+                            input#languages(type="text" name="languages" value=(tutorProfile && tutorProfile.languages ? tutorProfile.languages.join(', ') : 'English') placeholder="e.g. English, Spanish" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                        
+                        div
+                            label(for="description" style="font-weight: 600; display: block; margin-bottom: 5px;") Profile Description
+                            textarea#description(name="description" rows="5" placeholder="Tell students about yourself and your teaching style..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: vertical;") #{tutorProfile && tutorProfile.description ? tutorProfile.description : ''}
+                        
+                        div
+                            button.btn-success(type="submit" style="padding: 10px 20px; font-size: 1rem;") Save Changes
+
+

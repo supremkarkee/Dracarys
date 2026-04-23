@@ -1,5 +1,7 @@
-const db = require('../services/db');
+const db = require('../services/db'); // what is this doing ?
 
+
+// user story : as a tutee I want to book a lessoin with a tutor
 class Booking {
     static async getByTutee(tuteeId) {
         const sql = `
@@ -12,6 +14,9 @@ class Booking {
         `;
         return await db.query(sql, [tuteeId]);
     }
+
+
+
 
     static async getByTutor(tutorId) {
         const sql = `
@@ -46,6 +51,28 @@ class Booking {
     static async cancel(bookingId, tuteeId) {
         const sql = 'DELETE FROM bookings WHERE booking_id = ? AND tutee_id = ?';
         return await db.query(sql, [bookingId, tuteeId]);
+    }
+
+    /**
+     * Marks a booking as completed and increments the tutor's lesson count.
+     */
+    static async complete(bookingId) {
+        // Get tutor_id for this booking
+        const bookingSql = 'SELECT tutor_id FROM bookings WHERE booking_id = ?';
+        const bookingResult = await db.query(bookingSql, [bookingId]);
+        
+        if (bookingResult.length > 0) {
+            const tutorId = bookingResult[0].tutor_id;
+            
+            // Update booking status
+            await db.query('UPDATE bookings SET status = "completed" WHERE booking_id = ?', [bookingId]);
+            
+            // Increment tutor lesson count
+            await db.query('UPDATE tutors SET lesson_count = lesson_count + 1 WHERE tutor_id = ?', [tutorId]);
+            
+            return true;
+        }
+        return false;
     }
 }
 

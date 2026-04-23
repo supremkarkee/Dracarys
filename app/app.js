@@ -1,10 +1,13 @@
 // Import express.js
+// Imports express framework
 const express = require("express");
 
 // Create express app
 var app = express();
 
 const session = require('express-session');
+
+// Internal framework tools
 const path = require('path');
 
 // Import models at top level
@@ -14,11 +17,25 @@ const { User } = require('./models/User');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configure sessions
+// Configure sessions: This middleware sets up session management for the application
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'dracarys-dev-secret-change-in-production',
+    // secret: The key used to sign the session ID cookie. 
+    // It uses an environment variable for security in production, 
+    // or falls back to a random string for local development.
+    secret: process.env.SESSION_SECRET || 'x9k2mP5vL8nQwRt3yH7bZc4jF1sV0aE6',
+
+    // resave: Forces the session to be saved back to the session store, 
+    // even if the session was never modified during the request. 
+    // Setting to false optimizes performance and avoids race conditions.
     resave: false,
+
+    // saveUninitialized: Forces a session that is "uninitialized" to be saved to the store.
+    // Setting to false helps implement login sessions and complies with laws that require permission before setting a cookie.
     saveUninitialized: false,
+
+    // cookie: Settings object for the session ID cookie.
+    // secure: false means the cookie will be sent over HTTP (not requiring HTTPS). 
+    // This is necessary for local development without SSL.
     cookie: { secure: false }
 }));
 
@@ -33,7 +50,7 @@ app.use(function (req, res, next) {
 
     // Only attempt to hydrate user object if logged in
     if (req.session.loggedIn && req.session.userId) {
-        const { User } = require('./models/User');
+        // Fix Bug 8: User is already imported at the top of the file, no need to require again
         const user = new User(req.session.userId);
         user.getUserDetails()
             .then(() => {
@@ -44,7 +61,8 @@ app.use(function (req, res, next) {
                 console.error("Session User Hydration Error:", err);
                 next();
             });
-    } else {
+    }
+    else {
         next();
     }
 });
@@ -57,13 +75,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, '../static')));
 
 // Import all controller modules using absolute paths to avoid any resolution issues
-const indexRoutes = require(path.join(__dirname, 'controllers', 'index-controller'));
-const authRoutes = require(path.join(__dirname, 'controllers', 'auth-controller'));
-const studentRoutes = require(path.join(__dirname, 'controllers', 'student-controller'));
-const subjectRoutes = require(path.join(__dirname, 'controllers', 'subject-controller'));
-const tutorRoutes = require(path.join(__dirname, 'controllers', 'tutor-controller'));
-const dashboardRoutes = require(path.join(__dirname, 'controllers', 'dashboard-controller'));
-const adminRoutes = require(path.join(__dirname, 'controllers', 'admin-controller'));
+const indexRoutes = require(path.join(__dirname, 'controllers', 'IndexController'));
+const authRoutes = require(path.join(__dirname, 'controllers', 'AuthController'));
+const studentRoutes = require(path.join(__dirname, 'controllers', 'StudentController'));
+const subjectRoutes = require(path.join(__dirname, 'controllers', 'SubjectController'));
+const tutorRoutes = require(path.join(__dirname, 'controllers', 'TutorController'));
+const dashboardRoutes = require(path.join(__dirname, 'controllers', 'DashboardController'));
+const adminRoutes = require(path.join(__dirname, 'controllers', 'AdminController'));
 
 // Mount the routes
 app.use('/', indexRoutes);
@@ -76,7 +94,7 @@ app.use('/', adminRoutes);
 
 // Error handling - 404
 app.use(function (req, res, next) {
-    res.status(404).render("404", { title: "404 - Not Found", activePage: null });
+    res.status(404).render("Error404", { title: "404 - Not Found", activePage: null });
 });
 
 // Error handling - General (Enhanced for diagnostics)

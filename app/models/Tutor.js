@@ -38,7 +38,7 @@ class Tutor {
                 this.lesson_count = row.lesson_count || 0;
                 this.lessonsCount = row.lesson_count || 0;
                 this.qualifications = row.qualification ? [row.qualification] : [];
-                this.verified = true;
+                this.verified = row.verified === 1 || row.verified === true;
                 this.languages = row.languages ? row.languages.split(',').map(s => s.trim()) : ['English'];
             }
         }
@@ -56,6 +56,21 @@ class Tutor {
         this.reviews = await db.query(sql, [this.tutor_id]);
         this.reviewCount = this.reviews.length;
         return this.reviews;
+    }
+
+    /**
+     * Calculates the average rating from the reviews table and updates the tutor record.
+     */
+    async calculateAvgRating() {
+        const sql = 'SELECT AVG(rating) as avgRating FROM reviews WHERE tutor_id = ?';
+        const results = await db.query(sql, [this.tutor_id]);
+        const avg = results[0].avgRating || 0.0;
+        
+        // Update the tutors table with the new average
+        await db.query('UPDATE tutors SET rating = ? WHERE tutor_id = ?', [avg, this.tutor_id]);
+        
+        this.avgRating = parseFloat(avg).toFixed(1);
+        return this.avgRating;
     }
 
     static async getTutorOfTheWeek() {
@@ -101,7 +116,7 @@ class Tutor {
         });
     }
 
-    static async search(query, subjectFilter = 'all', flaggedOnly = false, tuteeId = null, languageFilter = 'all') {
+    static async search(query, subjectFilter = 'all', flaggedOnly = false, tuteeId = null, languageFilter = 'all', favoritesOnly = false) {
         let sql = `
             SELECT t.*, u.full_name, u.email,
                    GROUP_CONCAT(DISTINCT s.subject_name SEPARATOR ', ') AS subjects_list
@@ -116,6 +131,11 @@ class Tutor {
 
         if (flaggedOnly && tuteeId) {
             sql += ' AND t.tutor_id IN (SELECT tutor_id FROM flagged_tutors WHERE tutee_id = ?)';
+            params.push(tuteeId);
+        }
+
+        if (favoritesOnly && tuteeId) {
+            sql += ' AND t.tutor_id IN (SELECT tutor_id FROM favourites_tutors WHERE tutee_id = ?)';
             params.push(tuteeId);
         }
 
@@ -145,6 +165,22 @@ class Tutor {
             t.subjects = row.subjects_list ? row.subjects_list.split(',').map(s => s.trim()) : [];
             return t;
         });
+    }
+
+    /**
+     * Updates the tutor's profile information in the database.
+     * @param {number} tutor_id - The ID of the tutor to update.
+     * @param {string} description - The tutor's profile description.
+     * @param {string} qualification - The tutor's academic/professional qualification.
+     * @param {string} languages - Comma-separated list of languages spoken by the tutor.
+     */
+    static async updateProfile(tutor_id, description, qualification, languages) {
+        const sql = `
+            UPDATE tutors 
+            SET description = ?, qualification = ?, languages = ? 
+            WHERE tutor_id = ?
+        `;
+        return await db.query(sql, [description, qualification, languages, tutor_id]);
     }
 }
 
