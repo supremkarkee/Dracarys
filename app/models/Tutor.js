@@ -1,4 +1,4 @@
-const db = require('../services/db');
+const db = require('../services/db'); // database connection
 
 class Tutor {
     tutor_id;
@@ -15,7 +15,13 @@ class Tutor {
         this.tutor_id = tutor_id;
     }
 
+    /**
+     * Load tutor details from the database
+     * Only runs if data is not already loaded
+     */
     async getTutorDetails() {
+        // check if details already exist
+
         if (typeof this.full_name !== 'string') {
             const sql = `
                 SELECT t.*, u.full_name, u.email, u.role,
@@ -28,21 +34,33 @@ class Tutor {
                 GROUP BY t.tutor_id, u.user_id, u.full_name, u.email, u.role
             `;
             const results = await db.query(sql, [this.tutor_id, this.tutor_id]);
+
+            // if tutor found, save data into object
             if (results.length > 0) {
                 const row = results[0];
-                Object.assign(this, row);
+                Object.assign(this, row); // copy all fields
+
                 this.name = row.full_name;
+
+                // subjects as string and array
                 this.teaching_subjects = row.subjects_list || 'General Tutor';
                 this.subjects = row.subjects_list ? row.subjects_list.split(',').map(s => s.trim()) : [];
+                // ratings and lessons count
                 this.avgRating = row.rating || 0.0;
                 this.lesson_count = row.lesson_count || 0;
                 this.lessonsCount = row.lesson_count || 0;
+                // extra info
                 this.qualifications = row.qualification ? [row.qualification] : [];
                 this.verified = row.verified === 1 || row.verified === true;
+                // languages as array
                 this.languages = row.languages ? row.languages.split(',').map(s => s.trim()) : ['English'];
             }
         }
     }
+
+    /**
+     * to get all reviews for this tutor
+     */
 
     async getReviews() {
         const sql = `
@@ -65,10 +83,10 @@ class Tutor {
         const sql = 'SELECT AVG(rating) as avgRating FROM reviews WHERE tutor_id = ?';
         const results = await db.query(sql, [this.tutor_id]);
         const avg = results[0].avgRating || 0.0;
-        
+
         // Update the tutors table with the new average
         await db.query('UPDATE tutors SET rating = ? WHERE tutor_id = ?', [avg, this.tutor_id]);
-        
+
         this.avgRating = parseFloat(avg).toFixed(1);
         return this.avgRating;
     }
@@ -103,6 +121,9 @@ class Tutor {
         return newPoints;
     }
 
+    /**
+     * to get the tutor with highest points
+     */
     static async getTutorOfTheWeek() {
         const sql = `
             SELECT t.*, u.full_name, u.email,
@@ -126,6 +147,9 @@ class Tutor {
         return null;
     }
 
+    /**
+     * to get all tutors
+     */
     static async getAll() {
         const sql = `
             SELECT t.*, u.full_name, u.email,
@@ -146,6 +170,9 @@ class Tutor {
         });
     }
 
+    /**
+     * Search tutors with filters (name, subject, language, etc.)
+     */
     static async search(query, subjectFilter = 'all', flaggedOnly = false, tuteeId = null, languageFilter = 'all', favoritesOnly = false) {
         let sql = `
             SELECT t.*, u.full_name, u.email,
@@ -156,24 +183,28 @@ class Tutor {
             LEFT JOIN subjects s ON ts.subject_id = s.subject_id
             WHERE 1=1
         `;
-        
+
         let params = [];
 
+        // filter flagged tutors
         if (flaggedOnly && tuteeId) {
             sql += ' AND t.tutor_id IN (SELECT tutor_id FROM flagged_tutors WHERE tutee_id = ?)';
             params.push(tuteeId);
         }
 
+        // filter favorite tutors
         if (favoritesOnly && tuteeId) {
             sql += ' AND t.tutor_id IN (SELECT tutor_id FROM favourites_tutors WHERE tutee_id = ?)';
             params.push(tuteeId);
         }
 
+        // filter by subject
         if (subjectFilter !== 'all') {
             sql += ' AND t.tutor_id IN (SELECT ts2.tutor_id FROM tutor_subjects ts2 JOIN subjects s2 ON ts2.subject_id = s2.subject_id WHERE s2.subject_name LIKE ?)';
             params.push(`%${subjectFilter}%`);
         }
-        
+
+        // filter by language
         if (languageFilter !== 'all') {
             sql += ' AND t.languages LIKE ?';
             params.push(`%${languageFilter}%`);
@@ -198,12 +229,8 @@ class Tutor {
     }
 
     /**
-     * Updates the tutor's profile information in the database.
-     * @param {number} tutor_id - The ID of the tutor to update.
-     * @param {string} description - The tutor's profile description.
-     * @param {string} qualification - The tutor's academic/professional qualification.
-     * @param {string} languages - Comma-separated list of languages spoken by the tutor.
-     */
+    * Update tutor profile details
+    */
     static async updateProfile(tutor_id, description, qualification, languages) {
         const sql = `
             UPDATE tutors 
