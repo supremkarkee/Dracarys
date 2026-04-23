@@ -14,6 +14,8 @@ block head
     .status-badge { display: block; text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: 600; }
     .status-pending { background: #fff3cd; color: #856404; }
     .status-accepted { background: #d4edda; color: #155724; }
+    .verified-badge { display: inline-flex; align-items: center; background: #00b894; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-left: 10px; vertical-align: middle; }
+    .verified-icon { margin-right: 4px; }
 
 block content
   .container.profile-page
@@ -24,7 +26,12 @@ block content
             .tutor-photo
               | #{tutor.full_name ? tutor.full_name.charAt(0).toUpperCase() : 'T'}
             .tutor-info
-              h1= tutor.full_name
+              h1(style="display: flex; align-items: center;")
+                | #{tutor.full_name}
+                if tutor.verified
+                  span.verified-badge(title="Verified by Admin")
+                    span.verified-icon 
+                    | Verified Tutor
               .tutor-rating
                 span.stars(style="color: #f1c40f") ★ #{tutor.rating || 'N/A'}
                 span.review-count  · #{tutor.reviews ? tutor.reviews.length : 0} reviews
@@ -76,14 +83,14 @@ block content
 
       aside.profile-sidebar
         .sidebar-booking
-          h3 Book a Trial
+          h3 Book a Lesson.
           p Start your learning journey with #{tutor.full_name} today.
           
           if existingBooking
             if existingBooking.status === 'pending'
               .status-badge.status-pending Pending Tutor Approval
             else if existingBooking.status === 'accepted'
-              .status-badge.status-accepted ✅ Booking Confirmed!
+              .status-badge.status-accepted  Booking Confirmed!
             button.btn-book-trial(disabled style="opacity: 0.7; cursor: not-allowed;") Booking Submitted
           else if loggedIn
             if role === 'tutee'

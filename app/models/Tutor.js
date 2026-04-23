@@ -38,7 +38,7 @@ class Tutor {
                 this.lesson_count = row.lesson_count || 0;
                 this.lessonsCount = row.lesson_count || 0;
                 this.qualifications = row.qualification ? [row.qualification] : [];
-                this.verified = true;
+                this.verified = row.verified === 1 || row.verified === true;
                 this.languages = row.languages ? row.languages.split(',').map(s => s.trim()) : ['English'];
             }
         }
