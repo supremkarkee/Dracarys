@@ -584,3 +584,70 @@
         grid-template-columns: 1fr;
     }
 }
+/* -- ADDITIONAL OVERRIDES -- */
+.profile-page { padding: 40px 0; background: #f8f9fa; }
+.profile-grid { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
+.profile-section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+.tutor-header { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+.tutor-photo { width: 100px; height: 100px; background: #00b894; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; }
+.tutor-tag { display: inline-block; padding: 5px 12px; background: #e0fcf6; color: #00b894; border-radius: 20px; font-size: 0.85rem; margin-right: 8px; margin-top: 10px; }
+.sidebar-booking { position: sticky; top: 20px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.btn-book-trial { display: block; width: 100%; text-align: center; padding: 15px; background: linear-gradient(135deg, #00b894, #00cec9); color: white; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 20px; }
+.status-badge { display: block; text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: 600; }
+.status-pending { background: #fff3cd; color: #856404; }
+.status-accepted { background: #d4edda; color: #155724; }
+.verified-badge { display: inline-flex; align-items: center; background: #00b894; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-left: 10px; vertical-align: middle; }
+.verified-icon { margin-right: 4px; }
+
+/* -- INLINE STYLE REPLACEMENTS -- */
+.tutor-name-wrapper { display: flex; align-items: center; }
+.stars-rating { color: #f1c40f; }
+.profile-action-buttons { display: flex; gap: 10px; margin-left: 15px; align-items: center; }
+
+#favBtn {
+    padding: 8px 14px;
+    border: 1.5px solid #ff4757;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #ff4757;
+    background: none;
+    transition: all 0.2s;
+}
+#favBtn.favorited {
+    color: #fff;
+    background: #ff4757;
+}
+
+#flagBtn {
+    padding: 6px 10px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: #999;
+    background: none;
+    transition: all 0.2s;
+}
+#flagBtn.flagged {
+    color: #fff;
+    background: #999;
+}
+
+.review-item { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+.review-item-header { display: flex; justify-content: space-between; }
+.review-item-text { margin-top: 10px; color: #636e72; }
+.review-post-form { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+.form-field { margin-bottom: 10px; }
+.rating-input { width: 100%; padding: 8px; margin-top: 5px; max-width: 150px; }
+.feedback-textarea { width: 100%; padding: 8px; margin-top: 5px; }
+.submit-review-btn { padding: 10px 15px; background: #00b894; color: white; border: none; border-radius: 5px; cursor: pointer; }
+
+.stats-card { margin-top: 25px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: sticky; top: 250px; }
+.stats-title { font-size: 1.1rem; margin-bottom: 20px; color: #2d3436; border-bottom: 2px solid #f1f2f6; padding-bottom: 10px; }
+.stats-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; }
+.stats-row.no-border { border-bottom: none; }
+.stats-label { color: #636e72; font-size: 0.95rem; }
+.stats-value { color: #00b894; font-size: 1.1rem; }
+.stats-value.points { color: #ff9f43; }
