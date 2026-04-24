@@ -23,3 +23,32 @@ h2 { margin-bottom: 25px; color: #ffffff; font-weight: 400; letter-spacing: 1px;
 .back-link:hover { color: #fff; text-decoration: underline; }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* -- ADDITIONAL SIGNUP STYLES -- */
+.error-message {
+    color: white;
+    background: #ff4757;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.password-error {
+    color: #ff4757;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.input-invalid {
+    border-color: #ff4757 !important;
+}
+
+/* Script-controlled display */
+.display-none { display: none !important; }
+.display-block { display: block !important; }
