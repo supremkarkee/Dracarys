@@ -232,6 +232,15 @@ router.post("/booking/respond", requireLogin, async function (req, res) {
 
     try {
         await Booking.updateStatus(booking_id, status, message);
+
+        // Recalculate points for the tutor
+        const bookingSql = 'SELECT tutor_id FROM bookings WHERE booking_id = ?';
+        const bookingResult = await db.query(bookingSql, [booking_id]);
+        if (bookingResult.length > 0) {
+            const tutor = new Tutor(bookingResult[0].tutor_id);
+            await tutor.calculatePoints();
+        }
+
         res.redirect("/dashboard/tutor");
     } catch (err) {
         console.error(err);
@@ -272,6 +281,11 @@ router.post("/tutor/:id/review", requireLogin, async function (req, res) {
                 [tutor_id, tutee_id, rating, limitedFeedback]
             );
         }
+
+        // Recalculate rating and points for the tutor
+        const tutor = new Tutor(tutor_id);
+        await tutor.calculateAvgRating();
+        await tutor.calculatePoints();
 
         res.redirect(`/tutor/${tutor_id}`);
 

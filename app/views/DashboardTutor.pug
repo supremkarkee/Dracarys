@@ -70,7 +70,6 @@ block content
                                         form(action="/booking/respond" method="POST" style="display: flex; gap: 10px; align-items: center;")
                                             input(type="hidden" name="booking_id" value=booking.booking_id)
                                             input(type="hidden" name="status" value="declined")
-                                            input(type="text" name="message" placeholder="Optional decline message..." style="padding: 6px; border: 1px solid #ccc; border-radius: 5px;")
                                             button.btn-danger(type="submit") Decline
                                 else if booking.status === 'accepted'
                                     p(style="color: #28a745; margin-top: 10px; font-weight: 600;") Booking confirmed.

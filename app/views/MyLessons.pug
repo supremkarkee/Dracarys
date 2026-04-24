@@ -14,7 +14,12 @@ block content
                         .lesson-info
                             h3= lesson.tutor_name
                             p Subject: #{lesson.subject_name || 'General'}
-                            p Date: #{new Date(lesson.lesson_date).toLocaleString()}
+                            p
+                                strong Date: 
+                                | #{new Date(lesson.lesson_date).toLocaleDateString()}
+                            p
+                                strong Time: 
+                                | #{lesson.lesson_time ? lesson.lesson_time.slice(0,5) : '...'} - #{lesson.end_time ? lesson.end_time.slice(0,5) : '...'}
                         .lesson-status(class=`status-${lesson.status}`)= lesson.status
             else
                 .no-results

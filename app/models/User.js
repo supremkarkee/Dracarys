@@ -20,6 +20,7 @@ class User {
     role;
 
     constructor(user_id) {
+        // save the user ID when creating an object
         this.user_id = user_id;
     }
 
@@ -33,10 +34,11 @@ class User {
             const sql = 'SELECT * FROM users WHERE user_id = ?';
             const results = await db.query(sql, [this.user_id]);
 
+            // if user exists, store the data in this object
             if (results.length > 0) {
                 this.full_name = results[0].full_name;
-                this.email     = results[0].email;
-                this.role      = results[0].role;
+                this.email = results[0].email;
+                this.role = results[0].role;
             }
         }
     }
@@ -56,13 +58,13 @@ class User {
             if (user.password_hash.startsWith('$2b$') || user.password_hash.startsWith('$2a$')) {
                 const match = await bcrypt.compare(password, user.password_hash);
                 if (match) return user;
-            } 
+            }
             // Legacy plain-text support (only for development)
             else {
                 if (password === user.password_hash) return user;
             }
         }
-
+        // no match found: login failed
         return null;
     }
 
@@ -81,8 +83,12 @@ class User {
 
         const maxSql = 'SELECT MAX(CAST(SUBSTRING(user_id, 2) AS UNSIGNED)) as max_id FROM users WHERE user_id LIKE ?';
         const maxResult = await db.query(maxSql, [prefix + '%']);
+
+        // get last number and increase it
         const maxId = maxResult[0].max_id || 0;
         const newId = maxId + 1;
+
+        // create new ID like T001, S002, etc.
         const userId = prefix + newId.toString().padStart(3, '0');
 
         // Create the main user record
@@ -93,24 +99,28 @@ class User {
 
         // Create the matching profile in the role-specific table
         if (role === 'tutor') {
+            // add tutor record with default values
             await db.query(
                 'INSERT INTO tutors (user_id, rating, lesson_count, points) VALUES (?, 0.0, 0, 0)',
                 [userId]
             );
         } else if (role === 'tutee') {
+            // add tutee record
             await db.query(
                 'INSERT INTO tutees (user_id) VALUES (?)',
                 [userId]
             );
         }
 
+        // return the new user ID
         return userId;
     }
 
     /**
-     * Returns a list of ALL users in the system.
-     * Mainly used by admins.
+     * Returns all users in the database
+     * (mainly used by admin pages)
      */
+
     static async getAll() {
         const sql = 'SELECT * FROM users';
         return await db.query(sql);
