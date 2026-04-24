@@ -449,3 +449,129 @@
     color: white;
     transform: scale(1.05);
 }
+
+/* -- TUTOR DASHBOARD SPECIFIC OVERRIDES -- */
+.alert {
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.alert-success { background: #28a745; }
+.alert-danger { background: #dc3545; }
+
+.respond-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.booking-form-inline {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.text-confirmed { color: #28a745; margin-top: 10px; font-weight: 600; }
+.text-completed { color: #6c757d; margin-top: 10px; font-weight: 600; }
+.text-declined { color: #dc3545; margin-top: 10px; }
+
+.btn-complete { background: #007bff !important; margin-top: 10px; }
+
+.review-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.review-date { color: #666; font-size: 0.85rem; }
+
+.review-rating-badge {
+    background: #f1f1f1;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    color: #ff9800;
+}
+
+.review-feedback {
+    font-style: italic;
+    color: #333;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+.subjects-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.subject-item {
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 20px;
+    gap: 10px;
+}
+
+.subject-name { font-weight: 500; color: #333; }
+
+.btn-remove-subject {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+}
+
+.no-subjects-text { margin-bottom: 20px; color: #666; }
+
+.add-subject-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.subject-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn-add-subject { padding: 10px 20px; white-space: nowrap; }
+
+.edit-profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-label-bold {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.profile-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.profile-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.btn-save-profile { padding: 10px 20px; font-size: 1rem; }
