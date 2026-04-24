@@ -30,16 +30,16 @@ block content
                     a.btn-secondary(href="/admin/users?role=tutee") Manage Students
 
                 .dashboard-card
-                    .card-icon(style="color: #ff4757") FLAGGED
+                    .card-icon.card-icon-danger FLAGGED
                     h3 Flagged Tutors
                     p #{stats.flagged || 0} Flagged
-                    a.btn-secondary(href="/admin/flagged" style="border-color: #ff4757; color: #ff4757") Review Flags
+                    a.btn-secondary.btn-secondary-danger(href="/admin/flagged") Review Flags
 
             .dashboard-section
                 h2 System Management
                 .admin-menu
                     a.admin-btn(href="/admin/users") Manage All Users
                     a.admin-btn(href="/admin/approve-tutors") Approve Tutors
-                    a.admin-btn(href="/admin/flagged" style="background: #fff5f5; color: #ff4757; border-color: #ff4757") Review Flagged Tutors
+                    a.admin-btn.admin-btn-danger(href="/admin/flagged") Review Flagged Tutors
 
 

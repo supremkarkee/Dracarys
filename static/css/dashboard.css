@@ -582,3 +582,23 @@
 .text-confirmed-bold { color: #28a745; font-size: 0.9em; margin-top: 5px; font-weight: bold; }
 .activity-status-wrapper { display: flex; gap: 10px; align-items: center; }
 .education-form { display: flex; flex-direction: column; gap: 15px; }
+
+/* -- ADMIN DASHBOARD SPECIFIC OVERRIDES -- */
+.card-icon-danger { color: #ff4757; }
+
+.btn-secondary-danger {
+    border-color: #ff4757 !important;
+    color: #ff4757 !important;
+}
+.btn-secondary-danger:hover {
+    background: #fff5f5;
+}
+
+.admin-btn-danger {
+    background: #fff5f5 !important;
+    color: #ff4757 !important;
+    border-color: #ff4757 !important;
+}
+.admin-btn-danger:hover {
+    background: #ffebeb !important;
+}
