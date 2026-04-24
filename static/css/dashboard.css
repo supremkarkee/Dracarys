@@ -575,3 +575,10 @@
 }
 
 .btn-save-profile { padding: 10px 20px; font-size: 1rem; }
+
+/* -- STUDENT DASHBOARD SPECIFIC OVERRIDES -- */
+.text-unsuccessful { color: #dc3545; font-size: 0.9em; margin-top: 5px; }
+.tutor-note { color: #6c757d; font-style: italic; font-size: 0.85em; }
+.text-confirmed-bold { color: #28a745; font-size: 0.9em; margin-top: 5px; font-weight: bold; }
+.activity-status-wrapper { display: flex; gap: 10px; align-items: center; }
+.education-form { display: flex; flex-direction: column; gap: 15px; }

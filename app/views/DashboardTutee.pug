@@ -11,9 +11,9 @@ block content
 
         .dashboard-content
             if success
-                .alert.alert-success(style="color: white; background: #28a745; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{success}
+                .alert.alert-success #{success}
             if error
-                .alert.alert-danger(style="color: white; background: #dc3545; padding: 10px; border-radius: 5px; margin-bottom: 20px;") #{error}
+                .alert.alert-danger #{error}
 
             .dashboard-grid
                 .dashboard-card
@@ -46,14 +46,14 @@ block content
                                     p #{new Date(booking.lesson_date).toLocaleDateString()} | #{booking.lesson_time ? booking.lesson_time.slice(0,5) : '...'} - #{booking.end_time ? booking.end_time.slice(0,5) : '...'}
                                     
                                     if booking.status === 'declined'
-                                        p(style="color: #dc3545; font-size: 0.9em; margin-top: 5px;") Booking unsuccessful.
+                                        p.text-unsuccessful Booking unsuccessful.
                                         if booking.tutor_message
-                                            p(style="color: #6c757d; font-style: italic; font-size: 0.85em;") Tutor Note: "#{booking.tutor_message}"
+                                            p.tutor-note Tutor Note: "#{booking.tutor_message}"
 
                                     if booking.status === 'accepted'
-                                        p(style="color: #28a745; font-size: 0.9em; margin-top: 5px; font-weight: bold;") Booking confirmed.
+                                        p.text-confirmed-bold Booking confirmed.
 
-                                .activity-status(style="display: flex; gap: 10px; align-items: center;")
+                                .activity-status.activity-status-wrapper
                                     span(class=`status-badge status-${booking.status}`) #{booking.status.toUpperCase()}
                                     
                                     if booking.status === 'pending'
@@ -69,12 +69,12 @@ block content
             .dashboard-section#edit-education
                 h2 Edit Education Profile
                 .booking-card
-                    form(action="/dashboard/tutee/education" method="POST" style="display: flex; flex-direction: column; gap: 15px;")
+                    form.education-form(action="/dashboard/tutee/education" method="POST")
                         div
-                            label(for="school_level" style="font-weight: 600; display: block; margin-bottom: 5px;") School Level
-                            input#school_level(type="text" name="school_level" value=(tuteeProfile && tuteeProfile.school_level ? tuteeProfile.school_level : '') placeholder="e.g. High School, University" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                            label.form-label-bold(for="school_level") School Level
+                            input#school_level.profile-input(type="text" name="school_level" value=(tuteeProfile && tuteeProfile.school_level ? tuteeProfile.school_level : '') placeholder="e.g. High School, University")
                         div
-                            label(for="grade_level" style="font-weight: 600; display: block; margin-bottom: 5px;") Grade / Year Level
-                            input#grade_level(type="text" name="grade_level" value=(tuteeProfile && tuteeProfile.grade_level ? tuteeProfile.grade_level : '') placeholder="e.g. Grade 10, Year 2" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;")
+                            label.form-label-bold(for="grade_level") Grade / Year Level
+                            input#grade_level.profile-input(type="text" name="grade_level" value=(tuteeProfile && tuteeProfile.grade_level ? tuteeProfile.grade_level : '') placeholder="e.g. Grade 10, Year 2")
                         div
-                            button.btn-success(type="submit" style="padding: 10px 20px; font-size: 1rem;") Save Changes
+                            button.btn-success.btn-save-profile(type="submit") Save Changes
