@@ -1,0 +1,116 @@
+/* 
+   Booking Success Styles
+   Dracarys - Premium Tuition Marketplace
+*/
+
+:root {
+    --success-green: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --primary-blue: #3b82f6;
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+}
+
+body {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.booking-success-container {
+    max-width: 500px;
+    width: 90%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--success-green);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    position: relative;
+}
+
+/* Simulated Checkmark */
+.success-icon::after {
+    content: '✓';
+    font-size: 3rem;
+}
+
+h2 {
+    color: var(--text-dark);
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.025em;
+}
+
+.success-message {
+    color: var(--text-muted);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+.btn-view-lessons, .btn-browse-tutors {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-bottom: 1rem;
+}
+
+.btn-view-lessons {
+    background: var(--primary-blue);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+}
+
+.btn-view-lessons:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+}
+
+.btn-browse-tutors {
+    background: white;
+    color: var(--text-dark);
+    border: 1px solid #e5e7eb;
+}
+
+.btn-browse-tutors:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+@media (max-width: 640px) {
+    .booking-success-container {
+        padding: 2rem;
+    }
+}

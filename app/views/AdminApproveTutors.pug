@@ -39,7 +39,7 @@ block content
                                                 span.status-badge.status-pending PENDING
                                         td
                                             if !tutor.verified
-                                                button.btn-success.approve-tutor(data-tutor-id=tutor.tutor_id) Approve
+                                                button.btn-success.approve-tutor(data-user-id=tutor.user_id) Approve
                     else
                         p No tutors to approve.
 
@@ -47,9 +47,9 @@ block scripts
     script.
         document.querySelectorAll('.approve-tutor').forEach(btn => {
             btn.addEventListener('click', async function() {
-                const tutorId = this.dataset.tutorId;
+                const userId = this.dataset.userId;
                 try {
-                    const response = await fetch(`/admin/tutors/approve/${tutorId}`, {
+                    const response = await fetch(`/admin/tutors/approve/${userId}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' }
                     });

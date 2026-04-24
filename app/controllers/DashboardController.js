@@ -14,18 +14,7 @@ const { Tutor } = require('../models/Tutor');
 const { Tutee } = require('../models/Tutee');
 const { Subject } = require('../models/Subject');
 
-/**
- * Middleware: Check if user is logged in
- * 
- * This runs before every dashboard route.
- * If someone isn't logged in, it sends them back to the login page.
- */
-const isLoggedIn = (req, res, next) => {
-    if (!req.session.loggedIn) {
-        return res.redirect('/login?error=Please login to access dashboard');
-    }
-    next();
-};
+const { requireLogin: isLoggedIn } = require('../middleware/auth');
 
 /**
  * GET /dashboard

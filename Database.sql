@@ -35,7 +35,7 @@ CREATE TABLE `bookings` (
   `lesson_date` date NOT NULL,
   `lesson_time` time NOT NULL,
   `end_time` time DEFAULT NULL,
-  `status` enum('pending','accepted','declined') COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `status` enum('pending','accepted','declined','completed') COLLATE utf8mb4_general_ci DEFAULT 'pending',
   `tutor_message` text COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`booking_id`),

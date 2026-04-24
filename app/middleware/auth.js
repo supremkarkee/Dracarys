@@ -32,8 +32,22 @@ const isTutee = (req, res, next) => {
     next();
 };
 
+const isAdmin = (req, res, next) => {
+    // Only allow access if the user is logged in AND is an admin
+    if (!req.session.loggedIn || req.session.role !== 'admin') {
+        return res.status(403).render('Error404', {
+            title: 'Access Denied',
+            message: 'Only admins can access this page',
+            loggedIn: req.session.loggedIn || false
+        });
+    }
+
+    next();
+};
+
 module.exports = {
     requireLogin,
     isTutor,
-    isTutee
+    isTutee,
+    isAdmin
 };

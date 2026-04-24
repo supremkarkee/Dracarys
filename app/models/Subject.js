@@ -33,12 +33,49 @@ class Subject {
     /**
      * Get all subjects from database
      */
-
     static async getAll() {
         const sql = 'SELECT * FROM subjects';
 
         // to return full list of subject
         return await db.query(sql);
+    }
+
+    /**
+     * Adds a subject to a tutor's teaching list.
+     * If the subject doesn't exist in the global list, it creates it first.
+     */
+    static async addTutorSubject(tutorId, subjectName) {
+        // 1. Find or create the subject in the global subjects table
+        let subjectId;
+        const subjects = await db.query('SELECT subject_id FROM subjects WHERE subject_name = ?', [subjectName]);
+        
+        if (subjects.length > 0) {
+            subjectId = subjects[0].subject_id;
+        } else {
+            // Create the new subject category
+            const result = await db.query('INSERT INTO subjects (subject_name) VALUES (?)', [subjectName]);
+            subjectId = result.insertId;
+        }
+        
+        // 2. Link the tutor to this subject (INSERT IGNORE prevents duplicates)
+        const sql = 'INSERT IGNORE INTO tutor_subjects (tutor_id, subject_id) VALUES (?, ?)';
+        return await db.query(sql, [tutorId, subjectId]);
+    }
+
+    /**
+     * Removes a subject from a tutor's teaching list.
+     */
+    static async removeTutorSubject(tutorId, subjectName) {
+        // Find the subject ID first
+        const subjects = await db.query('SELECT subject_id FROM subjects WHERE subject_name = ?', [subjectName]);
+        
+        if (subjects.length > 0) {
+            const subjectId = subjects[0].subject_id;
+            const sql = 'DELETE FROM tutor_subjects WHERE tutor_id = ? AND subject_id = ?';
+            return await db.query(sql, [tutorId, subjectId]);
+        }
+        
+        return false;
     }
 }
 

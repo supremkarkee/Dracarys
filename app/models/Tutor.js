@@ -21,7 +21,6 @@ class Tutor {
      */
     async getTutorDetails() {
         // check if details already exist
-
         if (typeof this.full_name !== 'string') {
             const sql = `
                 SELECT t.*, u.full_name, u.email, u.role,
@@ -61,7 +60,6 @@ class Tutor {
     /**
      * to get all reviews for this tutor
      */
-
     async getReviews() {
         const sql = `
             SELECT r.*, u.full_name AS studentName 
@@ -95,26 +93,27 @@ class Tutor {
      * Recalculates the tutor's points based on lessons, reviews, and rating.
      */
     async calculatePoints() {
-        // Count accepted lessons
-        const lessonSql = 'SELECT COUNT(*) as count FROM bookings WHERE tutor_id = ? AND status = "accepted"';
-        const lessonRes = await db.query(lessonSql, [this.tutor_id]);
-        const lessonCount = lessonRes[0].count || 0;
+        // Optimized: Get all counts in one database trip
+        const sql = `
+            SELECT 
+                (SELECT COUNT(*) FROM bookings WHERE tutor_id = ? AND (status = "accepted" OR status = "completed")) as lessonCount,
+                (SELECT COUNT(*) FROM reviews WHERE tutor_id = ?) as reviewCount,
+                (SELECT rating FROM tutors WHERE tutor_id = ?) as currentRating
+        `;
+        
+        const results = await db.query(sql, [this.tutor_id, this.tutor_id, this.tutor_id]);
+        const row = results[0];
+        
+        const lessonCount = row.lessonCount || 0;
+        const reviewCount = row.reviewCount || 0;
+        const rating = row.currentRating || 0.0;
 
-        // Count reviews
-        const reviewSql = 'SELECT COUNT(*) as count FROM reviews WHERE tutor_id = ?';
-        const reviewRes = await db.query(reviewSql, [this.tutor_id]);
-        const reviewCount = reviewRes[0].count || 0;
-
-        // Get rating
-        const ratingSql = 'SELECT rating FROM tutors WHERE tutor_id = ?';
-        const ratingRes = await db.query(ratingSql, [this.tutor_id]);
-        const rating = ratingRes[0].rating || 0.0;
-
-        // Calculate points: (Lessons * 10) + (Reviews * 5) + (Rating * 20)
+        // Formula: (Lessons * 10) + (Reviews * 5) + (Rating * 20)
         const newPoints = Math.round((lessonCount * 10) + (reviewCount * 5) + (rating * 20));
 
-        // Update the database
-        await db.query('UPDATE tutors SET points = ?, lesson_count = ? WHERE tutor_id = ?', [newPoints, lessonCount, this.tutor_id]);
+        // Update the database with new stats
+        await db.query('UPDATE tutors SET points = ?, lesson_count = ? WHERE tutor_id = ?', 
+            [newPoints, lessonCount, this.tutor_id]);
 
         this.points = newPoints;
         this.lesson_count = lessonCount;

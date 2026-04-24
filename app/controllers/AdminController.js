@@ -11,27 +11,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../services/db');
 
-/**
- * Middleware: Check if the current user is a logged-in admin
- * 
- * This runs before every admin route.
- * If the user isn't logged in or isn't an admin, it shows
- * a friendly "Access Denied" page.
- */
-const isAdmin = (req, res, next) => {
-    const userIsNotLoggedIn = !req.session.loggedIn;
-    const userIsNotAnAdmin = req.session.role !== 'admin';
-
-    if (userIsNotLoggedIn || userIsNotAnAdmin) {
-        return res.status(403).render('404', {
-            title: 'Access Denied',
-            message: 'Only admins can access this page',
-            loggedIn: req.session.loggedIn || false
-        });
-    }
-
-    next();
-};
+const { isAdmin } = require('../middleware/auth');
 
 /**
  * GET /admin/users
@@ -63,10 +43,11 @@ router.get('/admin/users', isAdmin, async (req, res) => {
             pageTitle = 'Manage Tutors';
         }
 
-        res.render('admin-users', {
+        res.render('AdminUsers', {
             title: pageTitle,
             activePage: sidebarHighlight,
             users: users || [],
+            role: req.session.role,
             loggedIn: req.session.loggedIn || false
         });
 
@@ -125,38 +106,23 @@ router.post('/admin/users/delete/:id', isAdmin, async (req, res) => {
  */
 router.get('/admin/approve-tutors', isAdmin, async (req, res) => {
     try {
-        const query = `
-            SELECT 
-                u.user_id, 
-                u.full_name, 
-                u.email, 
-                t.* 
+        const tutors = await db.query(`
+            SELECT t.*, u.full_name, u.email 
             FROM tutors t 
-            JOIN users u ON t.user_id = u.user_id 
-            ORDER BY u.user_id DESC
-        `;
+            LEFT JOIN users u ON t.user_id = u.user_id 
+            ORDER BY t.tutor_id DESC
+        `);
 
-        const tutors = await db.query(query);
-
-        console.log(`Loaded ${tutors.length} tutors for approval.`);
-
-        res.render('admin-approve-tutors', {
+        res.render('AdminApproveTutors', {
             title: 'Approve Tutors',
             activePage: 'admin-approve-tutors',
             tutors: tutors || [],
             loggedIn: req.session.loggedIn || false
         });
 
-    } catch (error) {
-        console.error('Error fetching tutors for approval:', error);
-
-        res.render('admin-approve-tutors', {
-            title: 'Approve Tutors',
-            activePage: 'admin-approve-tutors',
-            tutors: [],
-            error: 'We ran into an issue while loading the tutor list.',
-            loggedIn: req.session.loggedIn || false
-        });
+    } catch (err) {
+        console.error("ADMIN_CONTROLLER_ERROR (approve tutors):", err);
+        res.status(500).send(`Internal Server Error: ${err.message}`);
     }
 });
 
@@ -201,7 +167,7 @@ router.get('/admin/reports', isAdmin, async (req, res) => {
         const roleBreakdown = await db.query('SELECT role, COUNT(*) as count FROM users GROUP BY role');
         const recentUsers = await db.query('SELECT * FROM users ORDER BY user_id DESC LIMIT 5');
 
-        res.render('admin-reports', {
+        res.render('AdminReports', {
             title: 'System Reports',
             activePage: 'admin-reports',
             totalUsers: totalUsersResult[0].count,
@@ -245,7 +211,7 @@ router.get('/admin/settings', isAdmin, async (req, res) => {
             maintenance_mode: false
         };
 
-        res.render('admin-settings', {
+        res.render('AdminSettings', {
             title: 'System Settings',
             activePage: 'admin-settings',
             settings: settings,
@@ -301,7 +267,7 @@ router.get('/admin/content', isAdmin, async (req, res) => {
             'SELECT * FROM subjects ORDER BY subject_id DESC'
         );
 
-        res.render('admin-content', {
+        res.render('AdminContent', {
             title: 'Manage Content',
             activePage: 'admin-content',
             subjects: subjects || [],
@@ -389,7 +355,7 @@ router.post('/admin/subjects/delete/:id', isAdmin, async (req, res) => {
  */
 router.get('/admin/support', isAdmin, async (req, res) => {
     try {
-        res.render('admin-support', {
+        res.render('AdminSupport', {
             title: 'Support Tickets',
             activePage: 'admin-support',
             tickets: [],
@@ -431,7 +397,7 @@ router.get('/admin/flagged', isAdmin, async (req, res) => {
 
         const flaggedTutors = await db.query(query);
 
-        res.render('admin-flagged', {
+        res.render('AdminFlagged', {
             title: 'Flagged Tutors',
             activePage: 'admin-flagged',
             flaggedTutors: flaggedTutors || [],
