@@ -16,16 +16,16 @@ block content
                     if tickets && tickets.length
                         .admin-grid
                             each ticket in tickets
-                                .admin-card-item(style="border-left: 4px solid #007bff;")
+                                .admin-card-item.ticket-card
                                     h4= ticket.subject
                                     p= ticket.description
-                                    .ticket-footer(style="display: flex; justify-content: space-between; align-items: center;")
+                                    .ticket-footer.ticket-footer-flex
                                         span.status-badge.status-verified= ticket.status || 'Open'
                                         button.btn-primary(onclick=`location.href='/admin/support/${ticket.id}'`) View Details
                     else
-                        .admin-card-item(style="text-align: center; padding: 40px;")
+                        .admin-card-item.empty-tickets-card
                             p No support tickets at this time.
-                            p(style="color: #666; margin-top: 10px;") Users can submit support requests and they will appear here.
+                            p.text-muted-mt Users can submit support requests and they will appear here.
 
             .dashboard-section
                 h2 Create Support Response

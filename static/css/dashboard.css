@@ -602,3 +602,9 @@
 .admin-btn-danger:hover {
     background: #ffebeb !important;
 }
+
+/* -- ADMIN SUPPORT SPECIFIC OVERRIDES -- */
+.ticket-card { border-left: 4px solid #007bff !important; }
+.ticket-footer-flex { display: flex; justify-content: space-between; align-items: center; }
+.empty-tickets-card { text-align: center; padding: 40px; }
+.text-muted-mt { color: #666; margin-top: 10px; }
