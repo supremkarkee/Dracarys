@@ -1,8 +1,11 @@
 extends Layout
 
+block head
+    link(rel="stylesheet" href="/css/error.css")
+
 block content
-    main.error-container(style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 60vh; text-align: center;")
-        h1.error-code(style="font-size: 6rem; color: var(--primary-color, #ff4757); margin-bottom: 0.5rem;") 404
-        h2(style="font-size: 2rem; margin-bottom: 1rem;") Page Not Found
-        p.tagline(style="color: var(--text-muted, #666); margin-bottom: 2rem;") Sorry, the page you are looking for doesn't exist.
+    main.error-container
+        h1.error-code 404
+        h2 Page Not Found
+        p.tagline Sorry, the page you are looking for doesn't exist.
         a.cta-btn(href="/") Back to Home
