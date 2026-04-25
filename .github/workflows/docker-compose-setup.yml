@@ -1,0 +1,37 @@
+name: Simple Practice Action
+
+# 1. The Trigger: When should this run?
+on:
+  push:
+    branches:
+      - main # Runs every time you push to the main branch
+
+# 2. The Jobs: What should it do?
+jobs:
+  practice-job:
+    # We'll use Ubuntu for the runner environment
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step A: Check out the code from your repository so the runner can access it
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step B: Run a basic command
+      - name: Say Hello
+        run: echo "Hello! The GitHub Action has successfully triggered."
+
+      # Step C: Pull in the secret you made earlier and create the .env file locally on the runner
+      - name: Setup Environment Variables
+        run: |
+          echo "$MY_ENV_FILE" > .env
+          echo "The .env file has been generated from GitHub Secrets."
+        env:
+          # This maps the GitHub Secret to an environment variable the step can use
+          MY_ENV_FILE: ${{ secrets.ENV_FILE }}
+
+      # Step D: List files to prove the .env and database-file exist
+      - name: Verify Directory Structure
+        run: |
+          echo "Listing current directory contents:"
+          ls -la
