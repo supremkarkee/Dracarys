@@ -22,10 +22,10 @@ services:
     ports:
       - "3309:3306"
     volumes:
-      - ./db:/var/lib/mysql
+      - db_data:/var/lib/mysql
       - ./Database.sql:/docker-entrypoint-initdb.d/Database.sql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,3 +38,6 @@ services:
       PMA_HOST: db
     ports:
       - "8085:80"
+
+volumes:
+  db_data:
