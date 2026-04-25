@@ -1,0 +1,21 @@
+# This workflow is triggered by a push to the 'deploy' branch
+name: On push to deploy branch
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Access the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Perform the deployment (currently just a placeholder)
+      - name: Send Notification
+        run: echo "The deploy branch has been updated. Starting deployment..."
