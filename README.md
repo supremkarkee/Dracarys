@@ -103,3 +103,8 @@ To set up the entire project (Node.js + JavaFX) in IntelliJ:
 
 > [!NOTE]
 > For the JavaFX lab, ensure you use **JDK 21 or higher** for best compatibility with macOS Sequoia.
+
+## test 
+
+
+this is just a test. 
