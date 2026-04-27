@@ -100,7 +100,8 @@ app.use('/', adminRoutes);
 // 404 Error Page
 app.use(function (req, res) {
     res.status(404).render("Error404", { 
-        title: "404 - Not Found", 
+        title: "Page Not Found", 
+        errorCode: "404",
         activePage: null 
     });
 });
@@ -108,10 +109,12 @@ app.use(function (req, res) {
 // General Error Handler (for unexpected crashes)
 app.use(function (err, req, res, next) {
     console.error("Express Error Handler:", err && (err.stack || err));
-    res.status(500).send(`
-        <h1>500 Internal Server Error</h1>
-        <pre>${err ? (err.stack || err) : 'Unknown Error'}</pre>
-    `);
+    res.status(500).render("Error404", { 
+        title: "Internal Server Error",
+        errorCode: "500",
+        message: "Something went wrong on our end. Our dragons are working on it!",
+        activePage: null
+    });
 });
 
 // Export the app so index.js can start the server

@@ -207,10 +207,14 @@ router.post("/book/:id", requireLogin, async function (req, res) {
 
         await Booking.create(tutee_id, tutor_id, date, time, end_time, subject_name);
 
+        const tutor = new Tutor(tutor_id);
+        await tutor.getTutorDetails();
+
         res.render("BookingSuccess", {
             title: "Booking Successful",
-            activePage: "search",
-            tutorId: tutor_id
+            activePage: "browse-tutors",
+            tutorId: tutor_id,
+            message: `Your lesson request for ${subject_name} with ${tutor.full_name} has been sent!`
         });
 
     } catch (err) {

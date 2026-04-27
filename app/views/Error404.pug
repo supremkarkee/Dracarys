@@ -5,7 +5,7 @@ block head
 
 block content
     main.error-container
-        h1.error-code 404
-        h2 Page Not Found
-        p.tagline Sorry, the page you are looking for doesn't exist.
+        h1.error-code= errorCode || "404"
+        h2= title || "Page Not Found"
+        p.tagline= message || "Sorry, the page you are looking for doesn't exist or has been moved."
         a.cta-btn(href="/") Back to Home

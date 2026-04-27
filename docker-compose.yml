@@ -14,9 +14,13 @@ services:
         condition: service_healthy
     env_file:
       - ./.env
+    networks:
+      - dracarys-net
+
   db:
     image: mysql:8.0
     restart: always
+    command: --default-authentication-plugin=mysql_native_password
     env_file:
       - ./.env
     ports:
@@ -29,6 +33,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - dracarys-net
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
@@ -36,8 +43,18 @@ services:
       - ./.env
     environment:
       PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "8085:80"
+    depends_on:
+      - db
+    networks:
+      - dracarys-net
 
 volumes:
   db_data:
+
+networks:
+  dracarys-net:
+    driver: bridge
